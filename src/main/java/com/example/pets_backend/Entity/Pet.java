@@ -12,7 +12,7 @@ public class Pet {
 
     @JsonBackReference
     @ManyToOne
-    @JoinColumn(name = "userId", nullable = false)
+    @JoinColumn(name = "uid", nullable = false)
     private User user;
 
     private String petName;
