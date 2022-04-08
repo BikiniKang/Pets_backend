@@ -1,6 +1,6 @@
-package com.example.pets_backend.Repository;
+package com.example.pets_backend.repository;
 
-import com.example.pets_backend.Entity.User;
+import com.example.pets_backend.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

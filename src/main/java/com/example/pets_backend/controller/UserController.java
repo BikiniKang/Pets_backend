@@ -1,8 +1,7 @@
-package com.example.pets_backend.Controller;
+package com.example.pets_backend.controller;
 
-import com.example.pets_backend.Entity.User;
-import com.example.pets_backend.Helper.Token;
-import com.example.pets_backend.Repository.UserRepository;
+import com.example.pets_backend.entity.User;
+import com.example.pets_backend.repository.UserRepository;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -21,7 +20,7 @@ public class UserController {
                 () -> new IllegalArgumentException("user with email " + email + " does not exist")
         );
         if (user.getPassword().equals(password)) {
-            return Token.generateToken(user);
+            return "";
         } else {
             throw new IllegalArgumentException("Entered wrong password");
         }

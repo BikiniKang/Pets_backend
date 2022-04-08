@@ -1,20 +1,20 @@
-package com.example.pets_backend.Entity;
+package com.example.pets_backend.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import javax.persistence.*;
 
 @Entity
-public class Task {
+public class Folder {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long taskId;
+    private Long fdId;
 
     @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "uid", nullable = false)
     private User user;
 
-    private String content;
+    private String name;
 }
