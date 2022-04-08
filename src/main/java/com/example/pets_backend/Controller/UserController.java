@@ -27,6 +27,11 @@ public class UserController {
         }
     }
 
+    @PostMapping("register")
+    public User addUser(@RequestBody User user) {
+        return userRepository.save(user);
+    }
+
 
 //    @GetMapping("users")
 //    public List<User> getAllUsers() {
