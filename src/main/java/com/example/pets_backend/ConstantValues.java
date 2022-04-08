@@ -9,4 +9,5 @@ public class ConstantValues {
     public static final Long EXPIRATION_TIME_MILLIS_REFRESH = 1000L * 60 * 60 * 24 * 30;
     public static final String LOGIN = "/login";
     public static final String TOKEN_REFRESH = "/token_refresh";
+    public static final String REGISTER = "/register";
 }

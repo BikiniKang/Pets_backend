@@ -1,33 +1,29 @@
 package com.example.pets_backend.controller;
 
 import com.example.pets_backend.entity.User;
-import com.example.pets_backend.repository.UserRepository;
+import com.example.pets_backend.service.UserService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import java.net.URI;
+
+import static com.example.pets_backend.ConstantValues.REGISTER;
 
 @RestController
+@RequiredArgsConstructor
 public class UserController {
 
-    private final UserRepository userRepository;
+    private final UserService userService;
 
-    public UserController(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    @PostMapping(REGISTER)
+    public ResponseEntity<User> register(@RequestBody User user) {
+        URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path(REGISTER).toUriString());
+        return ResponseEntity.created(uri).body(userService.register(user));
     }
 
-    @GetMapping("login")
-    public String login(@RequestParam String email, @RequestParam String password) {
-        //TODO: How to hide the password from the request URL?
-        User user = userRepository.findByEmail(email);
-        if (user.getPassword().equals(password)) {
-            return "";
-        } else {
-            throw new IllegalArgumentException("Entered wrong password");
-        }
-    }
 
-    @PostMapping("register")
-    public User addUser(@RequestBody User user) {
-        return userRepository.save(user);
-    }
 
 
 //    @GetMapping("users")
