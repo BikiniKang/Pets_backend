@@ -16,9 +16,7 @@ public class UserController {
     @GetMapping("login")
     public String login(@RequestParam String email, @RequestParam String password) {
         //TODO: How to hide the password from the request URL?
-        User user = userRepository.findByEmail(email).orElseThrow(
-                () -> new IllegalArgumentException("user with email " + email + " does not exist")
-        );
+        User user = userRepository.findByEmail(email);
         if (user.getPassword().equals(password)) {
             return "";
         } else {
