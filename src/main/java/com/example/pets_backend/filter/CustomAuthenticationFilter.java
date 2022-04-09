@@ -1,7 +1,6 @@
 package com.example.pets_backend.filter;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
+import com.example.pets_backend.util.SecurityHelperMethods;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -16,12 +15,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.example.pets_backend.ConstantValues.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @Slf4j
@@ -36,6 +32,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         String email = request.getParameter("email");
         String password = request.getParameter("password");
+        log.info("User created with email {} and password {}", email, password);
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(email, password);
         return authenticationManager.authenticate(authenticationToken);
     }
@@ -43,18 +40,8 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
         User scUser = (User) authResult.getPrincipal();
-        Algorithm algorithm = Algorithm.HMAC256(SECRET.getBytes(StandardCharsets.UTF_8));
-        String access_token = JWT.create()
-                .withSubject(scUser.getUsername())
-                .withClaim("password", scUser.getPassword())
-                .withIssuer(request.getRequestURL().toString())
-                .withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME_MILLIS))
-                .sign(algorithm);
-        String refresh_token = JWT.create()
-                .withSubject(scUser.getUsername())
-                .withIssuer(request.getRequestURL().toString())
-                .withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME_MILLIS_REFRESH))
-                .sign(algorithm);
+        String access_token = SecurityHelperMethods.generateAccessToken(request, scUser.getUsername(), scUser.getPassword());
+        String refresh_token = SecurityHelperMethods.generateRefreshToken(request, scUser.getUsername());
         Map<String, String> tokens = new HashMap<>();
         tokens.put("access_token", access_token);
         tokens.put("refresh_token", refresh_token);

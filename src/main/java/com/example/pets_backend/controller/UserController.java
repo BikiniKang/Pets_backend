@@ -1,18 +1,31 @@
 package com.example.pets_backend.controller;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.JWTVerifier;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.example.pets_backend.entity.User;
 import com.example.pets_backend.service.UserService;
+import com.example.pets_backend.util.SecurityHelperMethods;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
 
-import static com.example.pets_backend.ConstantValues.REGISTER;
+import static com.example.pets_backend.ConstantValues.*;
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
 @RequiredArgsConstructor
+@Slf4j
 public class UserController {
 
     private final UserService userService;
@@ -23,7 +36,30 @@ public class UserController {
         return ResponseEntity.created(uri).body(userService.register(user));
     }
 
+    @GetMapping(TOKEN_REFRESH)
+    public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        String authorizationHeader = request.getHeader(AUTHORIZATION);
+        if (authorizationHeader != null && authorizationHeader.startsWith(AUTHORIZATION_PREFIX)) {
+            try {
+                String refresh_token = authorizationHeader.substring(AUTHORIZATION_PREFIX.length());
+                JWTVerifier verifier = JWT.require(ALGORITHM).build();
+                DecodedJWT decodedJWT = verifier.verify(refresh_token);
 
+                String email = decodedJWT.getSubject();
+                String access_token_new = SecurityHelperMethods.generateAccessToken(request, email, userService.getUser(email).getPassword());
+
+                Map<String, String> tokens = new HashMap<>();
+                tokens.put("access_token", access_token_new);
+                tokens.put("refresh_token", refresh_token);
+                response.setContentType(APPLICATION_JSON_VALUE);
+                new ObjectMapper().writeValue(response.getOutputStream(), tokens);
+            } catch (Exception exception) {
+                SecurityHelperMethods.forbiddenErrorResponse(response, exception);
+            }
+        } else {
+            throw new RuntimeException("Refresh token is missing");
+        }
+    }
 
 
 //    @GetMapping("users")
