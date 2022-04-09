@@ -1,5 +1,6 @@
 package com.example.pets_backend.filter;
 
+import com.example.pets_backend.util.ResultData;
 import com.example.pets_backend.util.SecurityHelperMethods;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -35,11 +36,12 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         tokens.put("access_token", access_token);
         tokens.put("refresh_token", refresh_token);
         response.setContentType(APPLICATION_JSON_VALUE);
-        new ObjectMapper().writeValue(response.getOutputStream(), tokens);
+        new ObjectMapper().writeValue(response.getOutputStream(), ResultData.success(tokens));
     }
 
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
-        SecurityHelperMethods.forbiddenErrorResponse(response, failed);
+        response.setContentType(APPLICATION_JSON_VALUE);
+        new ObjectMapper().writeValue(response.getOutputStream(), ResultData.fail(response.getStatus(), failed.getMessage()));
     }
 }

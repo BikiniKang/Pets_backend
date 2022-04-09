@@ -5,6 +5,7 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.example.pets_backend.entity.User;
 import com.example.pets_backend.service.UserService;
+import com.example.pets_backend.util.ResultData;
 import com.example.pets_backend.util.SecurityHelperMethods;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -48,24 +49,22 @@ public class UserController {
     public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String authorizationHeader = request.getHeader(AUTHORIZATION);
         if (authorizationHeader != null && authorizationHeader.startsWith(AUTHORIZATION_PREFIX)) {
-            try {
-                String refresh_token = authorizationHeader.substring(AUTHORIZATION_PREFIX.length());
-                JWTVerifier verifier = JWT.require(ALGORITHM).build();
-                DecodedJWT decodedJWT = verifier.verify(refresh_token);
+            String refresh_token = authorizationHeader.substring(AUTHORIZATION_PREFIX.length());
+            JWTVerifier verifier = JWT.require(ALGORITHM).build();
+            DecodedJWT decodedJWT = verifier.verify(refresh_token);
 
-                String email = decodedJWT.getSubject();
-                String access_token_new = SecurityHelperMethods.generateAccessToken(request, email, userService.getUser(email).getPassword());
+            String email = decodedJWT.getSubject();
+            String access_token_new = SecurityHelperMethods.generateAccessToken(request, email, userService.getUser(email).getPassword());
 
-                Map<String, String> tokens = new HashMap<>();
-                tokens.put("access_token", access_token_new);
-                tokens.put("refresh_token", refresh_token);
-                response.setContentType(APPLICATION_JSON_VALUE);
-                new ObjectMapper().writeValue(response.getOutputStream(), tokens);
-            } catch (Exception exception) {
-                SecurityHelperMethods.forbiddenErrorResponse(response, exception);
-            }
+            Map<String, String> tokens = new HashMap<>();
+            tokens.put("access_token", access_token_new);
+            tokens.put("refresh_token", refresh_token);
+            response.setContentType(APPLICATION_JSON_VALUE);
+            new ObjectMapper().writeValue(response.getOutputStream(), ResultData.success(tokens));
         } else {
-            throw new RuntimeException("Refresh token is missing");
+            response.setContentType(APPLICATION_JSON_VALUE);
+            response.setStatus(500);
+            new ObjectMapper().writeValue(response.getOutputStream(), ResultData.fail(500, "Refresh token is missing"));
         }
     }
 

@@ -19,7 +19,7 @@ public class ResultData<T> {
     public static <T> ResultData<T> success(T data) {
         ResultData<T> resultData = new ResultData<>();
         resultData.setStatus(200);
-        resultData.setMessage("ok");
+        resultData.setMessage("OK");
         resultData.setData(data);
         return resultData;
     }

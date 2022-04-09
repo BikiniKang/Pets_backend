@@ -2,8 +2,10 @@ package com.example.pets_backend.filter;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
+import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.example.pets_backend.util.SecurityHelperMethods;
+import com.example.pets_backend.util.ResultData;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -20,11 +22,12 @@ import java.util.Collection;
 
 import static com.example.pets_backend.ConstantValues.*;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @Slf4j
 public class CustomAuthorizationFilter extends OncePerRequestFilter {
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException, TokenExpiredException {
 
         if (request.getServletPath().equals(LOGIN) || request.getServletPath().equals(TOKEN_REFRESH) || request.getServletPath().equals(REGISTER)) {
             filterChain.doFilter(request, response);
@@ -45,7 +48,8 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
                     log.info("authorization done");
                     filterChain.doFilter(request, response);
                 } catch (Exception exception) {
-                    SecurityHelperMethods.forbiddenErrorResponse(response, exception);
+                    response.setContentType(APPLICATION_JSON_VALUE);
+                    new ObjectMapper().writeValue(response.getOutputStream(), ResultData.fail(403, exception.getMessage()));
                 }
             } else {
                 filterChain.doFilter(request, response);
