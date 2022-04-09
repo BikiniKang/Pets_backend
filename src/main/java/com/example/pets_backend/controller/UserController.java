@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -68,47 +69,22 @@ public class UserController {
         }
     }
 
+    @GetMapping("/user")
+    public ResponseEntity<User> getUser(@RequestBody String email) {
+        return ResponseEntity.ok().body(userService.getUser(email));
+    }
 
-//    @GetMapping("users")
-//    public List<User> getAllUsers() {
-//        return userRepository.findAll();
-//    }
-//
-//    @GetMapping("users/{userId}/pets")
-//    public List<Pet> getUserPets(@PathVariable Long userId) {
-//        User user = userRepository.findById(userId).orElseThrow(
-//                () -> new IllegalStateException("user with id " + userId + " does not exist")
-//        );
-//        return user.getPetList();
-//    }
-//
-//    @PostMapping("users")
-//    public User addUser(@RequestBody User user) {
-//        return userRepository.save(user);
-//    }
-//
-//    @PostMapping("users/{userId}/addPet")
-//    public Pet addPet(@PathVariable Long userId, @RequestBody Pet pet) {
-//        User user = userRepository.findById(userId).orElseThrow(
-//                () -> new IllegalStateException("user with id " + userId + " does not exist")
-//        );
-//        pet.setUser(user);
-//        return petRepository.save(pet);
-//    }
-//
-//    @DeleteMapping("users/{userId}")
-//    public void deleteUser(@PathVariable Long userId) {
-//        userRepository.deleteById(userId);
-//    }
-//
-//    @Transactional
-//    @PutMapping("users/{userId}")
-//    public User changeUserName(@PathVariable Long userId, @RequestBody String userName) {
-//        User user = userRepository.findById(userId).orElseThrow(
-//                () -> new IllegalStateException("user with id " + userId + " does not exist")
-//        );
-//        user.setUserName(userName);
-//        return user;
-//    }
+    @PutMapping("/user/edit_setting")
+    @Transactional
+    public ResponseEntity<User> editUser(@RequestBody User user) {
+        User user_old = userService.getUser(user.getEmail());
+        // Change the attributes which can be edited in the "Setting" page:
+        user_old.setFirstName(user.getFirstName());
+        user_old.setLastName(user.getLastName());
+        user_old.setAddress(user.getAddress());
+        user_old.setImage(user.getImage());
+        user_old.setPhone(user.getPhone());
+        return ResponseEntity.ok().body(user_old);
+    }
 
 }
