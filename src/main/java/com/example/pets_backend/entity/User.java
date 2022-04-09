@@ -1,12 +1,17 @@
 package com.example.pets_backend.entity;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Data
+@AllArgsConstructor
+@RequiredArgsConstructor
+@NoArgsConstructor
 public class User {
 
     @Id
@@ -14,15 +19,19 @@ public class User {
     private Long uid;
 
     @Column(name = "email", nullable = false, unique = true)
+    @NonNull
     private String email;
 
-    @Column(name = "password", nullable = false, length = 16)
+    @Column(name = "password", nullable = false)
+    @NonNull
     private String password;
 
     @Column(name = "firstName", nullable = false, length = 35)
+    @NonNull
     private String firstName;
 
     @Column(name = "lastName", nullable = false, length = 35)
+    @NonNull
     private String lastName;
 
     @Column(name = "phone", length = 15)
@@ -49,8 +58,6 @@ public class User {
     @JsonManagedReference
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Folder> folderList = new ArrayList<>();
-
-    public User(){}
 
     public Long getUid() {
         return uid;

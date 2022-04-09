@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.net.URI;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static com.example.pets_backend.ConstantValues.*;
@@ -25,10 +26,16 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping
 @Slf4j
 public class UserController {
 
     private final UserService userService;
+
+    @GetMapping("/users")
+    public ResponseEntity<List<User>> getUsers() {
+        return ResponseEntity.ok().body(userService.getUsers());
+    }
 
     @PostMapping(REGISTER)
     public ResponseEntity<User> register(@RequestBody User user) {

@@ -2,12 +2,14 @@ package com.example.pets_backend.util;
 
 
 import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -36,7 +38,7 @@ public class SecurityHelperMethods {
                 .withClaim("password", password)
                 .withIssuer(request.getRequestURL().toString())
                 .withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME_MILLIS))
-                .sign(ALGORITHM);
+                .sign(Algorithm.HMAC256(SECRET.getBytes(StandardCharsets.UTF_8)));
     }
 
     public static String generateRefreshToken(HttpServletRequest request, String username) {
@@ -44,6 +46,6 @@ public class SecurityHelperMethods {
                 .withSubject(username)
                 .withIssuer(request.getRequestURL().toString())
                 .withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME_MILLIS_REFRESH))
-                .sign(ALGORITHM);
+                .sign(Algorithm.HMAC256(SECRET.getBytes(StandardCharsets.UTF_8)));
     }
 }

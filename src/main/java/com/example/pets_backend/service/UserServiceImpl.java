@@ -4,7 +4,6 @@ import com.example.pets_backend.entity.User;
 import com.example.pets_backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -13,7 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -28,13 +27,12 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         User user = userRepo.findByEmail(email);
         if (user == null) {
-            log.error("User not found in the database");
+            log.error("User {} not found in the database", email);
             throw new UsernameNotFoundException("User not found in the database");
         } else {
             log.info("User {} found in the database", email);
         }
-        Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
-        return new org.springframework.security.core.userdetails.User(email, user.getPassword(), authorities);
+        return new org.springframework.security.core.userdetails.User(email, user.getPassword(), new ArrayList<>());
     }
 
     @Override
@@ -48,5 +46,11 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     public User getUser(String email) {
         log.info("Fetching user {}", email);
         return userRepo.findByEmail(email);
+    }
+
+    @Override
+    public List<User> getUsers() {
+        log.info("Fetching all users");
+        return userRepo.findAll();
     }
 }
