@@ -1,4 +1,4 @@
-package com.example.pets_backend.Entity;
+package com.example.pets_backend.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import javax.persistence.*;
@@ -12,7 +12,7 @@ public class Pet {
 
     @JsonBackReference
     @ManyToOne
-    @JoinColumn(name = "userId", nullable = false)
+    @JoinColumn(name = "uid", nullable = false)
     private User user;
 
     private String petName;

@@ -1,7 +1,7 @@
-package com.example.pets_backend.Controller;
+package com.example.pets_backend.controller;
 
-import com.example.pets_backend.Entity.Pet;
-import com.example.pets_backend.Repository.PetRepository;
+import com.example.pets_backend.entity.Pet;
+import com.example.pets_backend.repository.PetRepository;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
