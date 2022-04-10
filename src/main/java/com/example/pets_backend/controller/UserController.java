@@ -36,6 +36,7 @@ public class UserController {
     public Map<String, String> refreshToken(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String authorizationHeader = request.getHeader(AUTHORIZATION);
         if (authorizationHeader != null && authorizationHeader.startsWith(AUTHORIZATION_PREFIX)) {
+            // send the refresh token when the access token is expired
             String refresh_token = authorizationHeader.substring(AUTHORIZATION_PREFIX.length());
             JWTVerifier verifier = JWT.require(ALGORITHM).build();
             DecodedJWT decodedJWT = verifier.verify(refresh_token);
