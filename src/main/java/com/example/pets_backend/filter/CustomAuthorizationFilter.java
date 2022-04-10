@@ -6,7 +6,6 @@ import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.example.pets_backend.util.ResultData;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,7 +23,6 @@ import static com.example.pets_backend.ConstantValues.*;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
-@Slf4j
 public class CustomAuthorizationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException, TokenExpiredException {
@@ -33,7 +31,6 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
         } else {
             String authorizationHeader = request.getHeader(AUTHORIZATION);
-            log.info("Request: {}, Authorization: {}", request.getServletPath(), authorizationHeader);
             if (authorizationHeader != null && authorizationHeader.startsWith(AUTHORIZATION_PREFIX)) {
                 try {
                     String token = authorizationHeader.substring(AUTHORIZATION_PREFIX.length());
@@ -45,10 +42,10 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
                     authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
                     UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(email, password, authorities);
                     SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-                    log.info("authorization done");
                     filterChain.doFilter(request, response);
                 } catch (Exception exception) {
                     response.setContentType(APPLICATION_JSON_VALUE);
+                    response.setStatus(403);
                     new ObjectMapper().writeValue(response.getOutputStream(), ResultData.fail(403, exception.getMessage()));
                 }
             } else {
