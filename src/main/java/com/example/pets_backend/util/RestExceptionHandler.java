@@ -14,6 +14,6 @@ public class RestExceptionHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ResultData<String> exception(Exception e) {
         log.error("Global exception: {}", e.getMessage(), e);
-        return ResultData.fail(500, "Internal Server Error");
+        return ResultData.fail(500, e.getMessage());
     }
 }

@@ -10,13 +10,11 @@ import com.example.pets_backend.util.SecurityHelperMethods;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -33,21 +31,13 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping(REGISTER)
-    public User register(@RequestBody User user, HttpServletRequest request, HttpServletResponse response) throws IOException {
-        try {
-            return userService.register(user);
-        } catch (DataIntegrityViolationException dataIntegrityViolationException) {
-            response.setContentType(APPLICATION_JSON_VALUE);
-            response.setStatus(400);
-            new ObjectMapper().writeValue(response.getOutputStream(), ResultData.fail(400, "Duplicate email " + user.getEmail()));
-            return null;
-        }
+    public User register(@RequestBody User user) {
+        return userService.register(user);
     }
 
     @GetMapping(TOKEN_REFRESH)
-    public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public Map<String, String> refreshToken(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String authorizationHeader = request.getHeader(AUTHORIZATION);
-        response.setContentType(APPLICATION_JSON_VALUE);
         if (authorizationHeader != null && authorizationHeader.startsWith(AUTHORIZATION_PREFIX)) {
             String refresh_token = authorizationHeader.substring(AUTHORIZATION_PREFIX.length());
             JWTVerifier verifier = JWT.require(ALGORITHM).build();
@@ -57,44 +47,34 @@ public class UserController {
             Map<String, String> tokens = new HashMap<>();
             tokens.put("access_token", access_token_new);
             tokens.put("refresh_token", refresh_token);
-            new ObjectMapper().writeValue(response.getOutputStream(), ResultData.success(tokens));
+            return tokens;
         } else {
-            response.setStatus(400);
-            new ObjectMapper().writeValue(response.getOutputStream(), ResultData.fail(400, "Refresh token is missing"));
+            response.setStatus(403);
+            new ObjectMapper().writeValue(response.getOutputStream(), ResultData.fail(403, "Refresh token is missing"));
+            return null;
         }
     }
 
     @GetMapping("/user")
-    public void getUser(@RequestBody String email, HttpServletRequest request, HttpServletResponse response) throws IOException {
-        User user = userService.getUser(email);
-        response.setContentType(APPLICATION_JSON_VALUE);
-        if (user == null) {
-            response.setStatus(400);
-            new ObjectMapper().writeValue(response.getOutputStream(), ResultData.fail(400, "User with email " + email + " not found in database"));
-        } else {
-            response.setStatus(200);
-            new ObjectMapper().writeValue(response.getOutputStream(), ResultData.success(user));
-        }
+    public User getUser(@RequestBody String email) {
+        return userService.getUser(email);
     }
 
     @PutMapping("/user/edit_setting")
-    @Transactional
-    public void editUser(@RequestBody User user, HttpServletRequest request, HttpServletResponse response) throws IOException {
-        User user_old = userService.getUser(user.getEmail());
+    public User editUser(@RequestBody User user, HttpServletRequest request, HttpServletResponse response) {
         response.setContentType(APPLICATION_JSON_VALUE);
-        if (user_old == null) {
-            response.setStatus(400);
-            new ObjectMapper().writeValue(response.getOutputStream(), ResultData.fail(400, "User with email " + user.getEmail() + " not found in database"));
-        } else {
-            // Change the attributes which can be edited in the "Setting" page:
-            user_old.setFirstName(user.getFirstName());
-            user_old.setLastName(user.getLastName());
-            user_old.setAddress(user.getAddress());
-            user_old.setImage(user.getImage());
-            user_old.setPhone(user.getPhone());
-            response.setStatus(200);
-            new ObjectMapper().writeValue(response.getOutputStream(), ResultData.success(user_old));
+
+        // check whether the provided user matches the current user
+        String email_provided = user.getEmail();
+        String authorizationHeader = request.getHeader(AUTHORIZATION);
+        String token = authorizationHeader.substring(AUTHORIZATION_PREFIX.length()); // no need to check the token format because the CustomAuthorizationFilter already did that
+        JWTVerifier verifier = JWT.require(ALGORITHM).build();
+        DecodedJWT decodedJWT = verifier.verify(token);
+        if (!email_provided.equals(decodedJWT.getSubject())) {
+            throw new IllegalArgumentException("Do not have access to edit user with email " + email_provided);
         }
+
+        return userService.editUser(user);
     }
 
 }
