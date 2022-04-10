@@ -50,8 +50,8 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
                 }
             } else {
                 response.setContentType(APPLICATION_JSON_VALUE);
-                response.setStatus(400);
-                new ObjectMapper().writeValue(response.getOutputStream(), ResultData.fail(400, "Token is missing"));
+                response.setStatus(403);
+                new ObjectMapper().writeValue(response.getOutputStream(), ResultData.fail(403, "Token is missing"));
             }
 
         }

@@ -9,8 +9,6 @@ import com.example.pets_backend.util.ResultData;
 import com.example.pets_backend.util.SecurityHelperMethods;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -25,7 +23,6 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping
-@Slf4j
 public class UserController {
 
     private final UserService userService;
