@@ -46,6 +46,7 @@ public class UserController {
             tokens.put("refresh_token", refresh_token);
             return tokens;
         } else {
+            response.setContentType(APPLICATION_JSON_VALUE);
             response.setStatus(403);
             new ObjectMapper().writeValue(response.getOutputStream(), ResultData.fail(403, "Refresh token is missing"));
             return null;
@@ -68,7 +69,7 @@ public class UserController {
         JWTVerifier verifier = JWT.require(ALGORITHM).build();
         DecodedJWT decodedJWT = verifier.verify(token);
         if (!email_provided.equals(decodedJWT.getSubject())) {
-            throw new IllegalArgumentException("Do not have access to edit user with email " + email_provided);
+            throw new IllegalArgumentException("Do not have access to edit user " + email_provided);
         }
 
         return userService.editUser(user);
