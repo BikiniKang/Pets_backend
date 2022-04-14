@@ -11,6 +11,8 @@ import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
+import java.util.LinkedHashMap;
+
 @RestControllerAdvice
 public class ResponseAdvice implements ResponseBodyAdvice<Object> {
 
@@ -27,9 +29,14 @@ public class ResponseAdvice implements ResponseBodyAdvice<Object> {
     public Object beforeBodyWrite(Object o, MethodParameter methodParameter, MediaType mediaType, Class<? extends HttpMessageConverter<?>> aClass, ServerHttpRequest serverHttpRequest, ServerHttpResponse serverHttpResponse) {
         if(o instanceof String){
             return objectMapper.writeValueAsString(ResultData.success(o));
-        }
-        if(o instanceof ResultData){
+        } else if(o instanceof ResultData){
             return o;
+        } else if (o instanceof LinkedHashMap) {
+            int status = (int) ((LinkedHashMap<?, ?>) o).get("status");
+            String error = (String) ((LinkedHashMap<?, ?>) o).get("error");
+            if (error != null) {
+                return ResultData.fail(status, error);
+            }
         }
         return ResultData.success(o);
     }
