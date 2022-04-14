@@ -2,17 +2,19 @@ package com.example.pets_backend.util;
 
 import lombok.Data;
 
+import java.text.SimpleDateFormat;
+
 @Data
 public class ResultData<T> {
 
     private int status;
     private String message;
     private T data;
-    private long timestamp ;
+    private String timestamp ;
 
 
     public ResultData (){
-        this.timestamp = System.currentTimeMillis();
+        this.timestamp = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX").format(new java.util.Date());
     }
 
 
