@@ -31,27 +31,25 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
         } else {
             String authorizationHeader = request.getHeader(AUTHORIZATION);
-            if (authorizationHeader != null && authorizationHeader.startsWith(AUTHORIZATION_PREFIX)) {
-                try {
-                    String token = authorizationHeader.substring(AUTHORIZATION_PREFIX.length());
-                    JWTVerifier verifier = JWT.require(ALGORITHM).build();
-                    DecodedJWT decodedJWT = verifier.verify(token);
-                    String email = decodedJWT.getSubject();
-                    String password = decodedJWT.getClaim("password").asString();
-                    Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
-                    authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
-                    UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(email, password, authorities);
-                    SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-                    filterChain.doFilter(request, response);
-                } catch (Exception exception) {
-                    response.setContentType(APPLICATION_JSON_VALUE);
-                    response.setStatus(403);
-                    new ObjectMapper().writeValue(response.getOutputStream(), ResultData.fail(403, exception.getMessage()));
-                }
-            } else {
+            try {
+                String token = authorizationHeader.substring(AUTHORIZATION_PREFIX.length());
+                JWTVerifier verifier = JWT.require(ALGORITHM).build();
+                DecodedJWT decodedJWT = verifier.verify(token);
+                String email = decodedJWT.getSubject();
+                String password = decodedJWT.getClaim("password").asString();
+                Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
+                authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
+                UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(email, password, authorities);
+                SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+                filterChain.doFilter(request, response);
+            } catch (TokenExpiredException exception) {
                 response.setContentType(APPLICATION_JSON_VALUE);
-                response.setStatus(403);
-                new ObjectMapper().writeValue(response.getOutputStream(), ResultData.fail(403, "Token is missing"));
+                response.setStatus(401);
+                new ObjectMapper().writeValue(response.getOutputStream(), ResultData.fail(401, exception.getMessage()));
+            } catch (Exception exception) {
+                response.setContentType(APPLICATION_JSON_VALUE);
+                response.setStatus(500);
+                new ObjectMapper().writeValue(response.getOutputStream(), ResultData.fail(500, "Invalid token"));
             }
 
         }
