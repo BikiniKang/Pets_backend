@@ -32,27 +32,27 @@ public class UserController {
         return userService.register(user);
     }
 
-    @GetMapping(TOKEN_REFRESH)
-    public Map<String, String> refreshToken(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        String authorizationHeader = request.getHeader(AUTHORIZATION);
-        if (authorizationHeader != null && authorizationHeader.startsWith(AUTHORIZATION_PREFIX)) {
-            // send the refresh token when the access token is expired
-            String refresh_token = authorizationHeader.substring(AUTHORIZATION_PREFIX.length());
-            JWTVerifier verifier = JWT.require(ALGORITHM).build();
-            DecodedJWT decodedJWT = verifier.verify(refresh_token);
-            String email = decodedJWT.getSubject();
-            String access_token_new = SecurityHelperMethods.generateAccessToken(request, email, userService.getUser(email).getPassword());
-            Map<String, String> tokens = new HashMap<>();
-            tokens.put("access_token", access_token_new);
-            tokens.put("refresh_token", refresh_token);
-            return tokens;
-        } else {
-            response.setContentType(APPLICATION_JSON_VALUE);
-            response.setStatus(403);
-            new ObjectMapper().writeValue(response.getOutputStream(), ResultData.fail(403, "Refresh token is missing"));
-            return null;
-        }
-    }
+//    @GetMapping(TOKEN_REFRESH)
+//    public Map<String, String> refreshToken(HttpServletRequest request, HttpServletResponse response) throws Exception {
+//        String authorizationHeader = request.getHeader(AUTHORIZATION);
+//        if (authorizationHeader != null && authorizationHeader.startsWith(AUTHORIZATION_PREFIX)) {
+//            // send the refresh token when the access token is expired
+//            String refresh_token = authorizationHeader.substring(AUTHORIZATION_PREFIX.length());
+//            JWTVerifier verifier = JWT.require(ALGORITHM).build();
+//            DecodedJWT decodedJWT = verifier.verify(refresh_token);
+//            String email = decodedJWT.getSubject();
+//            String access_token_new = SecurityHelperMethods.generateAccessToken(request, email, userService.getUser(email).getPassword());
+//            Map<String, String> tokens = new HashMap<>();
+//            tokens.put("access_token", access_token_new);
+//            tokens.put("refresh_token", refresh_token);
+//            return tokens;
+//        } else {
+//            response.setContentType(APPLICATION_JSON_VALUE);
+//            response.setStatus(403);
+//            new ObjectMapper().writeValue(response.getOutputStream(), ResultData.fail(403, "Refresh token is missing"));
+//            return null;
+//        }
+//    }
 
     @GetMapping("/user")
     public User getUser(@RequestBody String email) {

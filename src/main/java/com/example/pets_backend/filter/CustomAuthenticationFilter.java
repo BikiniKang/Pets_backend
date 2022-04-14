@@ -13,8 +13,6 @@ import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -28,12 +26,12 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException {
         User scUser = (User) authResult.getPrincipal();
         String access_token = SecurityHelperMethods.generateAccessToken(request, scUser.getUsername(), scUser.getPassword());
-        String refresh_token = SecurityHelperMethods.generateRefreshToken(request, scUser.getUsername());
-        Map<String, String> tokens = new HashMap<>();
-        tokens.put("access_token", access_token);
-        tokens.put("refresh_token", refresh_token);
+//        String refresh_token = SecurityHelperMethods.generateRefreshToken(request, scUser.getUsername());
+//        Map<String, String> tokens = new HashMap<>();
+//        tokens.put("access_token", access_token);
+//        tokens.put("refresh_token", refresh_token);
         response.setContentType(APPLICATION_JSON_VALUE);
-        new ObjectMapper().writeValue(response.getOutputStream(), ResultData.success(tokens));
+        new ObjectMapper().writeValue(response.getOutputStream(), ResultData.success(access_token));
     }
 
     @Override
