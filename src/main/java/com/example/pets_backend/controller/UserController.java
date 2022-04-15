@@ -170,4 +170,14 @@ public class UserController {
         pet.setHeight((double) mapIn.get("height"));
     }
 
+    @DeleteMapping("/user/pet")
+    public void deletePet(@RequestBody Map<String, Object> mapIn) {
+        Long petId = (long) ((int) mapIn.get("petId"));
+        Pet pet = petService.findByPetId(petId);
+        if (((long) ((int) mapIn.get("uid"))) != pet.getUser().getUid()) {
+            throw new IllegalArgumentException("Pet " + pet.getPetId() + " does not belongs to user " + mapIn.get("uid"));
+        }
+        petService.deletePetByPetId(petId);
+    }
+
 }

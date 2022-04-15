@@ -5,4 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface PetRepository extends JpaRepository<Pet, Long> {
     Pet findByPetId(Long petId);
+    void deletePetByPetId(Long petId);
 }
