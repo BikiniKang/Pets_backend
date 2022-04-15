@@ -5,9 +5,6 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.example.pets_backend.entity.User;
 import com.example.pets_backend.service.UserService;
-import com.example.pets_backend.util.ResultData;
-import com.example.pets_backend.util.SecurityHelperMethods;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,8 +25,10 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping(REGISTER)
-    public User register(@RequestBody User user) {
-        return userService.register(user);
+    public Map<String, Object> register(@RequestBody User user) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("uid", userService.register(user).getUid().intValue());
+        return map;
     }
 
 //    @GetMapping(TOKEN_REFRESH)
