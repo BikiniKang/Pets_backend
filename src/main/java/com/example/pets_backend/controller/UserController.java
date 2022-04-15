@@ -10,8 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.LinkedHashMap;
 
 import static com.example.pets_backend.ConstantValues.*;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
@@ -25,8 +24,8 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping(REGISTER)
-    public Map<String, Object> register(@RequestBody User user) {
-        Map<String, Object> map = new HashMap<>();
+    public LinkedHashMap<String, Object> register(@RequestBody User user) {
+        LinkedHashMap<String, Object> map = new LinkedHashMap<>();
         map.put("uid", userService.register(user).getUid().intValue());
         return map;
     }

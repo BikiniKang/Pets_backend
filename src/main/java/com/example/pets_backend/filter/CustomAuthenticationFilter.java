@@ -13,6 +13,7 @@ import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.LinkedHashMap;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -30,8 +31,10 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
 //        Map<String, String> tokens = new HashMap<>();
 //        tokens.put("access_token", access_token);
 //        tokens.put("refresh_token", refresh_token);
+        LinkedHashMap<String, Object> map = new LinkedHashMap<>();
+        map.put("token", access_token);
         response.setContentType(APPLICATION_JSON_VALUE);
-        new ObjectMapper().writeValue(response.getOutputStream(), ResultData.success(access_token));
+        new ObjectMapper().writeValue(response.getOutputStream(), ResultData.success(map));
     }
 
     @Override

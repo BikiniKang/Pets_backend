@@ -31,12 +31,10 @@ public class ResponseAdvice implements ResponseBodyAdvice<Object> {
             return objectMapper.writeValueAsString(ResultData.success(o));
         } else if(o instanceof ResultData){
             return o;
-        } else if (o instanceof LinkedHashMap) {
+        } else if (o instanceof LinkedHashMap && ((LinkedHashMap<?, ?>) o).get("error") != null) {  // i.e., 404 not found response
             int status = (int) ((LinkedHashMap<?, ?>) o).get("status");
             String error = (String) ((LinkedHashMap<?, ?>) o).get("error");
-            if (error != null) {
-                return ResultData.fail(status, error);
-            }
+            return ResultData.fail(status, error);
         }
         return ResultData.success(o);
     }
