@@ -4,6 +4,7 @@ import com.example.pets_backend.entity.CalendarDate;
 import com.example.pets_backend.entity.Folder;
 import com.example.pets_backend.entity.Pet;
 import com.example.pets_backend.entity.User;
+import com.example.pets_backend.service.PetService;
 import com.example.pets_backend.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +22,7 @@ import static com.example.pets_backend.ConstantValues.*;
 public class UserController {
 
     private final UserService userService;
+    private final PetService petService;
 
     @PostMapping(REGISTER)
     public LinkedHashMap<String, Object> register(@RequestBody Map<String, Object> mapIn) {
@@ -105,6 +107,31 @@ public class UserController {
     public void updateUserProfileImage(@RequestBody Map<String, Object> mapIn) {
         User user = userService.getUserById((long) ((int) mapIn.get("uid")));
         user.setImage((String) mapIn.get("image"));
+    }
+
+    @PostMapping("/user/pet")
+    @Transactional
+    public LinkedHashMap<String, Object> addPet(@RequestBody Map<String, Object> mapIn) {
+        User user = userService.getUserById((long) ((int) mapIn.get("uid")));
+        Pet pet = new Pet();
+        pet.setPetName((String) mapIn.get("petName"));
+        if (mapIn.containsKey("petAvatar") && mapIn.get("petAvatar") != null) {
+            pet.setPetAvatar((String) mapIn.get("petAvatar"));
+        }
+        pet.setSpecies((String) mapIn.get("species"));
+        pet.setBreed((String) mapIn.get("breed"));
+        pet.setPetDob((String) mapIn.get("petDob"));
+        if (mapIn.containsKey("weight")) {
+            pet.setWeight((double) mapIn.get("weight"));
+        }
+        if (mapIn.containsKey("height")) {
+            pet.setHeight((double) mapIn.get("height"));
+        }
+        pet.setUser(user);
+        user.getPetList().add(pet);
+        LinkedHashMap<String, Object> map = new LinkedHashMap<>();
+        map.put("petId", petService.savePet(pet).getPetId());
+        return map;
     }
 
 }
