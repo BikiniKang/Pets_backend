@@ -4,8 +4,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Entity
 @Data
@@ -41,6 +40,9 @@ public class User {
 
     @Column(name = "image")
     private String image;
+
+    @Column(name = "isPetSitter")
+    private boolean isPetSitter = false;
 
     @JsonManagedReference
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
@@ -139,5 +141,57 @@ public class User {
 
     public void setPetList(List<Pet> petList) {
         this.petList = petList;
+    }
+
+    public boolean isPetSitter() {
+        return isPetSitter;
+    }
+
+    public void setPetSitter(boolean petSitter) {
+        isPetSitter = petSitter;
+    }
+
+    public List<Task> getTaskList() {
+        return taskList;
+    }
+
+    public void setTaskList(List<Task> taskList) {
+        this.taskList = taskList;
+    }
+
+    public List<Event> getEventList() {
+        return eventList;
+    }
+
+    public void setEventList(List<Event> eventList) {
+        this.eventList = eventList;
+    }
+
+    public List<Folder> getFolderList() {
+        return folderList;
+    }
+
+    public void setFolderList(List<Folder> folderList) {
+        this.folderList = folderList;
+    }
+
+    public List<CalendarDate> getCalendarDateList() {
+        return calendarDateList;
+    }
+
+    public void setCalendarDateList(List<CalendarDate> calendarDateList) {
+        this.calendarDateList = calendarDateList;
+    }
+
+    public List<Map<String, Object>> getPetListSub() {
+        List<Map<String, Object>> list = new ArrayList<>();
+        for (Pet pet:this.petList) {
+            Map<String, Object> map = new LinkedHashMap<>();
+            map.put("petId", pet.getPetId());
+            map.put("petName", pet.getPetName());
+            map.put("petImg", pet.getPetImg());
+            list.add(map);
+        }
+        return list;
     }
 }
