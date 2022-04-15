@@ -20,12 +20,12 @@ public class PetsBackendApplication {
         return new BCryptPasswordEncoder();
     }
 
-    @Bean
-    CommandLineRunner run(UserService userService) {
-        return args -> {
-            userService.register(new User("1044159268@qq.com", "1234", "Xinyu", "Kang"));
-            userService.register(new User("1369977889@qq.com", "1234", "Zeyu", "Gong"));
-        };
-    }
+//    @Bean
+//    CommandLineRunner run(UserService userService) {
+//        return args -> {
+//            userService.register(new User("1044159268@qq.com", "1234", "Xinyu", "Kang"));
+//            userService.register(new User("1369977889@qq.com", "1234", "Zeyu", "Gong"));
+//        };
+//    }
 
 }
