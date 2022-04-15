@@ -153,4 +153,21 @@ public class UserController {
         return mapOut;
     }
 
+    @PutMapping("/user/pet/profile")
+    @Transactional
+    public void updatePet(@RequestBody Map<String, Object> mapIn) {
+        Pet pet = petService.findByPetId((long) ((int) mapIn.get("petId")));
+        if (((long) ((int) mapIn.get("uid"))) != pet.getUser().getUid()) {
+            throw new IllegalArgumentException("Pet " + pet.getPetId() + " does not belongs to user " + mapIn.get("uid"));
+        }
+        pet.setPetName((String) mapIn.get("petName"));
+        pet.setPetAvatar((String) mapIn.get("petAvatar"));
+        pet.setGender((int) mapIn.get("gender"));
+        pet.setSpecies((String) mapIn.get("species"));
+        pet.setBreed((String) mapIn.get("breed"));
+        pet.setPetDob((String) mapIn.get("petDob"));
+        pet.setWeight((double) mapIn.get("weight"));
+        pet.setHeight((double) mapIn.get("height"));
+    }
+
 }
