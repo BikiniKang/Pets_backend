@@ -48,7 +48,7 @@ public class UserController {
             LinkedHashMap<String, Object> map_p = new LinkedHashMap<>();
             map_p.put("petId", pet.getPetId());
             map_p.put("petName", pet.getPetName());
-            map_p.put("petImg", pet.getPetImg());
+            map_p.put("petAvatar", pet.getPetAvatar());
             petList.add(map_p);
         }
         mapOut.put("petList", petList);
@@ -118,6 +118,7 @@ public class UserController {
         if (mapIn.containsKey("petAvatar") && mapIn.get("petAvatar") != null) {
             pet.setPetAvatar((String) mapIn.get("petAvatar"));
         }
+        pet.setGender((int) mapIn.get("gender"));
         pet.setSpecies((String) mapIn.get("species"));
         pet.setBreed((String) mapIn.get("breed"));
         pet.setPetDob((String) mapIn.get("petDob"));
@@ -130,8 +131,26 @@ public class UserController {
         pet.setUser(user);
         user.getPetList().add(pet);
         LinkedHashMap<String, Object> map = new LinkedHashMap<>();
-        map.put("petId", petService.savePet(pet).getPetId());
+        map.put("petId", petService.save(pet).getPetId());
         return map;
+    }
+
+    @GetMapping("/user/pet/profile")
+    public LinkedHashMap<String, Object> getPet(@RequestBody Map<String, Object> mapIn) {
+        Pet pet = petService.findByPetId((long) ((int) mapIn.get("petId")));
+        if (((long) ((int) mapIn.get("uid"))) != pet.getUser().getUid()) {
+            throw new IllegalArgumentException("Pet " + pet.getPetId() + " does not belongs to user " + mapIn.get("uid"));
+        }
+        LinkedHashMap<String, Object> mapOut = new LinkedHashMap<>();
+        mapOut.put("petName", pet.getPetName());
+        mapOut.put("petAvatar", pet.getPetAvatar());
+        mapOut.put("gender", pet.getGender());
+        mapOut.put("petDob", pet.getPetDob());
+        mapOut.put("species", pet.getSpecies());
+        mapOut.put("breed", pet.getBreed());
+        mapOut.put("weight", pet.getWeight());
+        mapOut.put("height", pet.getHeight());
+        return mapOut;
     }
 
 }

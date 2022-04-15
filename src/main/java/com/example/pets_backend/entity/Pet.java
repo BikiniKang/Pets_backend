@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import javax.persistence.*;
 import java.util.List;
 
+import static com.example.pets_backend.ConstantValues.DEFAULT_IMAGE_PET;
+
 @Entity
 @Data
 @AllArgsConstructor
@@ -25,13 +27,11 @@ public class Pet {
 
     private String petName;
 
-    private String petAvatar;
+    private String petAvatar = DEFAULT_IMAGE_PET;
 
     private String species;
 
     private String breed;
-
-    private String petImg;
 
     private int gender;
 

@@ -16,7 +16,12 @@ public class PetServiceImpl implements PetService{
     private final PetRepository petRepository;
 
     @Override
-    public Pet savePet(Pet pet) {
+    public Pet save(Pet pet) {
         return petRepository.save(pet);
+    }
+
+    @Override
+    public Pet findByPetId(Long petId) {
+        return petRepository.findByPetId(petId);
     }
 }
