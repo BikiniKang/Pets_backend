@@ -3,6 +3,9 @@ package com.example.pets_backend.controller;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.example.pets_backend.entity.CalendarDate;
+import com.example.pets_backend.entity.Folder;
+import com.example.pets_backend.entity.Pet;
 import com.example.pets_backend.entity.User;
 import com.example.pets_backend.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -10,7 +13,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.Map;
 
 import static com.example.pets_backend.ConstantValues.*;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
@@ -24,37 +29,51 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping(REGISTER)
-    public LinkedHashMap<String, Object> register(@RequestBody User user) {
+    public LinkedHashMap<String, Object> register(@RequestBody Map<String, Object> mapIn) {
         LinkedHashMap<String, Object> map = new LinkedHashMap<>();
+        User user = new User((String) mapIn.get("email"), (String) mapIn.get("password"), (String) mapIn.get("firstName"), (String) mapIn.get("lastName"));
         map.put("uid", userService.register(user).getUid().intValue());
         return map;
     }
 
-//    @GetMapping(TOKEN_REFRESH)
-//    public Map<String, String> refreshToken(HttpServletRequest request, HttpServletResponse response) throws Exception {
-//        String authorizationHeader = request.getHeader(AUTHORIZATION);
-//        if (authorizationHeader != null && authorizationHeader.startsWith(AUTHORIZATION_PREFIX)) {
-//            // send the refresh token when the access token is expired
-//            String refresh_token = authorizationHeader.substring(AUTHORIZATION_PREFIX.length());
-//            JWTVerifier verifier = JWT.require(ALGORITHM).build();
-//            DecodedJWT decodedJWT = verifier.verify(refresh_token);
-//            String email = decodedJWT.getSubject();
-//            String access_token_new = SecurityHelperMethods.generateAccessToken(request, email, userService.getUser(email).getPassword());
-//            Map<String, String> tokens = new HashMap<>();
-//            tokens.put("access_token", access_token_new);
-//            tokens.put("refresh_token", refresh_token);
-//            return tokens;
-//        } else {
-//            response.setContentType(APPLICATION_JSON_VALUE);
-//            response.setStatus(403);
-//            new ObjectMapper().writeValue(response.getOutputStream(), ResultData.fail(403, "Refresh token is missing"));
-//            return null;
-//        }
-//    }
+    @GetMapping("/user/dashboard")
+    public LinkedHashMap<String, Object> getUserDashboard(@RequestBody Map<String, Object> mapIn) {
+        User user = userService.getUserById((long) ((int) mapIn.get("uid")));
+        LinkedHashMap<String, Object> mapOut = new LinkedHashMap<>();
+        mapOut.put("uid", user.getUid());
+        mapOut.put("firstName", user.getFirstName());
+        mapOut.put("lastName", user.getLastName());
+        mapOut.put("image", user.getImage());
 
-    @GetMapping("/user")
-    public User getUser(@RequestBody String email) {
-        return userService.getUser(email);
+        ArrayList<LinkedHashMap<String, Object>> petList = new ArrayList<>();
+        for (Pet pet : user.getPetList()) {
+            LinkedHashMap<String, Object> map_p = new LinkedHashMap<>();
+            map_p.put("petId", pet.getPetId());
+            map_p.put("petName", pet.getPetName());
+            map_p.put("petImg", pet.getPetImg());
+            petList.add(map_p);
+        }
+        mapOut.put("petList", petList);
+
+        ArrayList<LinkedHashMap<String, Object>> folderList = new ArrayList<>();
+        for (Folder folder : user.getFolderList()) {
+            LinkedHashMap<String, Object> map_f = new LinkedHashMap<>();
+            map_f.put("folderId", folder.getFolderId());
+            map_f.put("folderName", folder.getFolderName());
+            folderList.add(map_f);
+        }
+        mapOut.put("folderList", folderList);
+
+        LinkedHashMap<String, Object> map_c = new LinkedHashMap<>();
+        if (user.getCalendarDateList().size() != 0) {
+            CalendarDate calendarDate = user.getCalendarDateList().get(0); // TODO: need to get today's calendarDate object
+            map_c.put("calDateId", calendarDate.getCalDateId());
+            map_c.put("dataValue", calendarDate.getDateValue());
+            map_c.put("taskList", calendarDate.getTaskListSub());
+            map_c.put("eventList", calendarDate.getEventListSub());
+        }
+        mapOut.put("calendarDate", map_c);
+        return mapOut;
     }
 
     @PutMapping("/user/edit_setting")

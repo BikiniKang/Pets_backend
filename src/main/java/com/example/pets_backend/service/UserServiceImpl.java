@@ -1,5 +1,6 @@
 package com.example.pets_backend.service;
 
+import com.example.pets_backend.entity.Folder;
 import com.example.pets_backend.entity.User;
 import com.example.pets_backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -40,7 +41,11 @@ public class UserServiceImpl implements UserDetailsService, UserService {
             log.info("Saving new user {} to the database", email);
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        return userRepo.save(user);
+        User user1 = userRepo.save(user);
+        user1.getFolderList().add(new Folder(user1, 0L, "Invoice"));
+        user1.getFolderList().add(new Folder(user1, 0L, "Medical Report"));
+        user1.getFolderList().add(new Folder(user1, 0L, "Vaccination History"));
+        return user1;
     }
 
     @Override
@@ -48,6 +53,11 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         User user = userRepo.findByEmail(email);
         checkUserInDB(user, email);
         return user;
+    }
+
+    @Override
+    public User getUserById(Long uid) {
+        return userRepo.getById(uid);
     }
 
     @Override
