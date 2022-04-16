@@ -1,5 +1,6 @@
 package com.example.pets_backend.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -8,10 +9,14 @@ import javax.persistence.*;
 @Entity
 @Data
 @NoArgsConstructor
-public class City {
+public class Breed {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long cityId;
+    private Long breedId;
 
-    private String name;
+    private String breedName;
+
+    @JsonIgnore
+    @ManyToOne
+    private Species species;
 }
