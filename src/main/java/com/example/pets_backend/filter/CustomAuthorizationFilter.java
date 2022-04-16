@@ -29,9 +29,11 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException, TokenExpiredException {
 
+        // TODO: (temporarily closed the Authorization for all developed requests)
         if (request.getServletPath().equals(LOGIN)
                 || request.getServletPath().equals(REGISTER)
-                || request.getServletPath().startsWith("/data")) {
+                || request.getServletPath().startsWith("/data")
+                || request.getServletPath().startsWith("/user")) {
             filterChain.doFilter(request, response);
         } else {
             String authorizationHeader = request.getHeader(AUTHORIZATION);

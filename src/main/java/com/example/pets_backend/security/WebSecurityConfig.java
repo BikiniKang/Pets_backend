@@ -36,8 +36,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         customAuthenticationFilter.setFilterProcessesUrl(LOGIN);
         http.csrf().disable();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        // permit the login, register, and token refresh URLs
-        http.authorizeRequests().antMatchers(LOGIN, REGISTER, "/data/**").permitAll();
+        // TODO: (temporarily closed the Authorization for all developed requests)
+        http.authorizeRequests().antMatchers(LOGIN, REGISTER, "/data/**", "/user/**").permitAll();
         // bind all the other URLs
         http.authorizeRequests().anyRequest().authenticated();
         http.addFilter(customAuthenticationFilter);
