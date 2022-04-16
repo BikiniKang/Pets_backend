@@ -18,5 +18,6 @@ public class Breed {
 
     @JsonIgnore
     @ManyToOne
+    @JoinColumn(name = "speciesId", nullable = false)
     private Species species;
 }

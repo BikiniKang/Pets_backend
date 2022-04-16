@@ -7,6 +7,7 @@ import com.example.pets_backend.entity.User;
 import com.example.pets_backend.service.PetService;
 import com.example.pets_backend.service.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,6 +20,7 @@ import static com.example.pets_backend.ConstantValues.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping
+@Slf4j
 public class UserController {
 
     private final UserService userService;
@@ -27,7 +29,11 @@ public class UserController {
     @PostMapping(REGISTER)
     public LinkedHashMap<String, Object> register(@RequestBody Map<String, Object> mapIn) {
         LinkedHashMap<String, Object> map = new LinkedHashMap<>();
-        User user = new User((String) mapIn.get("email"), (String) mapIn.get("password"), (String) mapIn.get("firstName"), (String) mapIn.get("lastName"));
+        User user = new User();
+        user.setEmail((String) mapIn.get("email"));
+        user.setPassword((String) mapIn.get("password"));
+        user.setFirstName((String) mapIn.get("firstName"));
+        user.setLastName((String) mapIn.get("lastName"));
         user.setImage(DEFAULT_IMAGE);
         user.setAddress("");
         user.setPhone("");
@@ -139,6 +145,7 @@ public class UserController {
     public LinkedHashMap<String, Object> getPet(@RequestBody Map<String, Object> mapIn) {
         Pet pet = petService.findByPetId((long) ((int) mapIn.get("petId")));
         if (((long) ((int) mapIn.get("uid"))) != pet.getUser().getUid()) {
+            log.error("Pet {} does not belongs to user {}", pet.getPetId(), mapIn.get("uid"));
             throw new IllegalArgumentException("Pet " + pet.getPetId() + " does not belongs to user " + mapIn.get("uid"));
         }
         LinkedHashMap<String, Object> mapOut = new LinkedHashMap<>();
@@ -158,6 +165,7 @@ public class UserController {
     public void updatePet(@RequestBody Map<String, Object> mapIn) {
         Pet pet = petService.findByPetId((long) ((int) mapIn.get("petId")));
         if (((long) ((int) mapIn.get("uid"))) != pet.getUser().getUid()) {
+            log.error("Pet {} does not belongs to user {}", pet.getPetId(), mapIn.get("uid"));
             throw new IllegalArgumentException("Pet " + pet.getPetId() + " does not belongs to user " + mapIn.get("uid"));
         }
         pet.setPetName((String) mapIn.get("petName"));
@@ -175,6 +183,7 @@ public class UserController {
         Long petId = (long) ((int) mapIn.get("petId"));
         Pet pet = petService.findByPetId(petId);
         if (((long) ((int) mapIn.get("uid"))) != pet.getUser().getUid()) {
+            log.error("Pet {} does not belongs to user {}", pet.getPetId(), mapIn.get("uid"));
             throw new IllegalArgumentException("Pet " + pet.getPetId() + " does not belongs to user " + mapIn.get("uid"));
         }
         petService.deletePetByPetId(petId);

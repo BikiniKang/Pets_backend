@@ -16,35 +16,31 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long uid;
 
-    @Column(name = "email", nullable = false, unique = true)
     @NonNull
+    @Column(length = 32)
     private String email;
 
-    @Column(name = "password", nullable = false)
     @NonNull
+    @Column(length = 16)
     private String password;
 
-    @Column(name = "first_name", nullable = false, length = 35)
     @NonNull
+    @Column(length = 32)
     private String firstName;
 
-    @Column(name = "last_name", nullable = false, length = 35)
     @NonNull
+    @Column(length = 32)
     private String lastName;
 
-    @Column(name = "phone", length = 15)
+    @Column(length = 16)
     private String phone;
 
-    @Column(name = "address")
     private String address;
 
-    @Column(name = "image")
     private String image;
 
-    @Column(name = "pet_sitter")
     private boolean isPetSitter = false;
 
-    @JsonManagedReference
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Pet> petList = new ArrayList<>();
 
@@ -64,12 +60,6 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<CalendarDate> calendarDateList = new ArrayList<>();
 
-    public User(String email, String password, String firstName, String lastName) {
-        this.email = email;
-        this.password = password;
-        this.firstName = firstName;
-        this.lastName = lastName;
-    }
 
     public List<Map<String, Object>> getPetListSub() {
         List<Map<String, Object>> list = new ArrayList<>();
