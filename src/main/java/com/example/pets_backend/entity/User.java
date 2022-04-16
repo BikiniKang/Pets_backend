@@ -6,6 +6,8 @@ import lombok.*;
 import javax.persistence.*;
 import java.util.*;
 
+import static com.example.pets_backend.ConstantValues.*;
+
 @Entity
 @Data
 @AllArgsConstructor
@@ -33,11 +35,11 @@ public class User {
     private String lastName;
 
     @Column(length = 16)
-    private String phone;
+    private String phone = DEFAULT_PHONE;
 
-    private String address;
+    private String address = DEFAULT_ADDRESS;
 
-    private String image;
+    private String image = DEFAULT_IMAGE;
 
     private boolean isPetSitter = false;
 
