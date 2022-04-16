@@ -19,4 +19,7 @@ public class ConstantValues {
     public static final String DEFAULT_IMAGE_PET = "http://dummyimage.com/400x400";
     public static final String DEFAULT_ADDRESS = "";
     public static final String DEFAULT_PHONE = "";
+    public static final String DEFAULT_EVENT_TYPE = "";
+    public static final String DEFAULT_START_TIME = "";
+    public static final String DEFAULT_END_TIME = "";
 }

@@ -1,8 +1,8 @@
 package com.example.pets_backend.entity;
 
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -10,64 +10,40 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 @Entity
+@Data
+@AllArgsConstructor
+@RequiredArgsConstructor
+@NoArgsConstructor
 public class CalendarDate {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long calDateId;
 
-    @JsonBackReference
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "uid", nullable = false)
     private User user;
 
-    private Long dateValue;
-
-    @JsonManagedReference
     @OneToMany(mappedBy = "calendarDate", cascade = CascadeType.ALL)
     private List<Task> taskList = new ArrayList<>();
 
-    @JsonManagedReference
     @OneToMany(mappedBy = "calendarDate", cascade = CascadeType.ALL)
     private List<Event> eventList = new ArrayList<>();
 
-    public Long getCalDateId() {
-        return calDateId;
+    @NonNull
+    private Long dateValue;
+
+    public LinkedHashMap<String, Object> getCalDateAb() {
+        LinkedHashMap<String, Object> map = new LinkedHashMap<>();
+        map.put("calDateId", this.calDateId);
+        map.put("dataValue", this.dateValue);
+        map.put("taskList", this.getTaskListAb());
+        map.put("eventList", this.getEventListAb());
+        return map;
     }
 
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public Long getDateValue() {
-        return dateValue;
-    }
-
-    public void setDateValue(Long dateValue) {
-        this.dateValue = dateValue;
-    }
-
-    public List<Task> getTaskList() {
-        return taskList;
-    }
-
-    public void setTaskList(List<Task> taskList) {
-        this.taskList = taskList;
-    }
-
-    public List<Event> getEventList() {
-        return eventList;
-    }
-
-    public void setEventList(List<Event> eventList) {
-        this.eventList = eventList;
-    }
-
-    public List<LinkedHashMap<String, Object>> getTaskListSub() {
+    public List<LinkedHashMap<String, Object>> getTaskListAb() {
         List<LinkedHashMap<String, Object>> list = new ArrayList<>();
         for (Task task:this.taskList) {
             LinkedHashMap<String, Object> map = new LinkedHashMap<>();
@@ -80,7 +56,7 @@ public class CalendarDate {
         return list;
     }
 
-    public List<LinkedHashMap<String, Object>> getEventListSub() {
+    public List<LinkedHashMap<String, Object>> getEventListAb() {
         List<LinkedHashMap<String, Object>> list = new ArrayList<>();
         for (Event event:this.eventList) {
             LinkedHashMap<String, Object> map = new LinkedHashMap<>();

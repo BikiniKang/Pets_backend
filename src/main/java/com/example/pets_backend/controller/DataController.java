@@ -27,7 +27,7 @@ public class DataController {
     public void postLocationList(@RequestBody List<String> list) {
         for (String name : list) {
             City city = new City();
-            city.setName(name);
+            city.setCityName(name);
             cityRepository.save(city);
         }
     }

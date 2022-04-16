@@ -11,7 +11,6 @@ import static com.example.pets_backend.ConstantValues.DEFAULT_IMAGE_PET;
 
 @Entity
 @Data
-@AllArgsConstructor
 @RequiredArgsConstructor
 @NoArgsConstructor
 public class Pet {
@@ -21,6 +20,7 @@ public class Pet {
     private Long petId;
 
     @JsonIgnore
+    @NonNull
     @ManyToOne
     @JoinColumn(name = "uid", nullable = false)
     private User user;
@@ -30,7 +30,7 @@ public class Pet {
     private String petName;
 
     @NonNull
-    private String petAvatar = DEFAULT_IMAGE_PET;
+    private String petAvatar;
 
     @NonNull
     @Column(length = 32)

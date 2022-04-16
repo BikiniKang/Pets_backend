@@ -1,7 +1,6 @@
 package com.example.pets_backend.controller;
 
 import com.example.pets_backend.entity.CalendarDate;
-import com.example.pets_backend.entity.Folder;
 import com.example.pets_backend.entity.Pet;
 import com.example.pets_backend.entity.User;
 import com.example.pets_backend.service.PetService;
@@ -11,7 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -28,16 +26,10 @@ public class UserController {
 
     @PostMapping(REGISTER)
     public LinkedHashMap<String, Object> register(@RequestBody Map<String, Object> mapIn) {
+        User user = new User((String) mapIn.get("email"), (String) mapIn.get("password"), (String) mapIn.get("firstName"), (String) mapIn.get("lastName"));
+        User savedUser = userService.register(user);
         LinkedHashMap<String, Object> map = new LinkedHashMap<>();
-        User user = new User();
-        user.setEmail((String) mapIn.get("email"));
-        user.setPassword((String) mapIn.get("password"));
-        user.setFirstName((String) mapIn.get("firstName"));
-        user.setLastName((String) mapIn.get("lastName"));
-        user.setImage(DEFAULT_IMAGE);
-        user.setAddress("");
-        user.setPhone("");
-        map.put("uid", userService.register(user).getUid().intValue());
+        map.put("uid", savedUser.getUid().intValue());
         return map;
     }
 
@@ -48,34 +40,12 @@ public class UserController {
         mapOut.put("firstName", user.getFirstName());
         mapOut.put("lastName", user.getLastName());
         mapOut.put("image", user.getImage());
-
-        ArrayList<LinkedHashMap<String, Object>> petList = new ArrayList<>();
-        for (Pet pet : user.getPetList()) {
-            LinkedHashMap<String, Object> map_p = new LinkedHashMap<>();
-            map_p.put("petId", pet.getPetId());
-            map_p.put("petName", pet.getPetName());
-            map_p.put("petAvatar", pet.getPetAvatar());
-            petList.add(map_p);
-        }
-        mapOut.put("petList", petList);
-
-        ArrayList<LinkedHashMap<String, Object>> folderList = new ArrayList<>();
-        for (Folder folder : user.getFolderList()) {
-            LinkedHashMap<String, Object> map_f = new LinkedHashMap<>();
-            map_f.put("folderId", folder.getFolderId());
-            map_f.put("folderName", folder.getFolderName());
-            folderList.add(map_f);
-        }
-        mapOut.put("folderList", folderList);
-
-        LinkedHashMap<String, Object> map_c = new LinkedHashMap<>();
+        mapOut.put("petList", user.getPetListAb());
+        mapOut.put("folderList", user.getFolderListAb());
         if (user.getCalendarDateList().size() != 0) {
-            CalendarDate calendarDate = user.getCalendarDateList().get(0); // TODO: need to get today's calendarDate object
-            map_c.put("calDateId", calendarDate.getCalDateId());
-            map_c.put("dataValue", calendarDate.getDateValue());
-            map_c.put("taskList", calendarDate.getTaskListSub());
-            map_c.put("eventList", calendarDate.getEventListSub());
-            mapOut.put("calendarDate", map_c);
+            //TODO: need to get today's calendarDate object
+            CalendarDate calendarDate = user.getCalendarDateList().get(0);
+            mapOut.put("calendarDate", calendarDate.getCalDateAb());
         } else {
             mapOut.put("calendarDate", null);
         }
@@ -93,7 +63,7 @@ public class UserController {
         mapOut.put("phone", user.getPhone());
         mapOut.put("address", user.getAddress());
         mapOut.put("isPetSitter", user.isPetSitter());
-        mapOut.put("petList", user.getPetListSub());
+        mapOut.put("petList", user.getPetListAb());
         return mapOut;
     }
 
@@ -119,32 +89,23 @@ public class UserController {
     @Transactional
     public LinkedHashMap<String, Object> addPet(@RequestBody Map<String, Object> mapIn) {
         User user = userService.getUserById((long) ((int) mapIn.get("uid")));
-        Pet pet = new Pet();
-        pet.setPetName((String) mapIn.get("petName"));
-        if (mapIn.containsKey("petAvatar") && mapIn.get("petAvatar") != null) {
-            pet.setPetAvatar((String) mapIn.get("petAvatar"));
-        }
-        pet.setGender((int) mapIn.get("gender"));
-        pet.setSpecies((String) mapIn.get("species"));
-        pet.setBreed((String) mapIn.get("breed"));
-        pet.setPetDob((String) mapIn.get("petDob"));
-        if (mapIn.containsKey("weight")) {
-            pet.setWeight((double) mapIn.get("weight"));
-        }
-        if (mapIn.containsKey("height")) {
-            pet.setHeight((double) mapIn.get("height"));
-        }
-        pet.setUser(user);
-        user.getPetList().add(pet);
+        String petAvatar = (String) mapIn.get("petAvatar");
+        if (petAvatar == null || petAvatar.length() == 0) petAvatar = DEFAULT_IMAGE;
+        Pet pet = new Pet(user, (String) mapIn.get("petName"), petAvatar,
+                (String) mapIn.get("species"), (String) mapIn.get("breed"), (int) mapIn.get("gender"), (String) mapIn.get("petDob"));
+        if (mapIn.containsKey("weight")) pet.setWeight((double) mapIn.get("weight"));
+        if (mapIn.containsKey("height")) pet.setHeight((double) mapIn.get("height"));
         LinkedHashMap<String, Object> map = new LinkedHashMap<>();
-        map.put("petId", petService.save(pet).getPetId());
+        Pet savedPet = petService.save(pet);
+        map.put("petId", savedPet.getPetId());
         return map;
     }
 
     @GetMapping("/user/pet/profile")
     public LinkedHashMap<String, Object> getPet(@RequestBody Map<String, Object> mapIn) {
         Pet pet = petService.findByPetId((long) ((int) mapIn.get("petId")));
-        if (((long) ((int) mapIn.get("uid"))) != pet.getUser().getUid()) {
+        Long uid = (long) ((int) mapIn.get("uid"));
+        if (!uid.equals(pet.getUser().getUid())) {
             log.error("Pet {} does not belongs to user {}", pet.getPetId(), mapIn.get("uid"));
             throw new IllegalArgumentException("Pet " + pet.getPetId() + " does not belongs to user " + mapIn.get("uid"));
         }
@@ -174,8 +135,8 @@ public class UserController {
         pet.setSpecies((String) mapIn.get("species"));
         pet.setBreed((String) mapIn.get("breed"));
         pet.setPetDob((String) mapIn.get("petDob"));
-        pet.setWeight((double) mapIn.get("weight"));
-        pet.setHeight((double) mapIn.get("height"));
+        if (mapIn.containsKey("weight")) pet.setWeight((double) mapIn.get("weight"));
+        if (mapIn.containsKey("height")) pet.setHeight((double) mapIn.get("height"));
     }
 
     @DeleteMapping("/user/pet")
