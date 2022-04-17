@@ -17,6 +17,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 @RequestMapping
 @Slf4j
+@CrossOrigin(maxAge = 3600)
 public class DataController {
 
     private final CityRepository cityRepository;

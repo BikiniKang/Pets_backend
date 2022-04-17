@@ -19,6 +19,7 @@ import static com.example.pets_backend.ConstantValues.*;
 @RequiredArgsConstructor
 @RequestMapping
 @Slf4j
+@CrossOrigin(maxAge = 3600)
 public class UserController {
 
     private final UserService userService;
