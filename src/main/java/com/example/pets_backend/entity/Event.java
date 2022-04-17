@@ -1,5 +1,6 @@
 package com.example.pets_backend.entity;
 
+import com.aventrix.jnanoid.jnanoid.NanoIdUtils;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
@@ -17,8 +18,7 @@ import static com.example.pets_backend.ConstantValues.*;
 public class Event {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long eventId;
+    private final String eventId = NanoIdUtils.randomNanoId();
 
     @JsonIgnore
     @ManyToOne

@@ -10,8 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -31,7 +29,7 @@ public class UserController {
         User user = new User((String) mapIn.get("email"), (String) mapIn.get("password"), (String) mapIn.get("firstName"), (String) mapIn.get("lastName"));
         User savedUser = userService.register(user);
         LinkedHashMap<String, Object> map = new LinkedHashMap<>();
-        map.put("uid", savedUser.getUid().intValue());
+        map.put("uid", savedUser.getUid());
         return map;
     }
 
@@ -106,7 +104,7 @@ public class UserController {
     @GetMapping("/user/pet/profile")
     public LinkedHashMap<String, Object> getPet(@RequestBody Map<String, Object> mapIn) {
         Pet pet = petService.findByPetId((long) ((int) mapIn.get("petId")));
-        Long uid = (long) ((int) mapIn.get("uid"));
+        String uid = (String) mapIn.get("uid");
         if (!uid.equals(pet.getUser().getUid())) {
             log.error("Pet {} does not belongs to user {}", pet.getPetId(), mapIn.get("uid"));
             throw new IllegalArgumentException("Pet " + pet.getPetId() + " does not belongs to user " + mapIn.get("uid"));
@@ -127,7 +125,7 @@ public class UserController {
     @Transactional
     public void updatePet(@RequestBody Map<String, Object> mapIn) {
         Pet pet = petService.findByPetId((long) ((int) mapIn.get("petId")));
-        if (((long) ((int) mapIn.get("uid"))) != pet.getUser().getUid()) {
+        if (!mapIn.get("uid").equals(pet.getUser().getUid())) {
             log.error("Pet {} does not belongs to user {}", pet.getPetId(), mapIn.get("uid"));
             throw new IllegalArgumentException("Pet " + pet.getPetId() + " does not belongs to user " + mapIn.get("uid"));
         }
@@ -145,7 +143,7 @@ public class UserController {
     public void deletePet(@RequestBody Map<String, Object> mapIn) {
         Long petId = (long) ((int) mapIn.get("petId"));
         Pet pet = petService.findByPetId(petId);
-        if (((long) ((int) mapIn.get("uid"))) != pet.getUser().getUid()) {
+        if (!mapIn.get("uid").equals(pet.getUser().getUid())) {
             log.error("Pet {} does not belongs to user {}", pet.getPetId(), mapIn.get("uid"));
             throw new IllegalArgumentException("Pet " + pet.getPetId() + " does not belongs to user " + mapIn.get("uid"));
         }

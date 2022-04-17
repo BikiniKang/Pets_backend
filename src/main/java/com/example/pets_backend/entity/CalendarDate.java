@@ -1,6 +1,7 @@
 package com.example.pets_backend.entity;
 
 
+import com.aventrix.jnanoid.jnanoid.NanoIdUtils;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
@@ -17,8 +18,7 @@ import java.util.List;
 public class CalendarDate {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long calDateId;
+    private final String calDateId = NanoIdUtils.randomNanoId();
 
     @JsonIgnore
     @ManyToOne

@@ -1,13 +1,12 @@
 package com.example.pets_backend.entity;
 
+import com.aventrix.jnanoid.jnanoid.NanoIdUtils;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.example.pets_backend.ConstantValues.DEFAULT_IMAGE_PET;
 
 @Entity
 @Data
@@ -16,8 +15,7 @@ import static com.example.pets_backend.ConstantValues.DEFAULT_IMAGE_PET;
 public class Pet {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long petId;
+    private final String petId = NanoIdUtils.randomNanoId();
 
     @JsonIgnore
     @NonNull

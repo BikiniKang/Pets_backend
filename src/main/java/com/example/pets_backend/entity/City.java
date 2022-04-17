@@ -1,5 +1,6 @@
 package com.example.pets_backend.entity;
 
+import com.aventrix.jnanoid.jnanoid.NanoIdUtils;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -9,9 +10,9 @@ import javax.persistence.*;
 @Data
 @NoArgsConstructor
 public class City {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long cityId;
+    private final String cityId = NanoIdUtils.randomNanoId();
 
     private String cityName;
 }

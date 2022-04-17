@@ -1,5 +1,6 @@
 package com.example.pets_backend.entity;
 
+import com.aventrix.jnanoid.jnanoid.NanoIdUtils;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
@@ -17,8 +18,7 @@ import static com.example.pets_backend.ConstantValues.*;
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long uid;
+    private final String uid = NanoIdUtils.randomNanoId();
 
     @NonNull
     @Column(length = 32)

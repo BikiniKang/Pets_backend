@@ -1,6 +1,7 @@
 package com.example.pets_backend.entity;
 
 
+import com.aventrix.jnanoid.jnanoid.NanoIdUtils;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import javax.persistence.*;
@@ -9,8 +10,7 @@ import javax.persistence.*;
 public class Record {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long recordId;
+    private final String recordId = NanoIdUtils.randomNanoId();
 
     @JsonBackReference
     @ManyToOne

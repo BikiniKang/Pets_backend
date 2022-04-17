@@ -1,6 +1,7 @@
 package com.example.pets_backend.entity;
 
 
+import com.aventrix.jnanoid.jnanoid.NanoIdUtils;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,9 +14,9 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 public class Species {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long speciesId;
+    private final String speciesId = NanoIdUtils.randomNanoId();
 
     private String speciesName;
 
