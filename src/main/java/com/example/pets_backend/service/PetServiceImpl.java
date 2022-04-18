@@ -17,12 +17,12 @@ public class PetServiceImpl implements PetService{
 
     @Override
     public Pet save(Pet pet) {
-        log.info("Saving new pet {} to the database", pet.getPetName());
+        log.info("New pet {} saved into database", pet.getPetName());
         return petRepository.save(pet);
     }
 
     @Override
-    public Pet findByPetId(Long petId) {
+    public Pet findByPetId(String petId) {
         Pet pet = petRepository.findByPetId(petId);
         if (pet == null) {
             log.error("Pet {} not found in the database", petId);
@@ -34,7 +34,14 @@ public class PetServiceImpl implements PetService{
     }
 
     @Override
-    public void deletePetByPetId(Long petId) {
-        petRepository.deletePetByPetId(petId);
+    public void deleteByPetId(String petId) {
+        Pet pet = petRepository.findByPetId(petId);
+        if (pet == null) {
+            log.error("Pet {} not found in the database", petId);
+            throw new IllegalArgumentException("Pet " + petId + " not found in database");
+        } else {
+            log.error("Pet {} found in the database", petId);
+        }
+        petRepository.deleteById(petId);
     }
 }

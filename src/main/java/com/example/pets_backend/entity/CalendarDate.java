@@ -25,9 +25,11 @@ public class CalendarDate {
     @JoinColumn(name = "uid", nullable = false)
     private User user;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "calendarDate", cascade = CascadeType.ALL)
     private List<Task> taskList = new ArrayList<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy = "calendarDate", cascade = CascadeType.ALL)
     private List<Event> eventList = new ArrayList<>();
 

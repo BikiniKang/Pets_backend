@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -32,13 +33,13 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     }
 
     @Override
-    public User register(User user) {
+    public User save(User user) {
         String email = user.getEmail();
         if (userRepo.findByEmail(email) != null) {
             log.error("Duplicate email " + email);
             throw new DuplicateKeyException(("Duplicate email " + email));
         } else {
-            log.info("Saving new user {} to the database", email);
+            log.info("New user {} saved into to the database", email);
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         User user1 = userRepo.save(user);
@@ -49,38 +50,30 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     }
 
     @Override
-    public User getUser(String email) {
-        User user = userRepo.findByEmail(email);
-        checkUserInDB(user, email);
+    public User getById(String uid) {
+        User user = userRepo.getById(uid);
+        checkUserInDB(user, uid);
         return user;
     }
 
     @Override
-    public User getUserById(Long uid) {
-        return userRepo.getById(uid);
+    public List<User> findAll() {
+        return userRepo.findAll();
     }
 
     @Override
-    public User editUser(User user) {
-        String email_provided = user.getEmail();
-        User user_db = userRepo.findByEmail(email_provided);
-        checkUserInDB(user, email_provided);
-
-        // Change the attributes which are editable in the "Setting" page:
-        user_db.setFirstName(user.getFirstName());
-        user_db.setLastName(user.getLastName());
-        user_db.setAddress(user.getAddress());
-        user_db.setImage(user.getImage());
-        user_db.setPhone(user.getPhone());
-        return user_db;
+    public void deleteById(String uid) {
+        User user = userRepo.getById(uid);
+        checkUserInDB(user, uid);
+        userRepo.deleteById(uid);
     }
 
-    private void checkUserInDB(User user, String email) {
+    private void checkUserInDB(User user, String identifier) {
         if (user == null) {
-            log.error("User {} not found in the database", email);
-            throw new UsernameNotFoundException("User " + email + " not found in the database");
+            log.error("User {} not found in the database", identifier);
+            throw new UsernameNotFoundException("User " + identifier + " not found in the database");
         } else {
-            log.info("User {} found in the database", email);
+            log.info("User {} found in the database", identifier);
         }
     }
 }

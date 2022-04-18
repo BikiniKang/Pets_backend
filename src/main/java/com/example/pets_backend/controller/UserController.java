@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import static com.example.pets_backend.ConstantValues.*;
@@ -27,15 +28,25 @@ public class UserController {
     @PostMapping(REGISTER)
     public LinkedHashMap<String, Object> register(@RequestBody Map<String, Object> mapIn) {
         User user = new User((String) mapIn.get("email"), (String) mapIn.get("password"), (String) mapIn.get("firstName"), (String) mapIn.get("lastName"));
-        User savedUser = userService.register(user);
+        User savedUser = userService.save(user);
         LinkedHashMap<String, Object> map = new LinkedHashMap<>();
         map.put("uid", savedUser.getUid());
         return map;
     }
 
+    @DeleteMapping("/user")
+    public void deleteUser(@RequestBody Map<String, Object> mapIn) {
+        userService.deleteById((String) mapIn.get("uid"));
+    }
+
+    @GetMapping("/user/all")
+    public List<User> getAllUsers() {
+        return userService.findAll();
+    }
+
     @GetMapping("/user/dashboard")
     public LinkedHashMap<String, Object> getUserDashboard(@RequestBody Map<String, Object> mapIn) {
-        User user = userService.getUserById((long) ((int) mapIn.get("uid")));
+        User user = userService.getById((String) mapIn.get("uid"));
         LinkedHashMap<String, Object> mapOut = new LinkedHashMap<>();
         mapOut.put("firstName", user.getFirstName());
         mapOut.put("lastName", user.getLastName());
@@ -54,7 +65,7 @@ public class UserController {
 
     @GetMapping("/user/profile")
     public LinkedHashMap<String, Object> getUserProfile(@RequestBody Map<String, Object> mapIn) {
-        User user = userService.getUserById((long) ((int) mapIn.get("uid")));
+        User user = userService.getById((String) mapIn.get("uid"));
         LinkedHashMap<String, Object> mapOut = new LinkedHashMap<>();
         mapOut.put("firstName", user.getFirstName());
         mapOut.put("lastName", user.getLastName());
@@ -70,7 +81,7 @@ public class UserController {
     @PutMapping("/user/profile")
     @Transactional
     public void updateUserProfile(@RequestBody Map<String, Object> mapIn) {
-        User user = userService.getUserById((long) ((int) mapIn.get("uid")));
+        User user = userService.getById((String) mapIn.get("uid"));
         user.setFirstName((String) mapIn.get("firstName"));
         user.setLastName((String) mapIn.get("lastName"));
         user.setPhone((String) mapIn.get("phone"));
@@ -81,16 +92,16 @@ public class UserController {
     @PutMapping("/user/profile/image")
     @Transactional
     public void updateUserProfileImage(@RequestBody Map<String, Object> mapIn) {
-        User user = userService.getUserById((long) ((int) mapIn.get("uid")));
+        User user = userService.getById((String) mapIn.get("uid"));
         user.setImage((String) mapIn.get("image"));
     }
 
     @PostMapping("/user/pet")
     @Transactional
     public LinkedHashMap<String, Object> addPet(@RequestBody Map<String, Object> mapIn) {
-        User user = userService.getUserById((long) ((int) mapIn.get("uid")));
+        User user = userService.getById((String) mapIn.get("uid"));
         String petAvatar = (String) mapIn.get("petAvatar");
-        if (petAvatar == null || petAvatar.length() == 0) petAvatar = DEFAULT_IMAGE;
+        if (petAvatar == null || petAvatar.length() == 0) petAvatar = DEFAULT_IMAGE_PET;
         Pet pet = new Pet(user, (String) mapIn.get("petName"), petAvatar,
                 (String) mapIn.get("species"), (String) mapIn.get("breed"), (int) mapIn.get("gender"), (String) mapIn.get("petDob"));
         if (mapIn.containsKey("weight")) pet.setWeight((double) mapIn.get("weight"));
@@ -103,7 +114,7 @@ public class UserController {
 
     @GetMapping("/user/pet/profile")
     public LinkedHashMap<String, Object> getPet(@RequestBody Map<String, Object> mapIn) {
-        Pet pet = petService.findByPetId((long) ((int) mapIn.get("petId")));
+        Pet pet = petService.findByPetId((String) mapIn.get("petId"));
         String uid = (String) mapIn.get("uid");
         if (!uid.equals(pet.getUser().getUid())) {
             log.error("Pet {} does not belongs to user {}", pet.getPetId(), mapIn.get("uid"));
@@ -124,7 +135,7 @@ public class UserController {
     @PutMapping("/user/pet/profile")
     @Transactional
     public void updatePet(@RequestBody Map<String, Object> mapIn) {
-        Pet pet = petService.findByPetId((long) ((int) mapIn.get("petId")));
+        Pet pet = petService.findByPetId((String) mapIn.get("petId"));
         if (!mapIn.get("uid").equals(pet.getUser().getUid())) {
             log.error("Pet {} does not belongs to user {}", pet.getPetId(), mapIn.get("uid"));
             throw new IllegalArgumentException("Pet " + pet.getPetId() + " does not belongs to user " + mapIn.get("uid"));
@@ -141,13 +152,13 @@ public class UserController {
 
     @DeleteMapping("/user/pet")
     public void deletePet(@RequestBody Map<String, Object> mapIn) {
-        Long petId = (long) ((int) mapIn.get("petId"));
+        String petId = (String) mapIn.get("petId");
         Pet pet = petService.findByPetId(petId);
         if (!mapIn.get("uid").equals(pet.getUser().getUid())) {
             log.error("Pet {} does not belongs to user {}", pet.getPetId(), mapIn.get("uid"));
             throw new IllegalArgumentException("Pet " + pet.getPetId() + " does not belongs to user " + mapIn.get("uid"));
         }
-        petService.deletePetByPetId(petId);
+        petService.deleteByPetId(petId);
     }
 
 }

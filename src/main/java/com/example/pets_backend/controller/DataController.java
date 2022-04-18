@@ -59,7 +59,7 @@ public class DataController {
 
     @GetMapping("/data/breed_list")
     public List<Breed> getBreedList(@RequestBody Map<String, Object> mapIn) {
-        Long speciesId = (long) (int) mapIn.get("speciesId");
+        String speciesId = (String) mapIn.get("speciesId");
         Species species = speciesRepository.findBySpeciesId(speciesId);
         if (species == null) {
             log.error("Species {} not found in database", speciesId);

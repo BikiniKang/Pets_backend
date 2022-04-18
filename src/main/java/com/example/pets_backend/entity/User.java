@@ -44,18 +44,19 @@ public class User {
 
     private boolean isPetSitter = false;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Pet> petList = new ArrayList<>();
 
-    @JsonManagedReference
+    @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Task> taskList = new ArrayList<>();
 
-    @JsonManagedReference
+    @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Event> eventList = new ArrayList<>();
 
-    @JsonManagedReference
+    @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Folder> folderList = new ArrayList<>();
 

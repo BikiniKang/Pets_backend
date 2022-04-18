@@ -1,7 +1,6 @@
 package com.example.pets_backend.entity;
 
 import com.aventrix.jnanoid.jnanoid.NanoIdUtils;
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 
@@ -20,7 +19,6 @@ public class Folder {
     private final String folderId = NanoIdUtils.randomNanoId();
 
     @NonNull
-    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "uid", nullable = false)
     private User user;

@@ -14,6 +14,7 @@ public class RestExceptionHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ResultData<String> exception(Exception e) {
         log.error(e.getMessage());
+        e.printStackTrace();
         return ResultData.fail(500, e.getMessage());
     }
 }
