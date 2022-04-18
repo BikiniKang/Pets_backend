@@ -51,7 +51,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
     @Override
     public User getById(String uid) {
-        User user = userRepo.getById(uid);
+        User user = userRepo.findByUid(uid);
         checkUserInDB(user, uid);
         return user;
     }

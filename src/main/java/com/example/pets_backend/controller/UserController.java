@@ -34,17 +34,17 @@ public class UserController {
         return map;
     }
 
-    @DeleteMapping("/user")
+    @DeleteMapping("/user/delete")
     public void deleteUser(@RequestBody Map<String, Object> mapIn) {
         userService.deleteById((String) mapIn.get("uid"));
     }
 
-    @GetMapping("/user/all")
+    @PostMapping("/user/all")
     public List<User> getAllUsers() {
         return userService.findAll();
     }
 
-    @GetMapping("/user/dashboard")
+    @PostMapping("/user/dashboard")
     public LinkedHashMap<String, Object> getUserDashboard(@RequestBody Map<String, Object> mapIn) {
         User user = userService.getById((String) mapIn.get("uid"));
         LinkedHashMap<String, Object> mapOut = new LinkedHashMap<>();
@@ -63,7 +63,7 @@ public class UserController {
         return mapOut;
     }
 
-    @GetMapping("/user/profile")
+    @PostMapping("/user/profile")
     public LinkedHashMap<String, Object> getUserProfile(@RequestBody Map<String, Object> mapIn) {
         User user = userService.getById((String) mapIn.get("uid"));
         LinkedHashMap<String, Object> mapOut = new LinkedHashMap<>();
@@ -78,7 +78,7 @@ public class UserController {
         return mapOut;
     }
 
-    @PutMapping("/user/profile")
+    @PostMapping("/user/profile/update")
     @Transactional
     public void updateUserProfile(@RequestBody Map<String, Object> mapIn) {
         User user = userService.getById((String) mapIn.get("uid"));
@@ -89,14 +89,14 @@ public class UserController {
         user.setPetSitter((boolean) mapIn.get("isPetSitter"));
     }
 
-    @PutMapping("/user/profile/image")
+    @PostMapping("/user/profile/image/update")
     @Transactional
     public void updateUserProfileImage(@RequestBody Map<String, Object> mapIn) {
         User user = userService.getById((String) mapIn.get("uid"));
         user.setImage((String) mapIn.get("image"));
     }
 
-    @PostMapping("/user/pet")
+    @PostMapping("/user/pet/add")
     @Transactional
     public LinkedHashMap<String, Object> addPet(@RequestBody Map<String, Object> mapIn) {
         User user = userService.getById((String) mapIn.get("uid"));
@@ -112,7 +112,7 @@ public class UserController {
         return map;
     }
 
-    @GetMapping("/user/pet/profile")
+    @PostMapping("/user/pet/profile")
     public LinkedHashMap<String, Object> getPet(@RequestBody Map<String, Object> mapIn) {
         Pet pet = petService.findByPetId((String) mapIn.get("petId"));
         String uid = (String) mapIn.get("uid");
@@ -132,7 +132,7 @@ public class UserController {
         return mapOut;
     }
 
-    @PutMapping("/user/pet/profile")
+    @PostMapping("/user/pet/profile/update")
     @Transactional
     public void updatePet(@RequestBody Map<String, Object> mapIn) {
         Pet pet = petService.findByPetId((String) mapIn.get("petId"));
@@ -150,7 +150,7 @@ public class UserController {
         if (mapIn.containsKey("height")) pet.setHeight((double) mapIn.get("height"));
     }
 
-    @DeleteMapping("/user/pet")
+    @DeleteMapping("/user/pet/delete")
     public void deletePet(@RequestBody Map<String, Object> mapIn) {
         String petId = (String) mapIn.get("petId");
         Pet pet = petService.findByPetId(petId);
