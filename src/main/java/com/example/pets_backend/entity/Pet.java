@@ -45,9 +45,9 @@ public class Pet {
     @Column(length = 10)
     private String petDob; // "yyyy/mm/dd"
 
-    private double weight;
+    private int weight;
 
-    private double height;
+    private int height;
 
     @ManyToMany
     private List<Task> taskList = new ArrayList<>();

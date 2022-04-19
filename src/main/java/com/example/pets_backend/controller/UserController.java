@@ -104,8 +104,8 @@ public class UserController {
         if (petAvatar == null || petAvatar.length() == 0) petAvatar = DEFAULT_IMAGE_PET;
         Pet pet = new Pet(user, (String) mapIn.get("petName"), petAvatar,
                 (String) mapIn.get("species"), (String) mapIn.get("breed"), (int) mapIn.get("gender"), (String) mapIn.get("petDob"));
-        if (mapIn.containsKey("weight")) pet.setWeight((double) mapIn.get("weight"));
-        if (mapIn.containsKey("height")) pet.setHeight((double) mapIn.get("height"));
+        if (mapIn.containsKey("weight")) pet.setWeight((int) mapIn.get("weight"));
+        if (mapIn.containsKey("height")) pet.setHeight((int) mapIn.get("height"));
         LinkedHashMap<String, Object> map = new LinkedHashMap<>();
         Pet savedPet = petService.save(pet);
         map.put("petId", savedPet.getPetId());
@@ -146,8 +146,8 @@ public class UserController {
         pet.setSpecies((String) mapIn.get("species"));
         pet.setBreed((String) mapIn.get("breed"));
         pet.setPetDob((String) mapIn.get("petDob"));
-        if (mapIn.containsKey("weight")) pet.setWeight((double) mapIn.get("weight"));
-        if (mapIn.containsKey("height")) pet.setHeight((double) mapIn.get("height"));
+        if (mapIn.containsKey("weight")) pet.setWeight((int) mapIn.get("weight"));
+        if (mapIn.containsKey("height")) pet.setHeight((int) mapIn.get("height"));
     }
 
     @DeleteMapping("/user/pet/delete")
