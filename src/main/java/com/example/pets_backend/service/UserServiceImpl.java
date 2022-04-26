@@ -68,6 +68,11 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         userRepo.deleteById(uid);
     }
 
+    @Override
+    public User findByEmail(String email) {
+        return userRepo.findByEmail(email);
+    }
+
     private void checkUserInDB(User user, String identifier) {
         if (user == null) {
             log.error("User {} not found in the database", identifier);

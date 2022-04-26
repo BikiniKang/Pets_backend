@@ -39,6 +39,7 @@ public class DataController {
 
     @PostMapping("/data/species_and_breed")
     public void postSpeciesAndBreed(@RequestBody Map<String, List<String>> map) {
+        speciesRepository.deleteAll();
         for (Map.Entry<String, List<String>> entry: map.entrySet()) {
             Species species = new Species();
             species.setSpeciesName(entry.getKey());
