@@ -2,7 +2,6 @@ package com.example.pets_backend.entity;
 
 import com.aventrix.jnanoid.jnanoid.NanoIdUtils;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 
 import javax.persistence.*;
@@ -60,30 +59,19 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Folder> folderList = new ArrayList<>();
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<CalendarDate> calendarDateList = new ArrayList<>();
 
-
-    public List<LinkedHashMap<String, Object>> getPetListAb() {
+    public List<LinkedHashMap<String, Object>> getPetAbList() {
         List<LinkedHashMap<String, Object>> list = new ArrayList<>();
         for (Pet pet:this.petList) {
-            LinkedHashMap<String, Object> map = new LinkedHashMap<>();
-            map.put("petId", pet.getPetId());
-            map.put("petName", pet.getPetName());
-            map.put("petAvatar", pet.getPetAvatar());
-            list.add(map);
+            list.add(pet.getPetAb());
         }
         return list;
     }
 
-    public List<LinkedHashMap<String, Object>> getFolderListAb() {
+    public List<LinkedHashMap<String, Object>> getFolderAbList() {
         List<LinkedHashMap<String, Object>> list = new ArrayList<>();
         for (Folder folder : this.folderList) {
-            LinkedHashMap<String, Object> map = new LinkedHashMap<>();
-            map.put("folderId", folder.getFolderId());
-            map.put("folderName", folder.getFolderName());
-            list.add(map);
+            list.add(folder.getFolderAb());
         }
         return list;
     }

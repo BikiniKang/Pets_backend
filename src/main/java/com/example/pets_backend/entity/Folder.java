@@ -5,8 +5,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Entity
 @Data
@@ -32,5 +31,12 @@ public class Folder {
     @JsonManagedReference
     @OneToMany(mappedBy = "folder", cascade = CascadeType.ALL)
     private List<Record> recordList = new ArrayList<>();
+
+    public LinkedHashMap<String, Object> getFolderAb() {
+        LinkedHashMap<String, Object> folderAb = new LinkedHashMap<>();
+        folderAb.put("folderId", this.folderId);
+        folderAb.put("folderName", this.folderName);
+        return folderAb;
+    }
 
 }

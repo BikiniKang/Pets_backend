@@ -5,8 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedHashMap;
 
 @Entity
 @Data
@@ -20,7 +19,7 @@ public class Pet {
     @JsonIgnore
     @NonNull
     @ManyToOne
-    @JoinColumn(name = "uid", nullable = false)
+    @JoinColumn(name = "uid", nullable = false, foreignKey = @ForeignKey(name = "fk_pet_uid"))
     private User user;
 
     @NonNull
@@ -45,13 +44,17 @@ public class Pet {
     @Column(length = 10)
     private String petDob; // "yyyy/mm/dd"
 
-    private int weight;
+    private int weight; // in kg
 
-    private int height;
+    private int height; // in cm
 
-    @ManyToMany
-    private List<Task> taskList = new ArrayList<>();
 
-    @ManyToMany
-    private List<Task> eventList = new ArrayList<>();
+    public LinkedHashMap<String, Object> getPetAb() {
+        LinkedHashMap<String, Object> petAb = new LinkedHashMap<>();
+        petAb.put("petId", this.petId);
+        petAb.put("petName", this.petName);
+        petAb.put("petAvatar", this.petAvatar);
+        return petAb;
+    }
+
 }

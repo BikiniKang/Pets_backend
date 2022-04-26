@@ -1,6 +1,5 @@
 package com.example.pets_backend.controller;
 
-import com.example.pets_backend.entity.CalendarDate;
 import com.example.pets_backend.entity.Pet;
 import com.example.pets_backend.entity.User;
 import com.example.pets_backend.service.PetService;
@@ -51,15 +50,15 @@ public class UserController {
         mapOut.put("firstName", user.getFirstName());
         mapOut.put("lastName", user.getLastName());
         mapOut.put("image", user.getImage());
-        mapOut.put("petList", user.getPetListAb());
-        mapOut.put("folderList", user.getFolderListAb());
-        if (user.getCalendarDateList().size() != 0) {
-            //TODO: need to get today's calendarDate object
-            CalendarDate calendarDate = user.getCalendarDateList().get(0);
-            mapOut.put("calendarDate", calendarDate.getCalDateAb());
-        } else {
-            mapOut.put("calendarDate", null);
-        }
+        mapOut.put("petList", user.getPetAbList());
+        mapOut.put("folderList", user.getFolderAbList());
+//        if (user.getCalendarDateList().size() != 0) {
+//            //TODO: need to get today's calendarDate object
+//            CalendarDate calendarDate = user.getCalendarDateList().get(0);
+//            mapOut.put("calendarDate", calendarDate.getCalDateAb());
+//        } else {
+//            mapOut.put("calendarDate", null);
+//        }
         return mapOut;
     }
 
@@ -74,7 +73,7 @@ public class UserController {
         mapOut.put("phone", user.getPhone());
         mapOut.put("address", user.getAddress());
         mapOut.put("isPetSitter", user.isPetSitter());
-        mapOut.put("petList", user.getPetListAb());
+        mapOut.put("petList", user.getPetAbList());
         return mapOut;
     }
 

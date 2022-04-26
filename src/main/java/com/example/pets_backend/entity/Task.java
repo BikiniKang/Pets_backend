@@ -5,8 +5,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
+
+import static com.example.pets_backend.ConstantValues.DEFAULT_END_TIME;
+import static com.example.pets_backend.ConstantValues.DEFAULT_START_TIME;
 
 @Entity
 @Data
@@ -20,29 +21,20 @@ public class Task {
 
     @JsonIgnore
     @ManyToOne
-    @JoinColumn(name = "uid", nullable = false)
+    @JoinColumn(name = "uid", nullable = false, foreignKey = @ForeignKey(name = "fk_task_uid"))
     private User user;
 
-    @JsonIgnore
-    @ManyToOne
-    @JoinColumn(name = "calDateId", nullable = false)
-    private CalendarDate calendarDate;
-
-    @JsonIgnore
-    @ManyToMany
-    private List<Pet> petList;
+    @NonNull
+    private String petId;
 
     @NonNull
     private String content;
 
+    // TODO: need to modify the following four attributes
+    private String startDate = DEFAULT_START_TIME;
+    private String startTime = DEFAULT_START_TIME;
+    private String endDate = DEFAULT_END_TIME;
+    private String endTime = DEFAULT_END_TIME;
+
     private boolean isChecked = false;
-
-
-    public List<String> getPetNameList() {
-        List<String> petNameList = new ArrayList<>();
-        for (Pet pet:this.petList) {
-            petNameList.add(pet.getPetName());
-        }
-        return petNameList;
-    }
 }
