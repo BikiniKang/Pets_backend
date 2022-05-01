@@ -1,14 +1,19 @@
 package com.example.pets_backend.controller;
 
+import com.example.pets_backend.entity.Event;
 import com.example.pets_backend.entity.Pet;
+import com.example.pets_backend.entity.Task;
 import com.example.pets_backend.entity.User;
+import com.example.pets_backend.service.EventService;
 import com.example.pets_backend.service.PetService;
+import com.example.pets_backend.service.TaskService;
 import com.example.pets_backend.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +28,8 @@ public class UserController {
 
     private final UserService userService;
     private final PetService petService;
+    private final EventService eventService;
+    private final TaskService taskService;
 
     @PostMapping(REGISTER)
     public LinkedHashMap<String, Object> register(@RequestBody Map<String, Object> mapIn) {
@@ -158,6 +165,106 @@ public class UserController {
             throw new IllegalArgumentException("Pet " + pet.getPetId() + " does not belongs to user " + mapIn.get("uid"));
         }
         petService.deleteByPetId(petId);
+    }
+
+    @PostMapping("/user/event/add")
+    public Event addEvent(@RequestBody Map<String, Object> mapIn) {
+        String uid = (String) mapIn.get("userId");
+        User user = userService.getById(uid);
+        Event event = (Event) mapIn.get("eventData");
+        event.setEventId(null);
+        event.setUser(user);
+        return eventService.save(event);
+    }
+
+    @DeleteMapping("/user/event/delete")
+    public void deleteEvent(@RequestBody Map<String, Object> mapIn) {
+        String uid = (String) mapIn.get("userId");
+        String eventId = (String) mapIn.get("eventId");
+        userService.getEventByUidAndEventId(uid, eventId);
+        eventService.deleteByEventId(eventId);
+    }
+
+    @PostMapping("/user/event/edit")
+    @Transactional
+    public Event editEvent(@RequestBody Map<String, Object> mapIn) {
+        String uid = (String) mapIn.get("userId");
+        Event eventNew = (Event) mapIn.get("newEventData");
+        Event event = userService.getEventByUidAndEventId(uid, eventNew.getEventId());
+        event.setPetIdList(eventNew.getPetIdList());
+        event.setEventTitle(eventNew.getEventTitle());
+        event.setEventType(eventNew.getEventType());
+        event.setStartDateTime(eventNew.getStartDateTime());
+        event.setEndDateTime(eventNew.getEndDateTime());
+        event.setDescription(event.getDescription());
+        return event;
+    }
+
+    @PostMapping("/user/event/all")
+    public Map<String, Object> getEventsByDate(@RequestBody Map<String, Object> mapIn) {
+        String uid = (String) mapIn.get("userId");
+        User user = userService.getById(uid);
+        String date = (String) mapIn.get("date");
+        List<Event> eventList = user.getEventsByDate(date);
+        Map<String, Object> mapOut = new HashMap<>();
+        mapOut.put("userId", uid);
+        mapOut.put("eventList", eventList);
+        return mapOut;
+    }
+
+    @PostMapping("/user/task/add")
+    public Task addTask(@RequestBody Map<String, Object> mapIn) {
+        String uid = (String) mapIn.get("userId");
+        User user = userService.getById(uid);
+        Task task = (Task) mapIn.get("taskData");
+        task.setTaskId(null);
+        task.setUser(user);
+        return taskService.save(task);
+    }
+
+    @DeleteMapping("/user/task/delete")
+    public void deleteTask(@RequestBody Map<String, Object> mapIn) {
+        String uid = (String) mapIn.get("userId");
+        String taskId = (String) mapIn.get("taskId");
+        userService.getTaskByUidAndTaskId(uid, taskId);
+        taskService.deleteByTaskId(taskId);
+    }
+
+    @PostMapping("/user/task/edit")
+    @Transactional
+    public Task editTask(@RequestBody Map<String, Object> mapIn) {
+        String uid = (String) mapIn.get("userId");
+        Task taskNew = (Task) mapIn.get("newTaskData");
+        Task task = userService.getTaskByUidAndTaskId(uid, taskNew.getTaskId());
+        task.setTaskTitle(taskNew.getTaskTitle());
+        task.setPetIdList(taskNew.getPetIdList());
+        task.setStartDate(taskNew.getStartDate());
+        task.setDueDate(taskNew.getDueDate());
+        task.setChecked(taskNew.isChecked());
+        return task;
+    }
+
+    @PostMapping("/user/task/check")
+    @Transactional
+    public Task checkTask(@RequestBody Map<String, Object> mapIn) {
+        String uid = (String) mapIn.get("userId");
+        String taskId = (String) mapIn.get("taskId");
+        Task task = userService.getTaskByUidAndTaskId(uid, taskId);
+        int isChecked = (int) mapIn.get("isChecked");
+        task.setChecked(isChecked != 0);
+        return task;
+    }
+
+    @PostMapping("/user/task/all")
+    public Map<String, Object> getTasksByDate(@RequestBody Map<String, Object> mapIn) {
+        String uid = (String) mapIn.get("userId");
+        User user = userService.getById(uid);
+        String date = (String) mapIn.get("date");
+        List<Task> taskList = user.getTasksByDate(date);
+        Map<String, Object> mapOut = new HashMap<>();
+        mapOut.put("userId", uid);
+        mapOut.put("taskList", taskList);
+        return mapOut;
     }
 
 }

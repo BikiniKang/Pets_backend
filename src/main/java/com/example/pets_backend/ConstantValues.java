@@ -22,4 +22,6 @@ public class ConstantValues {
     public static final String DEFAULT_EVENT_TYPE = "";
     public static final String DEFAULT_START_TIME = "";
     public static final String DEFAULT_END_TIME = "";
+    public static final String DATE_PATTERN = "yyyy-MM-dd";
+    public static final String DATETIME_PATTERN = "yyyy-MM-dd HH:mm";
 }

@@ -1,6 +1,8 @@
 package com.example.pets_backend.service;
 
+import com.example.pets_backend.entity.Event;
 import com.example.pets_backend.entity.Folder;
+import com.example.pets_backend.entity.Task;
 import com.example.pets_backend.entity.User;
 import com.example.pets_backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -71,6 +73,32 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     @Override
     public User findByEmail(String email) {
         return userRepo.findByEmail(email);
+    }
+
+    @Override
+    public Event getEventByUidAndEventId(String uid, String eventId) {
+        User user = userRepo.getById(uid);
+        checkUserInDB(user, uid);
+        Event event = user.getEventByEventId(eventId);
+        if (event == null) {
+            log.error("User {} doesn't have event {}", uid, eventId);
+            throw new UsernameNotFoundException("User "+uid+" doesn't have event "+eventId);
+        } else {
+            return event;
+        }
+    }
+
+    @Override
+    public Task getTaskByUidAndTaskId(String uid, String taskId) {
+        User user = userRepo.getById(uid);
+        checkUserInDB(user, uid);
+        Task task = user.getTaskByTaskId(taskId);
+        if (task == null) {
+            log.error("User {} doesn't have task {}", uid, taskId);
+            throw new UsernameNotFoundException("User "+uid+" doesn't have task "+taskId);
+        } else {
+            return task;
+        }
     }
 
     private void checkUserInDB(User user, String identifier) {
