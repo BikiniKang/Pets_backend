@@ -28,9 +28,9 @@ public class PetServiceImpl implements PetService{
             log.error("Pet {} not found in the database", petId);
             throw new IllegalArgumentException("Pet " + petId + " not found in database");
         } else {
-            log.error("Pet {} found in the database", petId);
+            log.info("Pet {} found in the database", petId);
         }
-        return petRepository.findByPetId(petId);
+        return pet;
     }
 
     @Override
@@ -40,7 +40,7 @@ public class PetServiceImpl implements PetService{
             log.error("Pet {} not found in the database", petId);
             throw new IllegalArgumentException("Pet " + petId + " not found in database");
         } else {
-            log.error("Pet {} found in the database", petId);
+            log.info("Pet {} found in the database", petId);
         }
         petRepository.deleteById(petId);
     }
