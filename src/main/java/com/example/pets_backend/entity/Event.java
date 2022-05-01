@@ -25,6 +25,7 @@ public class Event {
     @JoinColumn(name = "uid", nullable = false, foreignKey = @ForeignKey(name = "fk_event_uid"))
     private User user;
 
+    @NonNull
     @ElementCollection
     @CollectionTable(
             name = "event_petidlist",
@@ -36,14 +37,19 @@ public class Event {
     @Column(length = 64)
     private String eventTitle;
 
-    // TODO: need to modify the following four attributes
-    private String startDate = DEFAULT_START_TIME;
-    private String startTime = DEFAULT_START_TIME;
-    private String endDate = DEFAULT_END_TIME;
-    private String endTime = DEFAULT_END_TIME;
-
-    private String eventNote = "";
-
+    @NonNull
+    @Column(length = 16)
     private String eventType = DEFAULT_EVENT_TYPE;
+
+    @NonNull
+    @Column(length = 16)
+    private String startDateTime;      // YYYY-MM-DD HH:mm
+
+    @NonNull
+    @Column(length = 16)
+    private String endDateTime;        // YYYY-MM-DD HH:mm
+
+    @NonNull
+    private String description = "";
 
 }

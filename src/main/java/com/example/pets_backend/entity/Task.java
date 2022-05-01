@@ -5,9 +5,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
-
-import static com.example.pets_backend.ConstantValues.DEFAULT_END_TIME;
-import static com.example.pets_backend.ConstantValues.DEFAULT_START_TIME;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Data
@@ -25,16 +24,25 @@ public class Task {
     private User user;
 
     @NonNull
-    private String petId;
+    @ElementCollection
+    @CollectionTable(
+            name = "task_petidlist",
+            joinColumns = @JoinColumn(name = "task_id")
+    )
+    private List<String> petIdList = new ArrayList<>();
 
     @NonNull
-    private String content;
+    @Column(length = 64)
+    private String taskTitle;
 
-    // TODO: need to modify the following four attributes
-    private String startDate = DEFAULT_START_TIME;
-    private String startTime = DEFAULT_START_TIME;
-    private String endDate = DEFAULT_END_TIME;
-    private String endTime = DEFAULT_END_TIME;
+    @NonNull
+    @Column(length = 16)
+    private String startDate;       // YYYY-MM-DD HH:mm
 
-    private boolean isChecked = false;
+    @NonNull
+    @Column(length = 16)
+    private String dueDate;         // YYYY-MM-DD HH:mm
+
+    @NonNull
+    private boolean isChecked;
 }
