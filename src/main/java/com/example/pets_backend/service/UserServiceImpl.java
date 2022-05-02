@@ -103,10 +103,10 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
     private void checkUserInDB(User user, String identifier) {
         if (user == null) {
-            log.error("User {} not found in the database", identifier);
-            throw new UsernameNotFoundException("User " + identifier + " not found in the database");
+            log.error("User {} not found in database", identifier);
+            throw new UsernameNotFoundException("User " + identifier + " not found in database");
         } else {
-            log.info("User {} found in the database", identifier);
+            log.info("User {} found in database", identifier);
         }
     }
 }
