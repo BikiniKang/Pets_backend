@@ -42,7 +42,7 @@ public class EventServiceImpl implements EventService{
         } else {
             log.info("Event {} found in the database", eventId);
         }
-        eventRepository.deleteById(eventId);
+        eventRepository.deleteByEventId(eventId);
     }
 
 }

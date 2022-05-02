@@ -65,7 +65,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
     @Override
     public void deleteById(String uid) {
-        User user = userRepo.getById(uid);
+        User user = userRepo.findByUid(uid);
         checkUserInDB(user, uid);
         userRepo.deleteById(uid);
     }
@@ -77,12 +77,12 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
     @Override
     public Event getEventByUidAndEventId(String uid, String eventId) {
-        User user = userRepo.getById(uid);
+        User user = userRepo.findByUid(uid);
         checkUserInDB(user, uid);
         Event event = user.getEventByEventId(eventId);
         if (event == null) {
-            log.error("User {} doesn't have event {}", uid, eventId);
-            throw new UsernameNotFoundException("User "+uid+" doesn't have event "+eventId);
+            log.error("Event {} doesn't exist or doesn't belong to User {}", eventId, uid);
+            throw new UsernameNotFoundException("Event "+eventId+" doesn't exist or doesn't belong to User "+uid);
         } else {
             return event;
         }
@@ -90,12 +90,12 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
     @Override
     public Task getTaskByUidAndTaskId(String uid, String taskId) {
-        User user = userRepo.getById(uid);
+        User user = userRepo.findByUid(uid);
         checkUserInDB(user, uid);
         Task task = user.getTaskByTaskId(taskId);
         if (task == null) {
-            log.error("User {} doesn't have task {}", uid, taskId);
-            throw new UsernameNotFoundException("User "+uid+" doesn't have task "+taskId);
+            log.error("Task {} doesn't exist or doesn't belong to User {}", taskId, uid);
+            throw new UsernameNotFoundException("Task "+taskId+" doesn't exist or doesn't belong to User "+uid);
         } else {
             return task;
         }

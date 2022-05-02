@@ -43,6 +43,7 @@ public class TaskServiceImpl implements TaskService{
         } else {
             log.info("Task {} found in the database", taskId);
         }
-        taskRepository.deleteById(taskId);
+        taskRepository.deleteByTaskId(taskId);
+        log.info("Task {} deleted from the database", taskId);
     }
 }

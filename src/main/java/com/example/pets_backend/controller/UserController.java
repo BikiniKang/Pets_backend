@@ -168,13 +168,17 @@ public class UserController {
     }
 
     @PostMapping("/user/event/add")
-    public Event addEvent(@RequestBody Map<String, Object> mapIn) {
+    public Map<String, Object> addEvent(@RequestBody Map<String, Object> mapIn) {
         String uid = (String) mapIn.get("userId");
         User user = userService.getById(uid);
-        Event event = (Event) mapIn.get("eventData");
-        event.setEventId(null);
+        LinkedHashMap<String, Object> eventData = (LinkedHashMap<String, Object>) mapIn.get("eventData");
+        Event event = new Event();
+        loadEvent(eventData, event);
         event.setUser(user);
-        return eventService.save(event);
+        event = eventService.save(event);
+        Map<String, Object> mapOut = new HashMap<>();
+        mapOut.put("event", event);
+        return mapOut;
     }
 
     @DeleteMapping("/user/event/delete")
@@ -187,17 +191,15 @@ public class UserController {
 
     @PostMapping("/user/event/edit")
     @Transactional
-    public Event editEvent(@RequestBody Map<String, Object> mapIn) {
+    public Map<String, Object> editEvent(@RequestBody Map<String, Object> mapIn) {
         String uid = (String) mapIn.get("userId");
-        Event eventNew = (Event) mapIn.get("newEventData");
-        Event event = userService.getEventByUidAndEventId(uid, eventNew.getEventId());
-        event.setPetIdList(eventNew.getPetIdList());
-        event.setEventTitle(eventNew.getEventTitle());
-        event.setEventType(eventNew.getEventType());
-        event.setStartDateTime(eventNew.getStartDateTime());
-        event.setEndDateTime(eventNew.getEndDateTime());
-        event.setDescription(event.getDescription());
-        return event;
+        LinkedHashMap<String, Object> newEventData = (LinkedHashMap<String, Object>) mapIn.get("newEventData");
+        String eventId = (String) newEventData.get("eventId");
+        Event event = userService.getEventByUidAndEventId(uid, eventId);
+        loadEvent(newEventData, event);
+        Map<String, Object> mapOut = new HashMap<>();
+        mapOut.put("event", event);
+        return mapOut;
     }
 
     @PostMapping("/user/event/all")
@@ -213,13 +215,21 @@ public class UserController {
     }
 
     @PostMapping("/user/task/add")
-    public Task addTask(@RequestBody Map<String, Object> mapIn) {
+    public Map<String, Object> addTask(@RequestBody Map<String, Object> mapIn) {
         String uid = (String) mapIn.get("userId");
         User user = userService.getById(uid);
-        Task task = (Task) mapIn.get("taskData");
-        task.setTaskId(null);
+        Task task = new Task();
+        LinkedHashMap<String, Object> taskData = (LinkedHashMap<String, Object>) mapIn.get("taskData");
+        task.setPetIdList((List<String>) taskData.get("petIdList"));
+        task.setTaskTitle((String) taskData.get("taskTitle"));
+        task.setStartDate((String) taskData.get("startDate"));
+        task.setDueDate((String) taskData.get("dueDate"));
+        task.setChecked(false);
         task.setUser(user);
-        return taskService.save(task);
+        task = taskService.save(task);
+        Map<String, Object> mapOut = new HashMap<>();
+        mapOut.put("task", task);
+        return mapOut;
     }
 
     @DeleteMapping("/user/task/delete")
@@ -265,6 +275,16 @@ public class UserController {
         mapOut.put("userId", uid);
         mapOut.put("taskList", taskList);
         return mapOut;
+    }
+
+
+    private void loadEvent(LinkedHashMap<String, Object> newEventData, Event event) {
+        event.setPetIdList((List<String>) newEventData.get("petIdList"));
+        event.setEventTitle((String) newEventData.get("eventTitle"));
+        event.setEventType((String) newEventData.get("eventType"));
+        event.setStartDateTime((String) newEventData.get("startDateTime"));
+        event.setEndDateTime((String) newEventData.get("endDateTime"));
+        event.setDescription((String) newEventData.get("description"));
     }
 
 }

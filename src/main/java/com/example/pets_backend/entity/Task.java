@@ -16,7 +16,7 @@ import java.util.List;
 public class Task {
 
     @Id
-    private String taskId = NanoIdUtils.randomNanoId();
+    private final String taskId = NanoIdUtils.randomNanoId();
 
     @JsonIgnore
     @ManyToOne
