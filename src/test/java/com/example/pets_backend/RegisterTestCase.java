@@ -24,7 +24,7 @@ public class RegisterTestCase {
     public void beforeEach() {
         User user = userService.findByEmail(email);
         if (user != null) {
-            userService.deleteById(user.getUid());
+            userService.deleteByUid(user.getUid());
         }
     }
 

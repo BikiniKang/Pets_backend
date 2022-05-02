@@ -42,7 +42,7 @@ public class UserController {
 
     @DeleteMapping("/user/delete")
     public void deleteUser(@RequestBody Map<String, Object> mapIn) {
-        userService.deleteById((String) mapIn.get("uid"));
+        userService.deleteByUid((String) mapIn.get("uid"));
     }
 
     @PostMapping("/user/all")
@@ -52,7 +52,7 @@ public class UserController {
 
     @PostMapping("/user/dashboard")
     public LinkedHashMap<String, Object> getUserDashboard(@RequestBody Map<String, Object> mapIn) {
-        User user = userService.getById((String) mapIn.get("uid"));
+        User user = userService.findByUid((String) mapIn.get("uid"));
         LinkedHashMap<String, Object> mapOut = new LinkedHashMap<>();
         mapOut.put("firstName", user.getFirstName());
         mapOut.put("lastName", user.getLastName());
@@ -71,7 +71,7 @@ public class UserController {
 
     @PostMapping("/user/profile")
     public LinkedHashMap<String, Object> getUserProfile(@RequestBody Map<String, Object> mapIn) {
-        User user = userService.getById((String) mapIn.get("uid"));
+        User user = userService.findByUid((String) mapIn.get("uid"));
         LinkedHashMap<String, Object> mapOut = new LinkedHashMap<>();
         mapOut.put("firstName", user.getFirstName());
         mapOut.put("lastName", user.getLastName());
@@ -87,7 +87,7 @@ public class UserController {
     @PostMapping("/user/profile/update")
     @Transactional
     public void updateUserProfile(@RequestBody Map<String, Object> mapIn) {
-        User user = userService.getById((String) mapIn.get("uid"));
+        User user = userService.findByUid((String) mapIn.get("uid"));
         user.setFirstName((String) mapIn.get("firstName"));
         user.setLastName((String) mapIn.get("lastName"));
         user.setPhone((String) mapIn.get("phone"));
@@ -98,14 +98,14 @@ public class UserController {
     @PostMapping("/user/profile/image/update")
     @Transactional
     public void updateUserProfileImage(@RequestBody Map<String, Object> mapIn) {
-        User user = userService.getById((String) mapIn.get("uid"));
+        User user = userService.findByUid((String) mapIn.get("uid"));
         user.setImage((String) mapIn.get("image"));
     }
 
     @PostMapping("/user/pet/add")
     @Transactional
     public LinkedHashMap<String, Object> addPet(@RequestBody Map<String, Object> mapIn) {
-        User user = userService.getById((String) mapIn.get("uid"));
+        User user = userService.findByUid((String) mapIn.get("uid"));
         String petAvatar = (String) mapIn.get("petAvatar");
         if (petAvatar == null || petAvatar.length() == 0) petAvatar = DEFAULT_IMAGE_PET;
         Pet pet = new Pet(user, (String) mapIn.get("petName"), petAvatar,
@@ -170,7 +170,7 @@ public class UserController {
     @PostMapping("/user/event/add")
     public Map<String, Object> addEvent(@RequestBody Map<String, Object> mapIn) {
         String uid = (String) mapIn.get("userId");
-        User user = userService.getById(uid);
+        User user = userService.findByUid(uid);
         LinkedHashMap<String, Object> eventData = (LinkedHashMap<String, Object>) mapIn.get("eventData");
         Event event = new Event();
         loadEvent(eventData, event);
@@ -205,7 +205,7 @@ public class UserController {
     @PostMapping("/user/event/all")
     public Map<String, Object> getEventsByDate(@RequestBody Map<String, Object> mapIn) {
         String uid = (String) mapIn.get("userId");
-        User user = userService.getById(uid);
+        User user = userService.findByUid(uid);
         String date = (String) mapIn.get("date");
         List<Event> eventList = user.getEventsByDate(date);
         Map<String, Object> mapOut = new HashMap<>();
@@ -217,7 +217,7 @@ public class UserController {
     @PostMapping("/user/task/add")
     public Map<String, Object> addTask(@RequestBody Map<String, Object> mapIn) {
         String uid = (String) mapIn.get("userId");
-        User user = userService.getById(uid);
+        User user = userService.findByUid(uid);
         Task task = new Task();
         LinkedHashMap<String, Object> taskData = (LinkedHashMap<String, Object>) mapIn.get("taskData");
         task.setPetIdList((List<String>) taskData.get("petIdList"));
@@ -268,7 +268,7 @@ public class UserController {
     @PostMapping("/user/task/all")
     public Map<String, Object> getTasksByDate(@RequestBody Map<String, Object> mapIn) {
         String uid = (String) mapIn.get("userId");
-        User user = userService.getById(uid);
+        User user = userService.findByUid(uid);
         String date = (String) mapIn.get("date");
         List<Task> taskList = user.getTasksByDate(date);
         Map<String, Object> mapOut = new HashMap<>();

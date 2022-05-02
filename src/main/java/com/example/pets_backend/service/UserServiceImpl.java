@@ -41,7 +41,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
             log.error("Duplicate email " + email);
             throw new DuplicateKeyException(("Duplicate email " + email));
         } else {
-            log.info("New user {} saved into to the database", email);
+            log.info("Saved new user with email {} into database", email);
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         User user1 = userRepo.save(user);
@@ -52,7 +52,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     }
 
     @Override
-    public User getById(String uid) {
+    public User findByUid(String uid) {
         User user = userRepo.findByUid(uid);
         checkUserInDB(user, uid);
         return user;
@@ -64,7 +64,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     }
 
     @Override
-    public void deleteById(String uid) {
+    public void deleteByUid(String uid) {
         User user = userRepo.findByUid(uid);
         checkUserInDB(user, uid);
         userRepo.deleteById(uid);

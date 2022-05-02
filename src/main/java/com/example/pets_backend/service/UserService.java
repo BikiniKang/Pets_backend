@@ -8,11 +8,11 @@ import java.util.List;
 
 public interface UserService {
     User save(User user);
-    User getById(String uid);
-    List<User> findAll();
-    void deleteById(String uid);
+    void deleteByUid(String uid);
+    User findByUid(String uid);
     User findByEmail(String email);
-    Event getEventByUidAndEventId(String uid, String eventId);
+    List<User> findAll();
 
+    Event getEventByUidAndEventId(String uid, String eventId);
     Task getTaskByUidAndTaskId(String uid, String taskId);
 }
