@@ -8,6 +8,7 @@ import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 @Entity
@@ -49,4 +50,12 @@ public class Task {
 
     @NonNull
     private boolean isChecked;
+
+    @JsonIgnore
+    public LinkedHashMap<String, Object> getTaskAb() {
+        LinkedHashMap<String, Object> map = new LinkedHashMap<>();
+        map.put("taskId", this.getTaskId());
+        map.put("taskTitle", this.getTaskTitle());
+        return map;
+    }
 }

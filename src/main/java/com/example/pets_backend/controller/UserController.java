@@ -58,7 +58,9 @@ public class UserController {
         mapOut.put("lastName", user.getLastName());
         mapOut.put("image", user.getImage());
         mapOut.put("petList", user.getPetAbList());
-        mapOut.put("folderList", user.getFolderAbList());
+        mapOut.put("eventList", user.getEventAbList());
+        mapOut.put("taskList", user.getTaskAbList());
+//        mapOut.put("folderList", user.getFolderAbList());
 //        if (user.getCalendarDateList().size() != 0) {
 //            //TODO: need to get today's calendarDate object
 //            CalendarDate calendarDate = user.getCalendarDateList().get(0);
@@ -169,7 +171,7 @@ public class UserController {
 
     @PostMapping("/user/event/add")
     public Map<String, Object> addEvent(@RequestBody Map<String, Object> mapIn) {
-        String uid = (String) mapIn.get("userId");
+        String uid = (String) mapIn.get("uid");
         User user = userService.findByUid(uid);
         LinkedHashMap<String, Object> eventData = (LinkedHashMap<String, Object>) mapIn.get("eventData");
         Event event = new Event();
@@ -183,7 +185,7 @@ public class UserController {
 
     @DeleteMapping("/user/event/delete")
     public void deleteEvent(@RequestBody Map<String, Object> mapIn) {
-        String uid = (String) mapIn.get("userId");
+        String uid = (String) mapIn.get("uid");
         String eventId = (String) mapIn.get("eventId");
         userService.getEventByUidAndEventId(uid, eventId);
         eventService.deleteByEventId(eventId);
@@ -192,7 +194,7 @@ public class UserController {
     @PostMapping("/user/event/edit")
     @Transactional
     public Map<String, Object> editEvent(@RequestBody Map<String, Object> mapIn) {
-        String uid = (String) mapIn.get("userId");
+        String uid = (String) mapIn.get("uid");
         LinkedHashMap<String, Object> newEventData = (LinkedHashMap<String, Object>) mapIn.get("newEventData");
         String eventId = (String) newEventData.get("eventId");
         Event event = userService.getEventByUidAndEventId(uid, eventId);
@@ -204,19 +206,19 @@ public class UserController {
 
     @PostMapping("/user/event/all")
     public Map<String, Object> getEventsByDate(@RequestBody Map<String, Object> mapIn) {
-        String uid = (String) mapIn.get("userId");
+        String uid = (String) mapIn.get("uid");
         User user = userService.findByUid(uid);
         String date = (String) mapIn.get("date");
         List<Event> eventList = user.getEventsByDate(date);
         Map<String, Object> mapOut = new HashMap<>();
-        mapOut.put("userId", uid);
+        mapOut.put("uid", uid);
         mapOut.put("eventList", eventList);
         return mapOut;
     }
 
     @PostMapping("/user/task/add")
     public Map<String, Object> addTask(@RequestBody Map<String, Object> mapIn) {
-        String uid = (String) mapIn.get("userId");
+        String uid = (String) mapIn.get("uid");
         User user = userService.findByUid(uid);
         Task task = new Task();
         LinkedHashMap<String, Object> taskData = (LinkedHashMap<String, Object>) mapIn.get("taskData");
@@ -230,7 +232,7 @@ public class UserController {
 
     @DeleteMapping("/user/task/delete")
     public void deleteTask(@RequestBody Map<String, Object> mapIn) {
-        String uid = (String) mapIn.get("userId");
+        String uid = (String) mapIn.get("uid");
         String taskId = (String) mapIn.get("taskId");
         userService.getTaskByUidAndTaskId(uid, taskId);
         taskService.deleteByTaskId(taskId);
@@ -239,7 +241,7 @@ public class UserController {
     @PostMapping("/user/task/edit")
     @Transactional
     public Map<String, Object> editTask(@RequestBody Map<String, Object> mapIn) {
-        String uid = (String) mapIn.get("userId");
+        String uid = (String) mapIn.get("uid");
         LinkedHashMap<String, Object> newTaskData = (LinkedHashMap<String, Object>) mapIn.get("newTaskData");
         Task task = userService.getTaskByUidAndTaskId(uid, (String) newTaskData.get("taskId"));
         loadTask(newTaskData, task);
@@ -251,7 +253,7 @@ public class UserController {
     @PostMapping("/user/task/check")
     @Transactional
     public Map<String, Object> checkTask(@RequestBody Map<String, Object> mapIn) {
-        String uid = (String) mapIn.get("userId");
+        String uid = (String) mapIn.get("uid");
         String taskId = (String) mapIn.get("taskId");
         Task task = userService.getTaskByUidAndTaskId(uid, taskId);
         int isChecked = (int) mapIn.get("isChecked");
@@ -263,12 +265,12 @@ public class UserController {
 
     @PostMapping("/user/task/all")
     public Map<String, Object> getTasksByDate(@RequestBody Map<String, Object> mapIn) {
-        String uid = (String) mapIn.get("userId");
+        String uid = (String) mapIn.get("uid");
         User user = userService.findByUid(uid);
         String date = (String) mapIn.get("date");
         List<Task> taskList = user.getTasksByDate(date);
         Map<String, Object> mapOut = new HashMap<>();
-        mapOut.put("userId", uid);
+        mapOut.put("uid", uid);
         mapOut.put("taskList", taskList);
         return mapOut;
     }

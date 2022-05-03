@@ -76,6 +76,23 @@ public class User {
         return list;
     }
 
+    public List<LinkedHashMap<String, Object>> getEventAbList() {
+        List<LinkedHashMap<String, Object>> list = new ArrayList<>();
+        for (Event event:this.eventList) {
+            list.add(event.getEventAb());
+        }
+        return list;
+    }
+
+    public List<LinkedHashMap<String, Object>> getTaskAbList() {
+        List<LinkedHashMap<String, Object>> list = new ArrayList<>();
+        for (Task task:this.taskList) {
+            list.add(task.getTaskAb());
+        }
+        return list;
+    }
+
+    @JsonIgnore
     public Event getEventByEventId(String eventId) {
         for (Event event:this.eventList) {
             if (event.getEventId().equals(eventId)) {
@@ -85,6 +102,7 @@ public class User {
         return null;
     }
 
+    @JsonIgnore
     public Task getTaskByTaskId(String taskId) {
         for (Task task:this.taskList) {
             if (task.getTaskId().equals(taskId)) {
@@ -94,10 +112,15 @@ public class User {
         return null;
     }
 
+    @JsonIgnore
     public List<Event> getEventsByDate(String date) {
         List<Event> eventList = new ArrayList<>();
         for (Event event:this.eventList) {
-            if (event.getStartDateTime().startsWith(date)) {
+            String from = event.getStartDateTime().substring(0, date.length());
+            System.out.println(from);
+            String to = event.getEndDateTime().substring(0, date.length());
+            System.out.println(to);
+            if (from.compareTo(date) <= 0 && to.compareTo(date) >= 0) {
                 eventList.add(event);
             }
         }
@@ -105,10 +128,13 @@ public class User {
         return eventList;
     }
 
+    @JsonIgnore
     public List<Task> getTasksByDate(String date) {
         List<Task> taskList = new ArrayList<>();
         for (Task task:this.taskList) {
-            if (task.getDueDate().startsWith(date)) {
+            String from = task.getStartDate();
+            String to = task.getDueDate();
+            if (from.compareTo(date) <= 0 && to.compareTo(date) >= 0) {
                 taskList.add(task);
             }
         }

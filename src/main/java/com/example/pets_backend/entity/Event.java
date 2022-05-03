@@ -8,6 +8,7 @@ import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import static com.example.pets_backend.ConstantValues.*;
@@ -55,5 +56,13 @@ public class Event {
 
     @NonNull
     private String description = "";
+
+    @JsonIgnore
+    public LinkedHashMap<String, Object> getEventAb() {
+        LinkedHashMap<String, Object> map = new LinkedHashMap<>();
+        map.put("eventId", this.eventId);
+        map.put("eventTitle", this.eventTitle);
+        return map;
+    }
 
 }
