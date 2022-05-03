@@ -220,11 +220,7 @@ public class UserController {
         User user = userService.findByUid(uid);
         Task task = new Task();
         LinkedHashMap<String, Object> taskData = (LinkedHashMap<String, Object>) mapIn.get("taskData");
-        task.setPetIdList((List<String>) taskData.get("petIdList"));
-        task.setTaskTitle((String) taskData.get("taskTitle"));
-        task.setStartDate((String) taskData.get("startDate"));
-        task.setDueDate((String) taskData.get("dueDate"));
-        task.setChecked(false);
+        loadTask(taskData, task);
         task.setUser(user);
         task = taskService.save(task);
         Map<String, Object> mapOut = new HashMap<>();
@@ -242,27 +238,27 @@ public class UserController {
 
     @PostMapping("/user/task/edit")
     @Transactional
-    public Task editTask(@RequestBody Map<String, Object> mapIn) {
+    public Map<String, Object> editTask(@RequestBody Map<String, Object> mapIn) {
         String uid = (String) mapIn.get("userId");
-        Task taskNew = (Task) mapIn.get("newTaskData");
-        Task task = userService.getTaskByUidAndTaskId(uid, taskNew.getTaskId());
-        task.setTaskTitle(taskNew.getTaskTitle());
-        task.setPetIdList(taskNew.getPetIdList());
-        task.setStartDate(taskNew.getStartDate());
-        task.setDueDate(taskNew.getDueDate());
-        task.setChecked(taskNew.isChecked());
-        return task;
+        LinkedHashMap<String, Object> newTaskData = (LinkedHashMap<String, Object>) mapIn.get("newTaskData");
+        Task task = userService.getTaskByUidAndTaskId(uid, (String) newTaskData.get("taskId"));
+        loadTask(newTaskData, task);
+        Map<String, Object> mapOut = new HashMap<>();
+        mapOut.put("task", task);
+        return mapOut;
     }
 
     @PostMapping("/user/task/check")
     @Transactional
-    public Task checkTask(@RequestBody Map<String, Object> mapIn) {
+    public Map<String, Object> checkTask(@RequestBody Map<String, Object> mapIn) {
         String uid = (String) mapIn.get("userId");
         String taskId = (String) mapIn.get("taskId");
         Task task = userService.getTaskByUidAndTaskId(uid, taskId);
         int isChecked = (int) mapIn.get("isChecked");
         task.setChecked(isChecked != 0);
-        return task;
+        Map<String, Object> mapOut = new HashMap<>();
+        mapOut.put("task", task);
+        return mapOut;
     }
 
     @PostMapping("/user/task/all")
@@ -278,13 +274,21 @@ public class UserController {
     }
 
 
-    private void loadEvent(LinkedHashMap<String, Object> newEventData, Event event) {
-        event.setPetIdList((List<String>) newEventData.get("petIdList"));
-        event.setEventTitle((String) newEventData.get("eventTitle"));
-        event.setEventType((String) newEventData.get("eventType"));
-        event.setStartDateTime((String) newEventData.get("startDateTime"));
-        event.setEndDateTime((String) newEventData.get("endDateTime"));
-        event.setDescription((String) newEventData.get("description"));
+    private void loadEvent(LinkedHashMap<String, Object> eventData, Event event) {
+        event.setPetIdList((List<String>) eventData.get("petIdList"));
+        event.setEventTitle((String) eventData.get("eventTitle"));
+        event.setEventType((String) eventData.get("eventType"));
+        event.setStartDateTime((String) eventData.get("startDateTime"));
+        event.setEndDateTime((String) eventData.get("endDateTime"));
+        event.setDescription((String) eventData.get("description"));
+    }
+
+    private void loadTask(LinkedHashMap<String, Object> taskData, Task task) {
+        task.setPetIdList((List<String>) taskData.get("petIdList"));
+        task.setTaskTitle((String) taskData.get("taskTitle"));
+        task.setStartDate((String) taskData.get("startDate"));
+        task.setDueDate((String) taskData.get("dueDate"));
+        task.setChecked(false);
     }
 
 }
