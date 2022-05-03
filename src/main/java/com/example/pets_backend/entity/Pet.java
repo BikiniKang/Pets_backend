@@ -1,13 +1,11 @@
 package com.example.pets_backend.entity;
 
+import com.aventrix.jnanoid.jnanoid.NanoIdUtils;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
-
-import static com.example.pets_backend.ConstantValues.DEFAULT_IMAGE_PET;
+import java.util.LinkedHashMap;
 
 @Entity
 @Data
@@ -16,13 +14,12 @@ import static com.example.pets_backend.ConstantValues.DEFAULT_IMAGE_PET;
 public class Pet {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long petId;
+    private final String petId = NanoIdUtils.randomNanoId();
 
     @JsonIgnore
     @NonNull
     @ManyToOne
-    @JoinColumn(name = "uid", nullable = false)
+    @JoinColumn(name = "uid", nullable = false, foreignKey = @ForeignKey(name = "fk_pet_uid"))
     private User user;
 
     @NonNull
@@ -47,13 +44,17 @@ public class Pet {
     @Column(length = 10)
     private String petDob; // "yyyy/mm/dd"
 
-    private double weight;
+    private int weight; // in kg
 
-    private double height;
+    private int height; // in cm
 
-    @ManyToMany
-    private List<Task> taskList = new ArrayList<>();
 
-    @ManyToMany
-    private List<Task> eventList = new ArrayList<>();
+    public LinkedHashMap<String, Object> getPetAb() {
+        LinkedHashMap<String, Object> petAb = new LinkedHashMap<>();
+        petAb.put("petId", this.petId);
+        petAb.put("petName", this.petName);
+        petAb.put("petAvatar", this.petAvatar);
+        return petAb;
+    }
+
 }

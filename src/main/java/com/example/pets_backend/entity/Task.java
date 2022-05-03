@@ -1,10 +1,14 @@
 package com.example.pets_backend.entity;
 
+import com.aventrix.jnanoid.jnanoid.NanoIdUtils;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 @Entity
@@ -15,34 +19,43 @@ import java.util.List;
 public class Task {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long taskId;
+    private final String taskId = NanoIdUtils.randomNanoId();
 
     @JsonIgnore
     @ManyToOne
-    @JoinColumn(name = "uid", nullable = false)
+    @JoinColumn(name = "uid", nullable = false, foreignKey = @ForeignKey(name = "fk_task_uid"))
     private User user;
 
-    @JsonIgnore
-    @ManyToOne
-    @JoinColumn(name = "calDateId", nullable = false)
-    private CalendarDate calendarDate;
-
-    @JsonIgnore
-    @ManyToMany
-    private List<Pet> petList;
+    @NonNull
+    @ElementCollection
+    @CollectionTable(
+            name = "task_petidlist",
+            joinColumns = @JoinColumn(name = "task_id")
+    )
+    @JoinColumn
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private List<String> petIdList = new ArrayList<>();
 
     @NonNull
-    private String content;
+    @Column(length = 64)
+    private String taskTitle;
 
-    private boolean isChecked = false;
+    @NonNull
+    @Column(length = 16)
+    private String startDate;       // YYYY-MM-DD HH:mm
 
+    @NonNull
+    @Column(length = 16)
+    private String dueDate;         // YYYY-MM-DD HH:mm
 
-    public List<String> getPetNameList() {
-        List<String> petNameList = new ArrayList<>();
-        for (Pet pet:this.petList) {
-            petNameList.add(pet.getPetName());
-        }
-        return petNameList;
+    @NonNull
+    private boolean isChecked;
+
+    @JsonIgnore
+    public LinkedHashMap<String, Object> getTaskAb() {
+        LinkedHashMap<String, Object> map = new LinkedHashMap<>();
+        map.put("taskId", this.getTaskId());
+        map.put("taskTitle", this.getTaskTitle());
+        return map;
     }
 }

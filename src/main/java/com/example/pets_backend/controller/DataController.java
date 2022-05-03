@@ -23,7 +23,7 @@ public class DataController {
     private final SpeciesRepository speciesRepository;
     private final BreedRepository breedRepository;
 
-    @PostMapping("/data/location_list")
+    @PostMapping("/data/location_list/post")
     public void postLocationList(@RequestBody List<String> list) {
         for (String name : list) {
             City city = new City();
@@ -32,13 +32,14 @@ public class DataController {
         }
     }
 
-    @GetMapping("/data/location_list")
+    @PostMapping("/data/location_list")
     public List<City> getLocationList() {
         return cityRepository.findAll();
     }
 
     @PostMapping("/data/species_and_breed")
     public void postSpeciesAndBreed(@RequestBody Map<String, List<String>> map) {
+        speciesRepository.deleteAll();
         for (Map.Entry<String, List<String>> entry: map.entrySet()) {
             Species species = new Species();
             species.setSpeciesName(entry.getKey());
@@ -52,14 +53,14 @@ public class DataController {
         }
     }
 
-    @GetMapping("/data/species_list")
+    @PostMapping("/data/species_list")
     public List<Species> getSpeciesList() {
         return speciesRepository.findAll();
     }
 
-    @GetMapping("/data/breed_list")
+    @PostMapping("/data/breed_list")
     public List<Breed> getBreedList(@RequestBody Map<String, Object> mapIn) {
-        Long speciesId = (long) (int) mapIn.get("speciesId");
+        String speciesId = (String) mapIn.get("speciesId");
         Species species = speciesRepository.findBySpeciesId(speciesId);
         if (species == null) {
             log.error("Species {} not found in database", speciesId);

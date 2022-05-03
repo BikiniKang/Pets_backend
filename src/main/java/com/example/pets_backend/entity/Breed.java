@@ -1,5 +1,6 @@
 package com.example.pets_backend.entity;
 
+import com.aventrix.jnanoid.jnanoid.NanoIdUtils;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,9 +11,9 @@ import javax.persistence.*;
 @Data
 @NoArgsConstructor
 public class Breed {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long breedId;
+    private final String breedId = NanoIdUtils.randomNanoId();
 
     private String breedName;
 

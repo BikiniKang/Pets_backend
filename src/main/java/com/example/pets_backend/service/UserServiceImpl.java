@@ -1,6 +1,8 @@
 package com.example.pets_backend.service;
 
+import com.example.pets_backend.entity.Event;
 import com.example.pets_backend.entity.Folder;
+import com.example.pets_backend.entity.Task;
 import com.example.pets_backend.entity.User;
 import com.example.pets_backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -32,13 +35,13 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     }
 
     @Override
-    public User register(User user) {
+    public User save(User user) {
         String email = user.getEmail();
         if (userRepo.findByEmail(email) != null) {
             log.error("Duplicate email " + email);
             throw new DuplicateKeyException(("Duplicate email " + email));
         } else {
-            log.info("Saving new user {} to the database", email);
+            log.info("Saved new user with email {} into database", email);
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         User user1 = userRepo.save(user);
@@ -49,38 +52,61 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     }
 
     @Override
-    public User getUser(String email) {
-        User user = userRepo.findByEmail(email);
-        checkUserInDB(user, email);
+    public User findByUid(String uid) {
+        User user = userRepo.findByUid(uid);
+        checkUserInDB(user, uid);
         return user;
     }
 
     @Override
-    public User getUserById(Long uid) {
-        return userRepo.getById(uid);
+    public List<User> findAll() {
+        return userRepo.findAll();
     }
 
     @Override
-    public User editUser(User user) {
-        String email_provided = user.getEmail();
-        User user_db = userRepo.findByEmail(email_provided);
-        checkUserInDB(user, email_provided);
-
-        // Change the attributes which are editable in the "Setting" page:
-        user_db.setFirstName(user.getFirstName());
-        user_db.setLastName(user.getLastName());
-        user_db.setAddress(user.getAddress());
-        user_db.setImage(user.getImage());
-        user_db.setPhone(user.getPhone());
-        return user_db;
+    public void deleteByUid(String uid) {
+        User user = userRepo.findByUid(uid);
+        checkUserInDB(user, uid);
+        userRepo.deleteById(uid);
     }
 
-    private void checkUserInDB(User user, String email) {
-        if (user == null) {
-            log.error("User {} not found in the database", email);
-            throw new UsernameNotFoundException("User " + email + " not found in the database");
+    @Override
+    public User findByEmail(String email) {
+        return userRepo.findByEmail(email);
+    }
+
+    @Override
+    public Event getEventByUidAndEventId(String uid, String eventId) {
+        User user = userRepo.findByUid(uid);
+        checkUserInDB(user, uid);
+        Event event = user.getEventByEventId(eventId);
+        if (event == null) {
+            log.error("Event {} doesn't exist or doesn't belong to User {}", eventId, uid);
+            throw new UsernameNotFoundException("Event "+eventId+" doesn't exist or doesn't belong to User "+uid);
         } else {
-            log.info("User {} found in the database", email);
+            return event;
+        }
+    }
+
+    @Override
+    public Task getTaskByUidAndTaskId(String uid, String taskId) {
+        User user = userRepo.findByUid(uid);
+        checkUserInDB(user, uid);
+        Task task = user.getTaskByTaskId(taskId);
+        if (task == null) {
+            log.error("Task {} doesn't exist or doesn't belong to User {}", taskId, uid);
+            throw new UsernameNotFoundException("Task "+taskId+" doesn't exist or doesn't belong to User "+uid);
+        } else {
+            return task;
+        }
+    }
+
+    private void checkUserInDB(User user, String identifier) {
+        if (user == null) {
+            log.error("User {} not found in database", identifier);
+            throw new UsernameNotFoundException("User " + identifier + " not found in database");
+        } else {
+            log.info("User {} found in database", identifier);
         }
     }
 }
