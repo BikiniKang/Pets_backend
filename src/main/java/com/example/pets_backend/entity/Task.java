@@ -3,6 +3,8 @@ package com.example.pets_backend.entity;
 import com.aventrix.jnanoid.jnanoid.NanoIdUtils;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -29,6 +31,8 @@ public class Task {
             name = "task_petidlist",
             joinColumns = @JoinColumn(name = "task_id")
     )
+    @JoinColumn
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private List<String> petIdList = new ArrayList<>();
 
     @NonNull
