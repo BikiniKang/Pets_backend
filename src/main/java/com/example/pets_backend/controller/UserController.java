@@ -4,6 +4,7 @@ import com.example.pets_backend.entity.User;
 import com.example.pets_backend.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,9 +31,26 @@ public class UserController {
         return map;
     }
 
+    /**
+     * Delete the user by uid/email.
+     * If both attributes are not valid, do nothing (do NOT throw exceptions).
+     *
+     * @apiNote in 'Admin' group
+     *
+     * @param mapIn contains a key of "uid", or, a key of "email"
+     *
+     */
     @DeleteMapping("/user/delete")
     public void deleteUser(@RequestBody Map<String, Object> mapIn) {
-        userService.deleteByUid((String) mapIn.get("uid"));
+        try {
+            if (mapIn.get("uid") != null) {
+                userService.deleteByUid((String) mapIn.get("uid"));
+            } else if (mapIn.get("email") != null) {
+                userService.deleteByEmail((String) mapIn.get("email"));
+            }
+        } catch (Exception e){
+            log.error(e.getMessage());
+        }
     }
 
     @PostMapping("/user/all")

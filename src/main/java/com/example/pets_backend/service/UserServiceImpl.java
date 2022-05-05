@@ -71,6 +71,13 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     }
 
     @Override
+    public void deleteByEmail(String email) {
+        User user = userRepo.findByEmail(email);
+        checkUserInDB(user, email);
+        userRepo.deleteByEmail(email);
+    }
+
+    @Override
     public User findByEmail(String email) {
         return userRepo.findByEmail(email);
     }
