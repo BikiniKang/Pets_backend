@@ -21,7 +21,7 @@ import static com.example.pets_backend.ConstantValues.*;
 public class Event {
 
     @Id
-    private final String eventId = NanoIdUtils.randomNanoId();
+    private String eventId = NanoIdUtils.randomNanoId();
 
     @JsonIgnore
     @ManyToOne

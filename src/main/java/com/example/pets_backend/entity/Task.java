@@ -13,13 +13,12 @@ import java.util.List;
 
 @Entity
 @Data
-@AllArgsConstructor
 @RequiredArgsConstructor
 @NoArgsConstructor
 public class Task {
 
     @Id
-    private final String taskId = NanoIdUtils.randomNanoId();
+    private String taskId = NanoIdUtils.randomNanoId();
 
     @JsonIgnore
     @ManyToOne
@@ -49,7 +48,7 @@ public class Task {
     private String dueDate;         // YYYY-MM-DD HH:mm
 
     @NonNull
-    private boolean isChecked;
+    private boolean checked;
 
     @JsonIgnore
     public LinkedHashMap<String, Object> getTaskAb() {
