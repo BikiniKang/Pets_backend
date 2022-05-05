@@ -83,4 +83,10 @@ public class EventController {
         mapOut.put("eventList", eventList);
         return mapOut;
     }
+
+    @PostMapping("/user/event")
+    public Event getEvent(@RequestBody Map<String, Object> mapIn) {
+        String eventId = (String) mapIn.get("eventId");
+        return eventService.findByEventId(eventId);
+    }
 }

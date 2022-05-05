@@ -95,4 +95,10 @@ public class TaskController {
         mapOut.put("taskList", taskList);
         return mapOut;
     }
+
+    @PostMapping("/user/event")
+    public Task getTask(@RequestBody Map<String, Object> mapIn) {
+        String taskId = (String) mapIn.get("taskId");
+        return taskService.findByTaskId(taskId);
+    }
 }
