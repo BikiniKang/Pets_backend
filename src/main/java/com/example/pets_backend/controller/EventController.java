@@ -70,7 +70,7 @@ public class EventController {
         return mapOut;
     }
 
-    @PostMapping("/user/event/all")
+    @PostMapping("/user/event/date")
     public Map<String, Object> getEventsByDate(@RequestBody Map<String, Object> mapIn) {
         String uid = (String) mapIn.get("uid");
         User user = userService.findByUid(uid);
@@ -88,5 +88,12 @@ public class EventController {
     public Event getEvent(@RequestBody Map<String, Object> mapIn) {
         String eventId = (String) mapIn.get("eventId");
         return eventService.findByEventId(eventId);
+    }
+
+    @PostMapping("/user/event/all")
+    public List<Event> getAllEvents(@RequestBody Map<String, Object> mapIn) {
+        String uid = (String) mapIn.get("uid");
+        User user = userService.findByUid(uid);
+        return user.getEventList();
     }
 }

@@ -82,7 +82,7 @@ public class TaskController {
         return mapOut;
     }
 
-    @PostMapping("/user/task/all")
+    @PostMapping("/user/task/date")
     public Map<String, Object> getTasksByDate(@RequestBody Map<String, Object> mapIn) {
         String uid = (String) mapIn.get("uid");
         User user = userService.findByUid(uid);
@@ -100,5 +100,12 @@ public class TaskController {
     public Task getTask(@RequestBody Map<String, Object> mapIn) {
         String taskId = (String) mapIn.get("taskId");
         return taskService.findByTaskId(taskId);
+    }
+
+    @PostMapping("/user/task/all")
+    public List<Task> getAllTasks(@RequestBody Map<String, Object> mapIn) {
+        String uid = (String) mapIn.get("uid");
+        User user = userService.findByUid(uid);
+        return user.getTaskList();
     }
 }
