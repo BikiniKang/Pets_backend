@@ -21,7 +21,7 @@ import static com.example.pets_backend.ConstantValues.*;
 public class Event {
 
     @Id
-    private final String eventId = NanoIdUtils.randomNanoId();
+    private String eventId = NanoIdUtils.randomNanoId();
 
     @JsonIgnore
     @ManyToOne
@@ -56,6 +56,14 @@ public class Event {
 
     @NonNull
     private String description = "";
+
+    public List<LinkedHashMap<String, Object>> getPetAbList() {
+        List<LinkedHashMap<String, Object>> list = new ArrayList<>();
+        for (String petId:this.petIdList) {
+            list.add(this.user.getPetByPetId(petId).getPetAb());
+        }
+        return list;
+    }
 
     @JsonIgnore
     public LinkedHashMap<String, Object> getEventAb() {
