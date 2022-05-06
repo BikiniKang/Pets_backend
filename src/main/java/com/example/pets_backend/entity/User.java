@@ -109,6 +109,21 @@ public class User {
     }
 
     /**
+     * Get the Pet object by petId
+     * @param petId the id of the pet
+     * @return a Pet object
+     */
+    @JsonIgnore
+    public Pet getPetByPetId(String petId) {
+        for (Pet pet:this.petList) {
+            if (pet.getPetId().equals(petId)) {
+                return pet;
+            }
+        }
+        return null;
+    }
+
+    /**
      * Get the Event object by eventId
      * @param eventId the id of the event
      * @return an Event object
