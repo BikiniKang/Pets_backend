@@ -93,6 +93,17 @@ public class User {
     }
 
     @JsonIgnore
+    public Pet getPetByPetName(String petName) {
+        for (Pet pet:this.petList) {
+            if (pet.getPetName().equals(petName)) {
+                return pet;
+            }
+        }
+        return null;
+    }
+
+
+    @JsonIgnore
     public Event getEventByEventId(String eventId) {
         for (Event event:this.eventList) {
             if (event.getEventId().equals(eventId)) {

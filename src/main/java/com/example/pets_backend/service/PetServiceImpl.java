@@ -1,9 +1,11 @@
 package com.example.pets_backend.service;
 
 import com.example.pets_backend.entity.Pet;
+import com.example.pets_backend.entity.User;
 import com.example.pets_backend.repository.PetRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,7 +19,13 @@ public class PetServiceImpl implements PetService{
 
     @Override
     public Pet save(Pet pet) {
-        log.info("Saved new pet with name {} into database", pet.getPetName());
+        String petName = pet.getPetName();
+        User user = pet.getUser();
+        if (user.getPetByPetName(petName) != null) {
+            log.error("Duplicate pet name '{}' for user '{}'", petName, user.getUid());
+            throw new DuplicateKeyException("Duplicate pet name '" + petName + "' for user '" + user.getUid() + "'");
+        }
+        log.info("Saved new pet with name '{}' into database", pet.getPetName());
         return petRepository.save(pet);
     }
 
