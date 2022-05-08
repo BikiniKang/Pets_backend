@@ -4,6 +4,8 @@ package com.example.pets_backend;
 import com.auth0.jwt.algorithms.Algorithm;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.List;
 
 public class ConstantValues {
 
@@ -24,4 +26,5 @@ public class ConstantValues {
     public static final String DEFAULT_END_TIME = "";
     public static final String DATE_PATTERN = "yyyy-MM-dd";
     public static final String DATETIME_PATTERN = "yyyy-MM-dd HH:mm";
+    public static final List<String> RECORD_TYPES = Arrays.asList("Invoice", "Medication", "Vaccination");
 }

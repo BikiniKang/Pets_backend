@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -36,6 +37,11 @@ public class RecordServiceImpl implements RecordService{
         Record record = recordRepository.findByRecordId(recordId);
         checkRecordInDB(record,recordId);
         recordRepository.deleteByRecordId(recordId);
+    }
+
+    @Override
+    public List<Record> findAllByUidAndRecordType(String uid, String recordType) {
+        return recordRepository.findAllByUidAndRecordType(uid, recordType);
     }
 
     private void checkRecordInDB(Record record, String recordId) {
