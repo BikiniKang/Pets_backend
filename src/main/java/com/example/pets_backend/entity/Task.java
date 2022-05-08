@@ -50,6 +50,14 @@ public class Task {
     @NonNull
     private boolean checked;
 
+    public List<LinkedHashMap<String, Object>> getPetAbList() {
+        List<LinkedHashMap<String, Object>> list = new ArrayList<>();
+        for (String petId:this.petIdList) {
+            list.add(this.user.getPetByPetId(petId).getPetAb());
+        }
+        return list;
+    }
+
     @JsonIgnore
     public LinkedHashMap<String, Object> getTaskAb() {
         LinkedHashMap<String, Object> map = new LinkedHashMap<>();
