@@ -15,7 +15,7 @@ import javax.persistence.*;
 public class Record {
 
     @Id
-    private final String recordId = NanoIdUtils.randomNanoId();
+    private String recordId = NanoIdUtils.randomNanoId();
 
     @JsonIgnore
     @ManyToOne
