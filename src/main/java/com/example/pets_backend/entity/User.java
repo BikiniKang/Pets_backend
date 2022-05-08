@@ -112,7 +112,7 @@ public class User {
                 return pet;
             }
         }
-        return null;
+        throw new EntityNotFoundException("Pet " + petId + " not found in database");
     }
 
     /**

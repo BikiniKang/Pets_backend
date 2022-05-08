@@ -7,6 +7,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
+
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -26,7 +28,7 @@ public class EventServiceImpl implements EventService{
         Event event = eventRepository.findByEventId(eventId);
         if (event == null) {
             log.error("Event {} not found in the database", eventId);
-            throw new IllegalArgumentException("Event " + eventId + " not found in database");
+            throw new EntityNotFoundException("Event " + eventId + " not found in database");
         } else {
             log.info("Event {} found in the database", eventId);
             return event;
@@ -38,7 +40,7 @@ public class EventServiceImpl implements EventService{
         Event event = eventRepository.findByEventId(eventId);
         if (event == null) {
             log.error("Event {} not found in the database", eventId);
-            throw new IllegalArgumentException("Event " + eventId + " not found in database");
+            throw new EntityNotFoundException("Event " + eventId + " not found in database");
         } else {
             log.info("Event {} found in the database", eventId);
         }

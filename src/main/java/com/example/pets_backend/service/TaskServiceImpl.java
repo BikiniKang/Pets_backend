@@ -8,6 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
+
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -27,7 +29,7 @@ public class TaskServiceImpl implements TaskService{
         Task task = taskRepository.findByTaskId(taskId);
         if (task == null) {
             log.error("Task {} not found in the database", taskId);
-            throw new IllegalArgumentException("Task " + taskId + " not found in database");
+            throw new EntityNotFoundException("Task " + taskId + " not found in database");
         } else {
             log.info("Task {} found in the database", taskId);
         }
@@ -39,7 +41,7 @@ public class TaskServiceImpl implements TaskService{
         Task task = taskRepository.findByTaskId(taskId);
         if (task == null) {
             log.error("Task {} not found in the database", taskId);
-            throw new IllegalArgumentException("Task " + taskId + " not found in database");
+            throw new EntityNotFoundException("Task " + taskId + " not found in database");
         } else {
             log.info("Task {} found in the database", taskId);
         }

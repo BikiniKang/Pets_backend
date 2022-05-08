@@ -8,6 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
+
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -27,7 +29,7 @@ public class RecordServiceImpl implements RecordService{
         Record record = recordRepository.findByRecordId(recordId);
         if (record == null) {
             log.error("Record {} not found in the database", recordId);
-            throw new IllegalArgumentException("Record " + recordId + " not found in database");
+            throw new EntityNotFoundException("Record " + recordId + " not found in database");
         } else {
             log.info("Record {} found in the database", recordId);
             return record;

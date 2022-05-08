@@ -14,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -84,7 +85,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         Event event = user.getEventByEventId(eventId);
         if (event == null) {
             log.error("Event {} doesn't exist or doesn't belong to User {}", eventId, uid);
-            throw new UsernameNotFoundException("Event "+eventId+" doesn't exist or doesn't belong to User "+uid);
+            throw new EntityNotFoundException("Event "+eventId+" doesn't exist or doesn't belong to User "+uid);
         } else {
             return event;
         }
@@ -97,7 +98,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         Task task = user.getTaskByTaskId(taskId);
         if (task == null) {
             log.error("Task {} doesn't exist or doesn't belong to User {}", taskId, uid);
-            throw new UsernameNotFoundException("Task "+taskId+" doesn't exist or doesn't belong to User "+uid);
+            throw new EntityNotFoundException("Task "+taskId+" doesn't exist or doesn't belong to User "+uid);
         } else {
             return task;
         }
@@ -106,7 +107,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     private void checkUserInDB(User user, String identifier) {
         if (user == null) {
             log.error("User {} not found in database", identifier);
-            throw new UsernameNotFoundException("User " + identifier + " not found in database");
+            throw new EntityNotFoundException("User " + identifier + " not found in database");
         } else {
             log.info("User {} found in database", identifier);
         }

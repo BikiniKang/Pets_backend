@@ -9,6 +9,8 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
+
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -46,7 +48,7 @@ public class PetServiceImpl implements PetService{
     private void checkPetInDB(Pet pet, String identifier) {
         if (pet == null) {
             log.error("Pet {} not found in the database", identifier);
-            throw new IllegalArgumentException("Pet " + identifier + " not found in database");
+            throw new EntityNotFoundException("Pet " + identifier + " not found in database");
         } else {
             log.info("Pet {} found in the database", identifier);
         }
