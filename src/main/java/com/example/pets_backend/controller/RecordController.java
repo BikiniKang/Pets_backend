@@ -9,6 +9,7 @@ import com.example.pets_backend.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,5 +39,28 @@ public class RecordController {
         record.setPetAvatar(pet.getPetAvatar());
 
         return recordService.save(record);
+    }
+
+    @PostMapping("/user/record/edit")
+    @Transactional
+    public Record editRecord(@RequestBody Map<String, Object> mapIn) {
+        User user = userService.findByUid((String) mapIn.get("uid"));
+        Record newRecord = mapper.convertValue(mapIn.get("newRecord"), Record.class);
+        String recordId = newRecord.getRecordId();
+        Record record = recordService.findByRecordId(recordId);
+
+        record.setRecordTitle(newRecord.getRecordTitle());
+        record.setDate(newRecord.getDate());
+        record.setFileDir(newRecord.getFileDir());
+        record.setFileFormat(newRecord.getFileFormat());
+        record.setVacType(newRecord.getVacType());
+        if (!record.getPetId().equals(newRecord.getPetId())) {
+            Pet newPet = user.getPetByPetId(newRecord.getPetId());
+            record.setPetId(newPet.getPetId());
+            record.setPetName(newPet.getPetName());
+            record.setPetAvatar(newPet.getPetAvatar());
+        }
+
+        return record;
     }
 }

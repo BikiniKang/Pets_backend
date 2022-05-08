@@ -21,4 +21,16 @@ public class RecordServiceImpl implements RecordService{
         log.info("New record saved into database");
         return recordRepository.save(record);
     }
+
+    @Override
+    public Record findByRecordId(String recordId) {
+        Record record = recordRepository.findByRecordId(recordId);
+        if (record == null) {
+            log.error("Record {} not found in the database", recordId);
+            throw new IllegalArgumentException("Record " + recordId + " not found in database");
+        } else {
+            log.info("Record {} found in the database", recordId);
+            return record;
+        }
+    }
 }
