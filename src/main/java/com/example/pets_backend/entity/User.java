@@ -85,6 +85,14 @@ public class User {
         return list;
     }
 
+    public List<LinkedHashMap<String, Object>> getRecordAbList() {
+        List<LinkedHashMap<String, Object>> list = new ArrayList<>();
+        for (Record record:this.recordList) {
+            list.add(record.getRecordAb());
+        }
+        return list;
+    }
+
     /**
      * Get the Pet object by petName
      * @param petName the name of the pet
@@ -112,7 +120,7 @@ public class User {
                 return pet;
             }
         }
-        throw new EntityNotFoundException("Pet " + petId + " not found in the pet list of user " + this.uid);
+        throw new EntityNotFoundException("Pet '" + petId + "' not found in User '" + this.uid + "'");
     }
 
     /**
@@ -127,7 +135,7 @@ public class User {
                 return event;
             }
         }
-        throw new EntityNotFoundException("Event " + eventId + " not found in the event list of user " + this.uid);
+        throw new EntityNotFoundException("Event '" + eventId + "' not found in User '" + this.uid + "'");
     }
 
     /**
@@ -142,7 +150,7 @@ public class User {
                 return task;
             }
         }
-        throw new EntityNotFoundException("Task " + taskId + " not found in the task list of user " + this.uid);
+        throw new EntityNotFoundException("Task '" + taskId + "' not found in User '" + this.uid + "'");
     }
 
     /**
@@ -157,7 +165,7 @@ public class User {
                 return record;
             }
         }
-        throw new EntityNotFoundException("Record " + recordId + " not found in the record list of user " + this.uid);
+        throw new EntityNotFoundException("Record '" + recordId + "' not found in User '" + this.uid + "'");
     }
 
     /**

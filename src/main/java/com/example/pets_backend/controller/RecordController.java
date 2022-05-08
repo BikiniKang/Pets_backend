@@ -60,12 +60,12 @@ public class RecordController {
 
         return record;
     }
-//
-//    @DeleteMapping("/user/record/delete")
-//    public void deleteRecord(@RequestBody Map<String, Object> mapIn) {
-//        User user = userService.findByUid((String) mapIn.get("uid"));
-//        String recordId = (String) mapIn.get("recordId");
-//        user.getRecordByRecordId(recordId);
-//
-//    }
+
+    @DeleteMapping("/user/record/delete")
+    public void deleteRecord(@RequestBody Map<String, Object> mapIn) {
+        User user = userService.findByUid((String) mapIn.get("uid"));
+        String recordId = (String) mapIn.get("recordId");
+        user.getRecordByRecordId(recordId);
+        recordService.deleteByRecordId(recordId);
+    }
 }

@@ -7,4 +7,6 @@ public interface RecordService {
     Record save(Record record);
 
     Record findByRecordId(String recordId);
+
+    void deleteByRecordId(String recordId);
 }

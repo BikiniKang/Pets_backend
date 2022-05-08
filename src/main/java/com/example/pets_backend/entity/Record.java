@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.LinkedHashMap;
 
 @Entity
 @Data
@@ -52,4 +53,12 @@ public class Record {
 
     @Column
     private String petAvatar;
+
+    public LinkedHashMap<String, Object> getRecordAb() {
+        LinkedHashMap<String, Object> map = new LinkedHashMap<>();
+        map.put("recordId", recordId);
+        map.put("recordType", recordType);
+        map.put("recordTitle", recordTitle);
+        return map;
+    }
 }
