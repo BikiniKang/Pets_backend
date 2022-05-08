@@ -112,7 +112,7 @@ public class User {
                 return pet;
             }
         }
-        throw new EntityNotFoundException("Pet " + petId + " not found in database");
+        throw new EntityNotFoundException("Pet " + petId + " not found in the pet list of user " + this.uid);
     }
 
     /**
@@ -127,7 +127,7 @@ public class User {
                 return event;
             }
         }
-        return null;
+        throw new EntityNotFoundException("Event " + eventId + " not found in the event list of user " + this.uid);
     }
 
     /**
@@ -142,7 +142,22 @@ public class User {
                 return task;
             }
         }
-        return null;
+        throw new EntityNotFoundException("Task " + taskId + " not found in the task list of user " + this.uid);
+    }
+
+    /**
+     * Get the Record object by recordId
+     * @param recordId the id of the record
+     * @return a Record object
+     */
+    @JsonIgnore
+    public Record getRecordByRecordId(String recordId) {
+        for (Record record:this.recordList) {
+            if (record.getRecordId().equals(recordId)) {
+                return record;
+            }
+        }
+        throw new EntityNotFoundException("Record " + recordId + " not found in the record list of user " + this.uid);
     }
 
     /**

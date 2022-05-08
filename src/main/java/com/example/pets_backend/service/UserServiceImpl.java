@@ -82,26 +82,14 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     public Event getEventByUidAndEventId(String uid, String eventId) {
         User user = userRepo.findByUid(uid);
         checkUserInDB(user, uid);
-        Event event = user.getEventByEventId(eventId);
-        if (event == null) {
-            log.error("Event {} doesn't exist or doesn't belong to User {}", eventId, uid);
-            throw new EntityNotFoundException("Event "+eventId+" doesn't exist or doesn't belong to User "+uid);
-        } else {
-            return event;
-        }
+        return user.getEventByEventId(eventId);
     }
 
     @Override
     public Task getTaskByUidAndTaskId(String uid, String taskId) {
         User user = userRepo.findByUid(uid);
         checkUserInDB(user, uid);
-        Task task = user.getTaskByTaskId(taskId);
-        if (task == null) {
-            log.error("Task {} doesn't exist or doesn't belong to User {}", taskId, uid);
-            throw new EntityNotFoundException("Task "+taskId+" doesn't exist or doesn't belong to User "+uid);
-        } else {
-            return task;
-        }
+        return user.getTaskByTaskId(taskId);
     }
 
     private void checkUserInDB(User user, String identifier) {
