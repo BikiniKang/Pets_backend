@@ -1,7 +1,6 @@
 package com.example.pets_backend.service;
 
 import com.example.pets_backend.entity.Event;
-import com.example.pets_backend.entity.Folder;
 import com.example.pets_backend.entity.Task;
 import com.example.pets_backend.entity.User;
 import com.example.pets_backend.repository.UserRepository;
@@ -44,11 +43,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
             log.info("Saved new user with email {} into database", email);
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        User user1 = userRepo.save(user);
-        user1.getFolderList().add(new Folder(user1, 0L, "Invoice"));
-        user1.getFolderList().add(new Folder(user1, 0L, "Medical Report"));
-        user1.getFolderList().add(new Folder(user1, 0L, "Vaccination History"));
-        return user1;
+        return userRepo.save(user);
     }
 
     @Override

@@ -11,9 +11,4 @@ public class Record {
 
     @Id
     private final String recordId = NanoIdUtils.randomNanoId();
-
-    @JsonBackReference
-    @ManyToOne
-    @JoinColumn(name = "folderId", nullable = false)
-    private Folder folder;
 }
