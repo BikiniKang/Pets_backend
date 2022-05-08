@@ -3,6 +3,7 @@ package com.example.pets_backend.entity;
 import com.aventrix.jnanoid.jnanoid.NanoIdUtils;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.*;
 import java.util.*;
@@ -15,6 +16,7 @@ import static com.example.pets_backend.util.GeneralHelperMethods.*;
 @AllArgsConstructor
 @RequiredArgsConstructor
 @NoArgsConstructor
+@Slf4j
 public class User {
 
     @Id
@@ -102,6 +104,7 @@ public class User {
     public Pet getPetByPetName(String petName) {
         for (Pet pet:this.petList) {
             if (pet.getPetName().equals(petName)) {
+                log.info("Pet with name '{}' found in User '{}'", petName, this.uid);
                 return pet;
             }
         }
@@ -117,6 +120,7 @@ public class User {
     public Pet getPetByPetId(String petId) {
         for (Pet pet:this.petList) {
             if (pet.getPetId().equals(petId)) {
+                log.info("Pet '{}' found in User '{}'", pet.getPetId(), this.uid);
                 return pet;
             }
         }
@@ -132,6 +136,7 @@ public class User {
     public Event getEventByEventId(String eventId) {
         for (Event event:this.eventList) {
             if (event.getEventId().equals(eventId)) {
+                log.info("Event '{}' found in User '{}'", eventId, this.uid);
                 return event;
             }
         }
@@ -147,6 +152,7 @@ public class User {
     public Task getTaskByTaskId(String taskId) {
         for (Task task:this.taskList) {
             if (task.getTaskId().equals(taskId)) {
+                log.info("Task '{}' found in User '{}'", taskId, this.uid);
                 return task;
             }
         }
@@ -162,6 +168,7 @@ public class User {
     public Record getRecordByRecordId(String recordId) {
         for (Record record:this.recordList) {
             if (record.getRecordId().equals(recordId)) {
+                log.info("Record '{}' found in User '{}'", recordId, this.uid);
                 return record;
             }
         }

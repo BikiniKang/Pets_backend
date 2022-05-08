@@ -38,10 +38,10 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     public User save(User user) {
         String email = user.getEmail();
         if (userRepo.findByEmail(email) != null) {
-            log.error("Duplicate email " + email);
-            throw new DuplicateKeyException(("Duplicate email " + email));
+            log.error("Duplicate email '" + email + "'");
+            throw new DuplicateKeyException(("Duplicate email '" + email + "'"));
         } else {
-            log.info("Saved new user with email {} into database", email);
+            log.info("New user '{}' saved into database", user.getUid());
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepo.save(user);
@@ -56,6 +56,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
     @Override
     public List<User> findAll() {
+        log.info("Finding all users in database");
         return userRepo.findAll();
     }
 
@@ -64,6 +65,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         User user = userRepo.findByUid(uid);
         checkUserInDB(user, uid);
         userRepo.deleteById(uid);
+        log.info("User '{}' deleted from database", uid);
     }
 
     @Override
@@ -71,11 +73,14 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         User user = userRepo.findByEmail(email);
         checkUserInDB(user, email);
         userRepo.deleteByEmail(email);
+        log.info("User with email '{}' deleted from database", email);
     }
 
     @Override
     public User findByEmail(String email) {
-        return userRepo.findByEmail(email);
+        User user = userRepo.findByEmail(email);
+        checkUserInDB(user, email);
+        return user;
     }
 
     @Override
@@ -94,10 +99,10 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
     private void checkUserInDB(User user, String identifier) {
         if (user == null) {
-            log.error("User {} not found in database", identifier);
-            throw new EntityNotFoundException("User " + identifier + " not found in database");
+            log.error("User '{}' not found in database", identifier);
+            throw new EntityNotFoundException("User '" + identifier + "' not found in database");
         } else {
-            log.info("User {} found in database", identifier);
+            log.info("User '{}' found in database", identifier);
         }
     }
 }

@@ -20,31 +20,30 @@ public class RecordServiceImpl implements RecordService{
 
     @Override
     public Record save(Record record) {
-        log.info("New record saved into database");
+        log.info("New record '{}' saved into database", record.getRecordId());
         return recordRepository.save(record);
     }
 
     @Override
     public Record findByRecordId(String recordId) {
         Record record = recordRepository.findByRecordId(recordId);
-        if (record == null) {
-            log.error("Record {} not found in the database", recordId);
-            throw new EntityNotFoundException("Record " + recordId + " not found in database");
-        } else {
-            log.info("Record {} found in the database", recordId);
-            return record;
-        }
+        checkRecordInDB(record,recordId);
+        return record;
     }
 
     @Override
     public void deleteByRecordId(String recordId) {
         Record record = recordRepository.findByRecordId(recordId);
+        checkRecordInDB(record,recordId);
+        recordRepository.deleteByRecordId(recordId);
+    }
+
+    private void checkRecordInDB(Record record, String recordId) {
         if (record == null) {
-            log.error("Record {} not found in the database", recordId);
-            throw new EntityNotFoundException("Record " + recordId + " not found in database");
+            log.error("Record '{}' not found in the database", recordId);
+            throw new EntityNotFoundException("Record '" + recordId + "' not found in database");
         } else {
-            log.info("Record {} found in the database", recordId);
-            recordRepository.deleteByRecordId(recordId);
+            log.info("Record '{}' found in the database", recordId);
         }
     }
 }
