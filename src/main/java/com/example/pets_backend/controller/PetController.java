@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import static com.example.pets_backend.ConstantValues.DEFAULT_IMAGE_PET;
@@ -86,5 +87,11 @@ public class PetController {
             throw new IllegalArgumentException("Pet " + pet.getPetId() + " does not belongs to user " + mapIn.get("uid"));
         }
         petService.deleteByPetId(petId);
+    }
+
+    @PostMapping("/user/pet/all")
+    public List<LinkedHashMap<String, Object>> getPetList(@RequestBody Map<String, Object> mapIn) {
+        User user = userService.findByUid((String) mapIn.get("uid"));
+        return user.getPetAbList();
     }
 }
