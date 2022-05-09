@@ -54,6 +54,7 @@ public class Record {
     @Column
     private String petAvatar;
 
+    @JsonIgnore
     public LinkedHashMap<String, Object> getRecordAb() {
         LinkedHashMap<String, Object> map = new LinkedHashMap<>();
         map.put("recordId", recordId);
