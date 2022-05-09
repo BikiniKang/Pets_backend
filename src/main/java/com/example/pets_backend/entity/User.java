@@ -3,6 +3,7 @@ package com.example.pets_backend.entity;
 import com.aventrix.jnanoid.jnanoid.NanoIdUtils;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.*;
 import java.util.*;
@@ -15,6 +16,7 @@ import static com.example.pets_backend.util.GeneralHelperMethods.*;
 @AllArgsConstructor
 @RequiredArgsConstructor
 @NoArgsConstructor
+@Slf4j
 public class User {
 
     @Id
@@ -58,21 +60,13 @@ public class User {
 
     @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<Folder> folderList = new ArrayList<>();
+    private List<Record> recordList = new ArrayList<>();
 
 
     public List<LinkedHashMap<String, Object>> getPetAbList() {
         List<LinkedHashMap<String, Object>> list = new ArrayList<>();
         for (Pet pet:this.petList) {
             list.add(pet.getPetAb());
-        }
-        return list;
-    }
-
-    public List<LinkedHashMap<String, Object>> getFolderAbList() {
-        List<LinkedHashMap<String, Object>> list = new ArrayList<>();
-        for (Folder folder : this.folderList) {
-            list.add(folder.getFolderAb());
         }
         return list;
     }
@@ -93,6 +87,14 @@ public class User {
         return list;
     }
 
+    public List<LinkedHashMap<String, Object>> getRecordAbList() {
+        List<LinkedHashMap<String, Object>> list = new ArrayList<>();
+        for (Record record:this.recordList) {
+            list.add(record.getRecordAb());
+        }
+        return list;
+    }
+
     /**
      * Get the Pet object by petName
      * @param petName the name of the pet
@@ -102,6 +104,7 @@ public class User {
     public Pet getPetByPetName(String petName) {
         for (Pet pet:this.petList) {
             if (pet.getPetName().equals(petName)) {
+                log.info("Pet with name '{}' found in User '{}'", petName, this.uid);
                 return pet;
             }
         }
@@ -117,10 +120,11 @@ public class User {
     public Pet getPetByPetId(String petId) {
         for (Pet pet:this.petList) {
             if (pet.getPetId().equals(petId)) {
+                log.info("Pet '{}' found in User '{}'", pet.getPetId(), this.uid);
                 return pet;
             }
         }
-        return null;
+        throw new EntityNotFoundException("Pet '" + petId + "' not found in User '" + this.uid + "'");
     }
 
     /**
@@ -132,10 +136,11 @@ public class User {
     public Event getEventByEventId(String eventId) {
         for (Event event:this.eventList) {
             if (event.getEventId().equals(eventId)) {
+                log.info("Event '{}' found in User '{}'", eventId, this.uid);
                 return event;
             }
         }
-        return null;
+        throw new EntityNotFoundException("Event '" + eventId + "' not found in User '" + this.uid + "'");
     }
 
     /**
@@ -147,10 +152,27 @@ public class User {
     public Task getTaskByTaskId(String taskId) {
         for (Task task:this.taskList) {
             if (task.getTaskId().equals(taskId)) {
+                log.info("Task '{}' found in User '{}'", taskId, this.uid);
                 return task;
             }
         }
-        return null;
+        throw new EntityNotFoundException("Task '" + taskId + "' not found in User '" + this.uid + "'");
+    }
+
+    /**
+     * Get the Record object by recordId
+     * @param recordId the id of the record
+     * @return a Record object
+     */
+    @JsonIgnore
+    public Record getRecordByRecordId(String recordId) {
+        for (Record record:this.recordList) {
+            if (record.getRecordId().equals(recordId)) {
+                log.info("Record '{}' found in User '{}'", recordId, this.uid);
+                return record;
+            }
+        }
+        throw new EntityNotFoundException("Record '" + recordId + "' not found in User '" + this.uid + "'");
     }
 
     /**

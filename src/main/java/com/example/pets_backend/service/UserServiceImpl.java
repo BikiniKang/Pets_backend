@@ -1,7 +1,6 @@
 package com.example.pets_backend.service;
 
 import com.example.pets_backend.entity.Event;
-import com.example.pets_backend.entity.Folder;
 import com.example.pets_backend.entity.Task;
 import com.example.pets_backend.entity.User;
 import com.example.pets_backend.repository.UserRepository;
@@ -15,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,17 +38,13 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     public User save(User user) {
         String email = user.getEmail();
         if (userRepo.findByEmail(email) != null) {
-            log.error("Duplicate email " + email);
-            throw new DuplicateKeyException(("Duplicate email " + email));
+            log.error("Duplicate email '" + email + "'");
+            throw new DuplicateKeyException(("Duplicate email '" + email + "'"));
         } else {
-            log.info("Saved new user with email {} into database", email);
+            log.info("New user '{}' saved into database", user.getUid());
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        User user1 = userRepo.save(user);
-        user1.getFolderList().add(new Folder(user1, 0L, "Invoice"));
-        user1.getFolderList().add(new Folder(user1, 0L, "Medical Report"));
-        user1.getFolderList().add(new Folder(user1, 0L, "Vaccination History"));
-        return user1;
+        return userRepo.save(user);
     }
 
     @Override
@@ -60,6 +56,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
     @Override
     public List<User> findAll() {
+        log.info("Finding all users in database");
         return userRepo.findAll();
     }
 
@@ -68,6 +65,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         User user = userRepo.findByUid(uid);
         checkUserInDB(user, uid);
         userRepo.deleteById(uid);
+        log.info("User '{}' deleted from database", uid);
     }
 
     @Override
@@ -75,45 +73,36 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         User user = userRepo.findByEmail(email);
         checkUserInDB(user, email);
         userRepo.deleteByEmail(email);
+        log.info("User with email '{}' deleted from database", email);
     }
 
     @Override
     public User findByEmail(String email) {
-        return userRepo.findByEmail(email);
+        User user = userRepo.findByEmail(email);
+        checkUserInDB(user, email);
+        return user;
     }
 
     @Override
     public Event getEventByUidAndEventId(String uid, String eventId) {
         User user = userRepo.findByUid(uid);
         checkUserInDB(user, uid);
-        Event event = user.getEventByEventId(eventId);
-        if (event == null) {
-            log.error("Event {} doesn't exist or doesn't belong to User {}", eventId, uid);
-            throw new UsernameNotFoundException("Event "+eventId+" doesn't exist or doesn't belong to User "+uid);
-        } else {
-            return event;
-        }
+        return user.getEventByEventId(eventId);
     }
 
     @Override
     public Task getTaskByUidAndTaskId(String uid, String taskId) {
         User user = userRepo.findByUid(uid);
         checkUserInDB(user, uid);
-        Task task = user.getTaskByTaskId(taskId);
-        if (task == null) {
-            log.error("Task {} doesn't exist or doesn't belong to User {}", taskId, uid);
-            throw new UsernameNotFoundException("Task "+taskId+" doesn't exist or doesn't belong to User "+uid);
-        } else {
-            return task;
-        }
+        return user.getTaskByTaskId(taskId);
     }
 
     private void checkUserInDB(User user, String identifier) {
         if (user == null) {
-            log.error("User {} not found in database", identifier);
-            throw new UsernameNotFoundException("User " + identifier + " not found in database");
+            log.error("User '{}' not found in database", identifier);
+            throw new EntityNotFoundException("User '" + identifier + "' not found in database");
         } else {
-            log.info("User {} found in database", identifier);
+            log.info("User '{}' found in database", identifier);
         }
     }
 }
