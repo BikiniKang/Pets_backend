@@ -27,4 +27,5 @@ public class ConstantValues {
     public static final String DATE_PATTERN = "yyyy-MM-dd";
     public static final String DATETIME_PATTERN = "yyyy-MM-dd HH:mm";
     public static final List<String> RECORD_TYPES = Arrays.asList("Invoice", "Medication", "Vaccination");
+    public static final String DELETED_PET_ID = "deleted_pet_id";
 }

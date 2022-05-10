@@ -1,6 +1,9 @@
 package com.example.pets_backend.service;
 
+import com.example.pets_backend.entity.Event;
 import com.example.pets_backend.entity.Pet;
+import com.example.pets_backend.entity.Record;
+import com.example.pets_backend.entity.Task;
 import com.example.pets_backend.entity.User;
 import com.example.pets_backend.repository.PetRepository;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +13,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
+
+import static com.example.pets_backend.ConstantValues.*;
 
 @Service
 @RequiredArgsConstructor
@@ -43,6 +48,17 @@ public class PetServiceImpl implements PetService{
         Pet pet = petRepository.findByPetId(petId);
         checkPetInDB(pet, petId);
         petRepository.deleteById(petId);
+        for (Event event:pet.getUser().getEventList()) {
+            event.getPetIdList().remove(petId);
+        }
+        for (Task task:pet.getUser().getTaskList()) {
+            task.getPetIdList().remove(petId);
+        }
+        for (Record record:pet.getUser().getRecordList()) {
+            if (record.getPetId().equals(petId)) {
+                record.setPetId(DELETED_PET_ID);
+            }
+        }
         log.info("Pet '{}' deleted from database", petId);
     }
 

@@ -95,6 +95,15 @@ public class User {
         return list;
     }
 
+    @JsonIgnore
+    public List<String> getPetIdList() {
+        List<String> petIdList = new ArrayList<>();
+        for (Pet pet:petList) {
+            petIdList.add(pet.getPetId());
+        }
+        return petIdList;
+    }
+
     /**
      * Get the Pet object by petName
      * @param petName the name of the pet

@@ -31,6 +31,10 @@ public class TaskController {
         User user = userService.findByUid(uid);
         Task task = mapper.convertValue(mapIn.get("taskData"), Task.class);
 
+        List<String> petIdList = user.getPetIdList();
+        if (!petIdList.containsAll(task.getPetIdList())) {
+            throw new IllegalArgumentException("One or more petIds do not belong to User '" + uid + "'");
+        }
         task.setTaskId(NanoIdUtils.randomNanoId());
         task.setUser(user);
         taskService.save(task);

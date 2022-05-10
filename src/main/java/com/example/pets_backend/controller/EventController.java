@@ -31,6 +31,10 @@ public class EventController {
         User user = userService.findByUid(uid);
         Event event = mapper.convertValue(mapIn.get("eventData"), Event.class);
 
+        List<String> petIdList = user.getPetIdList();
+        if (!petIdList.containsAll(event.getPetIdList())) {
+            throw new IllegalArgumentException("One or more petIds do not belong to User '" + uid + "'");
+        }
         event.setEventId(NanoIdUtils.randomNanoId());
         event.setUser(user);
         eventService.save(event);
