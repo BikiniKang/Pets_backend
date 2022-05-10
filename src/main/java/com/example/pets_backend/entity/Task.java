@@ -41,10 +41,6 @@ public class Task {
 
     @NonNull
     @Column(length = 16)
-    private String startDate;       // YYYY-MM-DD HH:mm
-
-    @NonNull
-    @Column(length = 16)
     private String dueDate;         // YYYY-MM-DD HH:mm
 
     @NonNull

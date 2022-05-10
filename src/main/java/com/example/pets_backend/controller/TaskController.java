@@ -60,7 +60,6 @@ public class TaskController {
         task.setTaskTitle(taskNew.getTaskTitle());
         task.setPetIdList(taskNew.getPetIdList());
         task.setChecked(taskNew.isChecked());
-        task.setStartDate(taskNew.getStartDate());
         task.setDueDate(taskNew.getDueDate());
 
         Map<String, Object> mapOut = new HashMap<>();

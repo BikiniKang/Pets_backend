@@ -177,7 +177,7 @@ public class User {
 
     /**
      * Get all Event objects in a given date
-     * @param date 'yyyy-MM'
+     * @param date 'yyyy-MM-dd'
      * @return a list of Event objects
      */
     @JsonIgnore
@@ -196,16 +196,14 @@ public class User {
 
     /**
      * Get all Task objects in a given date
-     * @param date 'yyyy-MM'
+     * @param date 'yyyy-MM-dd'
      * @return a list of Task objects
      */
     @JsonIgnore
     public List<Task> getTasksByDate(String date) {
         List<Task> taskList = new ArrayList<>();
         for (Task task:this.taskList) {
-            String from = task.getStartDate();
-            String to = task.getDueDate();
-            if (from.compareTo(date) <= 0 && to.compareTo(date) >= 0) {
+            if (task.getDueDate().equals(date)) {
                 taskList.add(task);
             }
         }
@@ -243,13 +241,9 @@ public class User {
             }
         }
         for (Task task:taskList) {
-            String from = task.getStartDate();
-            String to = task.getDueDate();
-            // get the date span of this task within the given month
-            List<String> taskDateSpan = getDateSpan(from, to, month);
-            // add the task into each day it spans
-            for (String d:taskDateSpan) {
-                taskCal.get(d).add(task);
+            String dueDate = task.getDueDate();
+            if (taskCal.containsKey(dueDate)) {
+                taskCal.get(dueDate).add(task);
             }
         }
         // create a list of map, each map contains 'date', 'eventList', and 'taskList' for a specific day in the given month
