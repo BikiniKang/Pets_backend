@@ -12,27 +12,38 @@ import javax.mail.internet.MimeMessage;
 import java.io.File;
 import java.util.Properties;
 
-@Service
-public class SendMailService {
+import static com.example.pets_backend.ConstantValues.TEAM_EMAIL;
 
-    @Value("bikinikang@gmail.com")
-    private String receiver;
+@Service
+public class SendMailService implements Runnable{
+
+//    @Value("bikinikang@gmail.com")
+//    private String receiver;
 
     private JavaMailSenderImpl mailSender;
+
 
     @Autowired
     public void setMailSender(JavaMailSenderImpl mailSender) {
         this.mailSender = mailSender;
     }
 
-    public void sendMail() {
-        Properties mailProperties = mailSender.getJavaMailProperties();
+    public void sendMail(String typeStr, String receiver, String receiverName, String content) {
+//        Properties mailProperties = mailSender.getJavaMailProperties();
         SimpleMailMessage msg = new SimpleMailMessage();
-        msg.setFrom(mailSender.getUsername());
-        msg.setTo( receiver.split(","));
-        msg.setText("Have a nice day !");
-        msg.setSubject("Test Send Mail");
+        msg.setFrom(TEAM_EMAIL);
+        msg.setTo(receiver);
+        String mailText = "Hi " + receiverName + ", \n" +
+                "You have " + typeStr + " starts in 1 hour: \n" +
+                "        " + content;
+        msg.setText(mailText);
+        msg.setSubject("Pet Pocket Reminder");
         mailSender.send(msg);
+    }
+
+    @Override
+    public void run() {
+
     }
 
 //    public void sendMailAttach(String filePath) throws Exception {

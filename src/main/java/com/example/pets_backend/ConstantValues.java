@@ -28,4 +28,7 @@ public class ConstantValues {
     public static final String DATETIME_PATTERN = "yyyy-MM-dd HH:mm";
     public static final List<String> RECORD_TYPES = Arrays.asList("Invoice", "Medication", "Vaccination");
     public static final String DELETED_PET_ID = "deleted_pet_id";
+    public static final String TEAM_EMAIL = "pet_pocket@outlook.com";
+    public static final int REMIND_BEFORE = 60;
+    public static final String TIMEZONE = "Australia/Sydney";
 }
