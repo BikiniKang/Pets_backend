@@ -5,15 +5,20 @@ import com.example.pets_backend.entity.Event;
 import com.example.pets_backend.entity.User;
 import com.example.pets_backend.service.EventService;
 import com.example.pets_backend.service.ScheduleTaskService;
+import com.example.pets_backend.service.SendMailService;
 import com.example.pets_backend.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import freemarker.template.TemplateException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.MessagingException;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
@@ -30,42 +35,57 @@ public class EventController {
     private final UserService userService;
     private final EventService eventService;
     private final ScheduleTaskService scheduleTaskService;
-    private final JavaMailSenderImpl mailSender;
+//    private final JavaMailSenderImpl mailSender;
     private final ObjectMapper mapper = new ObjectMapper();
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATETIME_PATTERN);
+    private final SendMailService sendMailService;
 
-    private long getDelay(String startDateTime) {
-        LocalDateTime remindTime = LocalDateTime.parse(startDateTime, formatter).minus(REMIND_BEFORE, ChronoUnit.MINUTES);
-        // assume the user is in the same timezone of the server
-        return ChronoUnit.MILLIS.between(LocalDateTime.now(), remindTime);
-    }
+//    private long getDelay(String startDateTime) {
+//        LocalDateTime remindTime = LocalDateTime.parse(startDateTime, formatter).minus(REMIND_BEFORE, ChronoUnit.MINUTES);
+//        // assume the user is in the same timezone of the server
+//        return ChronoUnit.MILLIS.between(LocalDateTime.now(), remindTime);
+//    }
+//
+//    private void sendMail(String typeStr, String receiver, String receiverName, String content) {
+//        SimpleMailMessage msg = new SimpleMailMessage();
+//        msg.setFrom(TEAM_EMAIL);
+//        msg.setTo(receiver);
+//        String mailText = "Hi " + receiverName + ", \n" +
+//                "You have " + typeStr + " starts in 1 hour: \n" +
+//                "        " + content;
+//        msg.setText(mailText);
+//        msg.setSubject("Pet Pocket Reminder");
+//        mailSender.send(msg);
+//    }
+//
+//    @PostMapping("/user/send/email")
+//    public void sendEmail(@RequestBody Map<String, Object> mapIn) {
+//        String id = (String) mapIn.get("id");
+//        String email = (String) mapIn.get("email");
+//        String name = (String) mapIn.get("name");
+//        String eventTitle = (String) mapIn.get("eventTitle");
+//        int delay = (int) mapIn.get("delay");
+//        scheduleTaskService.addTaskToScheduler(id, new Runnable() {
+//            @Override
+//            public void run() {
+//                sendMail("an event", email, name, eventTitle);
+//                log.info("Email sent!");
+//            }
+//        }, LocalDateTime.now().plusSeconds(delay));
+//    }
 
-    private void sendMail(String typeStr, String receiver, String receiverName, String content) {
-        SimpleMailMessage msg = new SimpleMailMessage();
-        msg.setFrom(TEAM_EMAIL);
-        msg.setTo(receiver);
-        String mailText = "Hi " + receiverName + ", \n" +
-                "You have " + typeStr + " starts in 1 hour: \n" +
-                "        " + content;
-        msg.setText(mailText);
-        msg.setSubject("Pet Pocket Reminder");
-        mailSender.send(msg);
-    }
-
-    @PostMapping("/user/send/email")
-    public void sendEmail(@RequestBody Map<String, Object> mapIn) {
-        String id = (String) mapIn.get("id");
+    @PostMapping("/user/send/email/html")
+    public void sendHtmlEmail(@RequestBody Map<String, Object> mapIn) throws Exception {
         String email = (String) mapIn.get("email");
-        String name = (String) mapIn.get("name");
-        String eventTitle = (String) mapIn.get("eventTitle");
-        int delay = (int) mapIn.get("delay");
-        scheduleTaskService.addTaskToScheduler(id, new Runnable() {
-            @Override
-            public void run() {
-                sendMail("an event", email, name, eventTitle);
-                log.info("Email sent!");
-            }
-        }, LocalDateTime.now().plusSeconds(delay));
+        List<String> petNameList = (List<String>) mapIn.get("petNameList");
+        Map<String, Object> templateModel = new HashMap<>();
+        templateModel.put("firstName", mapIn.get("name"));
+        templateModel.put("petNames", String.join(", ", petNameList));
+        templateModel.put("eventTitle", mapIn.get("eventTitle"));
+        templateModel.put("eventStartTime", mapIn.get("eventStartTime"));
+        templateModel.put("eventLocation", mapIn.get("eventLocation"));
+        templateModel.put("petAvatar", "images/pet-avatar-example.png");
+        sendMailService.sentEmailForEvent(email, "Pet Pocket Reminder", templateModel);
     }
 
     @PostMapping("/user/event/add")

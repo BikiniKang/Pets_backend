@@ -1,49 +1,62 @@
 package com.example.pets_backend.service;
 
+import freemarker.template.Template;
+import freemarker.template.TemplateException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
+import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
 
+import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
-import java.io.File;
-import java.util.Properties;
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.Map;
 
 import static com.example.pets_backend.ConstantValues.TEAM_EMAIL;
 
 @Service
-public class SendMailService implements Runnable{
-
-//    @Value("bikinikang@gmail.com")
-//    private String receiver;
-
-    private JavaMailSenderImpl mailSender;
-
+@Slf4j
+public class SendMailService {
 
     @Autowired
-    public void setMailSender(JavaMailSenderImpl mailSender) {
-        this.mailSender = mailSender;
+    private JavaMailSenderImpl mailSender;
+
+    @Autowired
+    private FreeMarkerConfigurer freemarkerConfigurer;
+
+//    public void sendMail(String typeStr, String receiver, String receiverName, String content) {
+////        Properties mailProperties = mailSender.getJavaMailProperties();
+//        SimpleMailMessage msg = new SimpleMailMessage();
+//        msg.setFrom(TEAM_EMAIL);
+//        msg.setTo(receiver);
+//        String mailText = "Hi " + receiverName + ", \n\n" +
+//                "You have " + typeStr + " starts in 1 hour: \n" +
+//                "        " + content;
+//        msg.setText(mailText);
+//        msg.setSubject("Pet Pocket Reminder");
+//        mailSender.send(msg);
+//    }
+
+    private void sendHtmlEmail(String to, String subject, String htmlBody) throws Exception {
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+        helper.setFrom(TEAM_EMAIL);
+        helper.setTo(to);
+        helper.setSubject(subject);
+        helper.setText(htmlBody, true);
+//        helper.addInline("attachment.png", new ClassPathResource("images/app-logo"));
+        mailSender.send(message);
+        log.info("Sent email to '{}' at {}", to, LocalDateTime.now());
     }
 
-    public void sendMail(String typeStr, String receiver, String receiverName, String content) {
-//        Properties mailProperties = mailSender.getJavaMailProperties();
-        SimpleMailMessage msg = new SimpleMailMessage();
-        msg.setFrom(TEAM_EMAIL);
-        msg.setTo(receiver);
-        String mailText = "Hi " + receiverName + ", \n" +
-                "You have " + typeStr + " starts in 1 hour: \n" +
-                "        " + content;
-        msg.setText(mailText);
-        msg.setSubject("Pet Pocket Reminder");
-        mailSender.send(msg);
-    }
-
-    @Override
-    public void run() {
-
+    public void sentEmailForEvent(String to, String subject, Map<String, Object> templateModel) throws Exception {
+        Template freemarkerTemplate = freemarkerConfigurer.getConfiguration().getTemplate("template-freemarker.ftlh");
+        String htmlBody = FreeMarkerTemplateUtils.processTemplateIntoString(freemarkerTemplate, templateModel);
+        sendHtmlEmail(to, subject, htmlBody);
     }
 
 //    public void sendMailAttach(String filePath) throws Exception {
