@@ -8,17 +8,11 @@ import com.example.pets_backend.service.ScheduleTaskService;
 import com.example.pets_backend.service.SendMailService;
 import com.example.pets_backend.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import freemarker.template.TemplateException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import javax.mail.MessagingException;
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
@@ -85,7 +79,7 @@ public class EventController {
         templateModel.put("eventStartTime", mapIn.get("eventStartTime"));
         templateModel.put("eventLocation", mapIn.get("eventLocation"));
         templateModel.put("petAvatar", "images/pet-avatar-example.png");
-        sendMailService.sentEmailForEvent(email, "Pet Pocket Reminder", templateModel);
+        sendMailService.sendEmailForEvent(email, "Pet Pocket Reminder", templateModel);
     }
 
     @PostMapping("/user/event/add")
@@ -108,6 +102,32 @@ public class EventController {
 //                sendMail("an event", user.getEmail(), user.getFirstName(), event.getEventTitle());
 //            }
 //        }, LocalDateTime.parse(event.getStartDateTime(), formatter).minus(REMIND_BEFORE, ChronoUnit.MINUTES));
+
+        if (mapIn.containsKey("delay")) {  // if the api specifies the delay, send an email to the user in given minutes
+            int delay = (int) mapIn.get("delay");
+            log.info("Send email to '{}' with delay of {} minute", event.getUser().getEmail(), delay);
+            if (delay < 1) { // if no delay, send email immediately
+                try {
+                    sendMailService.sendEmailForEvent(event);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } else {
+//                LocalDateTime scheduleTime = LocalDateTime.parse(event.getStartDateTime(), formatter).minus(REMIND_BEFORE, ChronoUnit.MINUTES);
+                LocalDateTime scheduleTime = LocalDateTime.now().plus(delay, ChronoUnit.MINUTES);
+                scheduleTaskService.addTaskToScheduler(event.getEventId(), new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            sendMailService.sendEmailForEvent(event);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, scheduleTime);
+            }
+        }
+
         ///////////////////////test mail sending///////////////////////
 
         eventService.save(event);

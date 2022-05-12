@@ -1,7 +1,9 @@
 package com.example.pets_backend.service;
 
+import com.example.pets_backend.entity.Event;
+import com.example.pets_backend.entity.User;
 import freemarker.template.Template;
-import freemarker.template.TemplateException;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
@@ -10,23 +12,20 @@ import org.springframework.stereotype.Service;
 import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
 
-import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
-import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.Map;
 
 import static com.example.pets_backend.ConstantValues.TEAM_EMAIL;
 
 @Service
+@RequiredArgsConstructor
 @Slf4j
 public class SendMailService {
 
-    @Autowired
-    private JavaMailSenderImpl mailSender;
-
-    @Autowired
-    private FreeMarkerConfigurer freemarkerConfigurer;
+    private final JavaMailSenderImpl mailSender;
+    private final FreeMarkerConfigurer freemarkerConfigurer;
 
 //    public void sendMail(String typeStr, String receiver, String receiverName, String content) {
 ////        Properties mailProperties = mailSender.getJavaMailProperties();
@@ -53,7 +52,20 @@ public class SendMailService {
         log.info("Sent email to '{}' at {}", to, LocalDateTime.now());
     }
 
-    public void sentEmailForEvent(String to, String subject, Map<String, Object> templateModel) throws Exception {
+    public void sendEmailForEvent(Event event) throws Exception {
+        Map<String, Object> templateModel = new HashMap<>();
+        templateModel.put("firstName", event.getUser().getFirstName());
+        templateModel.put("petNames", String.join(", ", event.getPetNameList()));
+        templateModel.put("eventTitle", event.getEventTitle());
+        templateModel.put("eventStartTime", event.getStartDateTime());
+        templateModel.put("eventLocation", "1 Anthony Rolfe Ave, Gungahlin ACT 2912"); // TODO: Event needs to have a Location attribute!!
+        templateModel.put("petAvatar", "images/pet-avatar-example.png");       // TODO: use the pet's real avatar
+        Template freemarkerTemplate = freemarkerConfigurer.getConfiguration().getTemplate("template-freemarker.ftlh");
+        String htmlBody = FreeMarkerTemplateUtils.processTemplateIntoString(freemarkerTemplate, templateModel);
+        sendHtmlEmail(event.getUser().getEmail(), "Pet Pocket Reminder", htmlBody);
+    }
+
+    public void sendEmailForEvent(String to, String subject, Map<String, Object> templateModel) throws Exception {
         Template freemarkerTemplate = freemarkerConfigurer.getConfiguration().getTemplate("template-freemarker.ftlh");
         String htmlBody = FreeMarkerTemplateUtils.processTemplateIntoString(freemarkerTemplate, templateModel);
         sendHtmlEmail(to, subject, htmlBody);

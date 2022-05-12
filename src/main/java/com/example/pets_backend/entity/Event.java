@@ -73,4 +73,12 @@ public class Event {
         return map;
     }
 
+    @JsonIgnore
+    public List<String> getPetNameList() {
+        List<String> list = new ArrayList<>();
+        for (String petId:petIdList) {
+            list.add(this.user.getPetByPetId(petId).getPetName());
+        }
+        return list;
+    }
 }
