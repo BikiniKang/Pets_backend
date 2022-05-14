@@ -1,11 +1,9 @@
 package com.example.pets_backend.service;
 
 import com.example.pets_backend.entity.Event;
-import com.example.pets_backend.entity.User;
 import freemarker.template.Template;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -27,18 +25,6 @@ public class SendMailService {
     private final JavaMailSenderImpl mailSender;
     private final FreeMarkerConfigurer freemarkerConfigurer;
 
-//    public void sendMail(String typeStr, String receiver, String receiverName, String content) {
-////        Properties mailProperties = mailSender.getJavaMailProperties();
-//        SimpleMailMessage msg = new SimpleMailMessage();
-//        msg.setFrom(TEAM_EMAIL);
-//        msg.setTo(receiver);
-//        String mailText = "Hi " + receiverName + ", \n\n" +
-//                "You have " + typeStr + " starts in 1 hour: \n" +
-//                "        " + content;
-//        msg.setText(mailText);
-//        msg.setSubject("Pet Pocket Reminder");
-//        mailSender.send(msg);
-//    }
 
     private void sendHtmlEmail(String to, String subject, String htmlBody) throws Exception {
         MimeMessage message = mailSender.createMimeMessage();
@@ -47,7 +33,6 @@ public class SendMailService {
         helper.setTo(to);
         helper.setSubject(subject);
         helper.setText(htmlBody, true);
-//        helper.addInline("attachment.png", new ClassPathResource("images/app-logo"));
         mailSender.send(message);
         log.info("Sent email to '{}' at {}", to, LocalDateTime.now());
     }
@@ -65,6 +50,7 @@ public class SendMailService {
         sendHtmlEmail(event.getUser().getEmail(), "Pet Pocket Reminder", htmlBody);
     }
 
+    // Temporary method to support testing
     public void sendEmailForEvent(String to, String subject, Map<String, Object> templateModel) throws Exception {
         Template freemarkerTemplate = freemarkerConfigurer.getConfiguration().getTemplate("template-freemarker.ftlh");
         String htmlBody = FreeMarkerTemplateUtils.processTemplateIntoString(freemarkerTemplate, templateModel);

@@ -29,45 +29,11 @@ public class EventController {
     private final UserService userService;
     private final EventService eventService;
     private final ScheduleTaskService scheduleTaskService;
-//    private final JavaMailSenderImpl mailSender;
     private final ObjectMapper mapper = new ObjectMapper();
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATETIME_PATTERN);
     private final SendMailService sendMailService;
 
-//    private long getDelay(String startDateTime) {
-//        LocalDateTime remindTime = LocalDateTime.parse(startDateTime, formatter).minus(REMIND_BEFORE, ChronoUnit.MINUTES);
-//        // assume the user is in the same timezone of the server
-//        return ChronoUnit.MILLIS.between(LocalDateTime.now(), remindTime);
-//    }
-//
-//    private void sendMail(String typeStr, String receiver, String receiverName, String content) {
-//        SimpleMailMessage msg = new SimpleMailMessage();
-//        msg.setFrom(TEAM_EMAIL);
-//        msg.setTo(receiver);
-//        String mailText = "Hi " + receiverName + ", \n" +
-//                "You have " + typeStr + " starts in 1 hour: \n" +
-//                "        " + content;
-//        msg.setText(mailText);
-//        msg.setSubject("Pet Pocket Reminder");
-//        mailSender.send(msg);
-//    }
-//
-//    @PostMapping("/user/send/email")
-//    public void sendEmail(@RequestBody Map<String, Object> mapIn) {
-//        String id = (String) mapIn.get("id");
-//        String email = (String) mapIn.get("email");
-//        String name = (String) mapIn.get("name");
-//        String eventTitle = (String) mapIn.get("eventTitle");
-//        int delay = (int) mapIn.get("delay");
-//        scheduleTaskService.addTaskToScheduler(id, new Runnable() {
-//            @Override
-//            public void run() {
-//                sendMail("an event", email, name, eventTitle);
-//                log.info("Email sent!");
-//            }
-//        }, LocalDateTime.now().plusSeconds(delay));
-//    }
-
+    // Temporary API for testing
     @PostMapping("/user/send/email/html")
     public void sendHtmlEmail(@RequestBody Map<String, Object> mapIn) throws Exception {
         String email = (String) mapIn.get("email");
@@ -78,7 +44,7 @@ public class EventController {
         templateModel.put("eventTitle", mapIn.get("eventTitle"));
         templateModel.put("eventStartTime", mapIn.get("eventStartTime"));
         templateModel.put("eventLocation", mapIn.get("eventLocation"));
-        templateModel.put("petAvatar", "images/pet-avatar-example.png");
+        templateModel.put("petAvatar", mapIn.get("petAvatar"));
         sendMailService.sendEmailForEvent(email, "Pet Pocket Reminder", templateModel);
     }
 
@@ -94,43 +60,25 @@ public class EventController {
         }
         event.setEventId(NanoIdUtils.randomNanoId());
         event.setUser(user);
+        eventService.save(event);
 
-        ///////////////////////test mail sending///////////////////////
-//        scheduleTaskService.addTaskToScheduler(event.getEventId(), new Runnable() {
-//            @Override
-//            public void run() {
-//                sendMail("an event", user.getEmail(), user.getFirstName(), event.getEventTitle());
-//            }
-//        }, LocalDateTime.parse(event.getStartDateTime(), formatter).minus(REMIND_BEFORE, ChronoUnit.MINUTES));
-
-        if (mapIn.containsKey("delay")) {  // if the api specifies the delay, send an email to the user in given minutes
-            int delay = (int) mapIn.get("delay");
-            log.info("Send email to '{}' with delay of {} minute", event.getUser().getEmail(), delay);
-            if (delay < 1) { // if delay is less than 1 minute, send email immediately
-                try {
-                    sendMailService.sendEmailForEvent(event);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            } else {
-//                LocalDateTime scheduleTime = LocalDateTime.parse(event.getStartDateTime(), formatter).minus(REMIND_BEFORE, ChronoUnit.MINUTES);
-                LocalDateTime scheduleTime = LocalDateTime.now().plus(delay, ChronoUnit.MINUTES);
-                scheduleTaskService.addTaskToScheduler(event.getEventId(), new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            sendMailService.sendEmailForEvent(event);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
+        LocalDateTime remindTime = LocalDateTime.parse(event.getStartDateTime(), formatter).minus(REMIND_BEFORE, ChronoUnit.MINUTES);
+        if (remindTime.isAfter(LocalDateTime.now())) {
+            log.info("Adding notification at {} into scheduler", remindTime);
+            scheduleTaskService.addTaskToScheduler(event.getEventId(), new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        sendMailService.sendEmailForEvent(event);
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-                }, scheduleTime);
-            }
+                }
+            }, remindTime);
+        } else {
+            log.info("Notification at {} is expired, do not notify the user", remindTime);
         }
 
-        ///////////////////////test mail sending///////////////////////
-
-        eventService.save(event);
         Map<String, Object> mapOut = new HashMap<>();
         mapOut.put("event", event);
         return mapOut;
