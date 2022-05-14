@@ -97,7 +97,7 @@ public class EventController {
     @Transactional
     public Map<String, Object> editEvent(@RequestBody Map<String, Object> mapIn) {
         String uid = (String) mapIn.get("uid");
-        Event eventNew = mapper.convertValue(mapIn.get("newEventData"), Event.class);
+        Event eventNew = mapper.convertValue(mapIn.get("eventData"), Event.class);
         String eventId = eventNew.getEventId();
 
         Event event = userService.getEventByUidAndEventId(uid, eventId);

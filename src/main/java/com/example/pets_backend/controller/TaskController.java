@@ -57,7 +57,7 @@ public class TaskController {
     @Transactional
     public Map<String, Object> editTask(@RequestBody Map<String, Object> mapIn) {
         String uid = (String) mapIn.get("uid");
-        Task taskNew = mapper.convertValue(mapIn.get("newTaskData"), Task.class);
+        Task taskNew = mapper.convertValue(mapIn.get("taskData"), Task.class);
         String taskId = taskNew.getTaskId();
         Task task = userService.getTaskByUidAndTaskId(uid, taskId);
 
