@@ -228,7 +228,7 @@ table, td { color: #000000; } a { color: #0000ee; text-decoration: underline; }
   <tr>
     <td style="padding-right: 0px;padding-left: 0px;" align="center">
       
-      <img align="center" border="0" src="https://i.ibb.co/P6Cz8CS/image-6.png" alt="image-6" alt="Image" title="Image" style="outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;display: inline-block !important;border: none;height: auto;float: none;width: 100%;max-width: 217px;" width="217"/>
+      <img align="center" border="0" src="${petAvatar}" alt="image-6" alt="Image" title="Image" style="outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;display: inline-block !important;border: none;height: auto;float: none;width: 100%;max-width: 217px;" width="217"/>
       
     </td>
   </tr>

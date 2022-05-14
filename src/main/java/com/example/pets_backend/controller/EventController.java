@@ -106,7 +106,7 @@ public class EventController {
         if (mapIn.containsKey("delay")) {  // if the api specifies the delay, send an email to the user in given minutes
             int delay = (int) mapIn.get("delay");
             log.info("Send email to '{}' with delay of {} minute", event.getUser().getEmail(), delay);
-            if (delay < 1) { // if no delay, send email immediately
+            if (delay < 1) { // if delay is less than 1 minute, send email immediately
                 try {
                     sendMailService.sendEmailForEvent(event);
                 } catch (Exception e) {

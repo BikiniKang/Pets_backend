@@ -59,7 +59,7 @@ public class SendMailService {
         templateModel.put("eventTitle", event.getEventTitle());
         templateModel.put("eventStartTime", event.getStartDateTime());
         templateModel.put("eventLocation", "1 Anthony Rolfe Ave, Gungahlin ACT 2912"); // TODO: Event needs to have a Location attribute!!
-        templateModel.put("petAvatar", "images/pet-avatar-example.png");       // TODO: use the pet's real avatar
+        templateModel.put("petAvatar", "https://i.ibb.co/P6Cz8CS/image-6.png");       // TODO: use the pet's real avatar
         Template freemarkerTemplate = freemarkerConfigurer.getConfiguration().getTemplate("template-freemarker.ftlh");
         String htmlBody = FreeMarkerTemplateUtils.processTemplateIntoString(freemarkerTemplate, templateModel);
         sendHtmlEmail(event.getUser().getEmail(), "Pet Pocket Reminder", htmlBody);
