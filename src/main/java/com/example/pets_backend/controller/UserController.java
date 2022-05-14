@@ -1,5 +1,7 @@
 package com.example.pets_backend.controller;
 
+import com.example.pets_backend.entity.Event;
+import com.example.pets_backend.entity.Task;
 import com.example.pets_backend.entity.User;
 import com.example.pets_backend.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -7,6 +9,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -65,8 +70,13 @@ public class UserController {
         mapOut.put("lastName", user.getLastName());
         mapOut.put("image", user.getImage());
         mapOut.put("petList", user.getPetAbList());
-        mapOut.put("eventList", user.getEventAbList());
-        mapOut.put("taskList", user.getTaskAbList());
+        String today = LocalDate.now().toString();
+        List<Task> taskList = user.getTasksByDate(today);
+        List<Event> eventList = user.getEventsByDate(today);
+        Map<String, Object> calendar = new HashMap<>();
+        calendar.put("taskList", taskList);
+        calendar.put("eventList", eventList);
+        mapOut.put("calendar", calendar);
         return mapOut;
     }
 
