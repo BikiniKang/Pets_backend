@@ -272,4 +272,20 @@ public class User {
         }
         return list;
     }
+
+    /**
+     * Get all unchecked tasks due before today
+     * @param today 'yyyy-MM-dd'
+     * @return a list of overdue Task objects
+     */
+    @JsonIgnore
+    public List<Task> getOverdueTasks(String today) {
+        List<Task> list = new ArrayList<>();
+        for (Task task:taskList) {
+            if (task.getDueDate().compareTo(today) < 0 && !task.isChecked()) {
+                list.add(task);
+            }
+        }
+        return list;
+    }
 }
