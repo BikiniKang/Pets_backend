@@ -247,7 +247,7 @@ table, td { color: #000000; } a { color: #0000ee; text-decoration: underline; }
   <div style="line-height: 140%; text-align: left; word-wrap: break-word;">
     <p dir="ltr" style="font-size: 14px; line-height: 140%; text-align: left;">&nbsp;</p>
 <ul style="list-style-type: circle;">
-<li style="font-size: 14px; line-height: 19.6px; text-align: left;"><span style="font-size: 14px; line-height: 19.6px;"><span style="line-height: 19.6px; font-size: 14px;"><strong><span style="line-height: 19.6px; font-size: 14px;">Event description:</span>&nbsp;</strong> </span></span><strong style="font-family: Cabin, sans-serif;"><span style="color: #169179; line-height: 19.6px; font-size: 14px;"><span style="line-height: 19.6px; font-size: 14px;">${eventTitle}</span></span></strong></li>
+<li style="font-size: 14px; line-height: 19.6px; text-align: left;"><span style="font-size: 14px; line-height: 19.6px;"><span style="line-height: 19.6px; font-size: 14px;"><strong><span style="line-height: 19.6px; font-size: 14px;">Event title:</span>&nbsp;</strong>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</span></span><strong style="font-family: Cabin, sans-serif;"><span style="color: #169179; line-height: 19.6px; font-size: 14px;"><span style="line-height: 19.6px; font-size: 14px;">${eventTitle}</span></span></strong></li>
 </ul>
 <ul style="list-style-type: circle;">
 <li style="font-size: 14px; line-height: 19.6px; text-align: left;"><span style="font-size: 14px; line-height: 19.6px;"><strong><span style="line-height: 19.6px; font-size: 14px;">Event start time:</span>&nbsp;</strong>&nbsp; &nbsp;</span>${eventStartTime}</li>

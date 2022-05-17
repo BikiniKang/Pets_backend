@@ -50,6 +50,7 @@ public class EventController {
 
     @PostMapping("/user/event/add")
     public Map<String, Object> addEvent(@RequestBody Map<String, Object> mapIn) {
+        LocalDateTime timeNow = LocalDateTime.now();
         String uid = (String) mapIn.get("uid");
         User user = userService.findByUid(uid);
         Event event = mapper.convertValue(mapIn.get("eventData"), Event.class);
@@ -63,7 +64,9 @@ public class EventController {
         eventService.save(event);
 
         LocalDateTime remindTime = LocalDateTime.parse(event.getStartDateTime(), formatter).minus(REMIND_BEFORE, ChronoUnit.MINUTES);
-        if (remindTime.isAfter(LocalDateTime.now())) {
+        if (timeNow.isAfter(LocalDateTime.parse(event.getEndDateTime(), formatter))) {  // if the event end time is before now, do not notify
+            log.info("Event has ended, do not notify the user");
+        } else {
             log.info("Adding notification at {} into scheduler", remindTime);
             scheduleTaskService.addTaskToScheduler(event.getEventId(), new Runnable() {
                 @Override
@@ -74,9 +77,7 @@ public class EventController {
                         e.printStackTrace();
                     }
                 }
-            }, remindTime);
-        } else {
-            log.info("Notification at {} is expired, do not notify the user", remindTime);
+            }, remindTime); // remind time is 1 hour before the event begins. If remind time is before 'now', send the notification directly
         }
 
         Map<String, Object> mapOut = new HashMap<>();
