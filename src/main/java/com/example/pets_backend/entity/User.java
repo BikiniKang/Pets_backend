@@ -46,6 +46,12 @@ public class User {
 
     private boolean isPetSitter = false;
 
+    private boolean eventNtfSetting = true;
+
+    private boolean taskNtfSetting = true;
+
+    private String taskNtfTime  = "18:00";
+
     @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Pet> petList = new ArrayList<>();

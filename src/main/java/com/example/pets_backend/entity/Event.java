@@ -57,6 +57,8 @@ public class Event {
     @NonNull
     private String description = "";
 
+    private int notifyBefore = 24;
+
     public List<LinkedHashMap<String, Object>> getPetAbList() {
         List<LinkedHashMap<String, Object>> list = new ArrayList<>();
         for (String petId:this.petIdList) {
