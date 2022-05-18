@@ -26,12 +26,12 @@ public class SendMailService {
     private final FreeMarkerConfigurer freemarkerConfigurer;
 
 
-    private void sendHtmlEmail(String to, String subject, String htmlBody) throws Exception {
+    private void sendHtmlEmail(String to, String htmlBody) throws Exception {
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
         helper.setFrom(TEAM_EMAIL);
         helper.setTo(to);
-        helper.setSubject(subject);
+        helper.setSubject("Pet Pocket Reminder");
         helper.setText(htmlBody, true);
         mailSender.send(message);
         log.info("Sent email to '{}' at {}", to, LocalDateTime.now());
@@ -45,16 +45,22 @@ public class SendMailService {
         templateModel.put("eventStartTime", event.getStartDateTime());
         templateModel.put("eventLocation", "1 Anthony Rolfe Ave, Gungahlin ACT 2912"); // TODO: Event needs to have a Location attribute!!
         templateModel.put("petAvatar", "https://i.ibb.co/P6Cz8CS/image-6.png");       // TODO: use the pet's real avatar
-        Template freemarkerTemplate = freemarkerConfigurer.getConfiguration().getTemplate("template-freemarker.ftlh");
+        Template freemarkerTemplate = freemarkerConfigurer.getConfiguration().getTemplate("template-event.ftlh");
         String htmlBody = FreeMarkerTemplateUtils.processTemplateIntoString(freemarkerTemplate, templateModel);
-        sendHtmlEmail(event.getUser().getEmail(), "Pet Pocket Reminder", htmlBody);
+        sendHtmlEmail(event.getUser().getEmail(),  htmlBody);
     }
 
     // Temporary method to support testing
-    public void sendEmailForEvent(String to, String subject, Map<String, Object> templateModel) throws Exception {
-        Template freemarkerTemplate = freemarkerConfigurer.getConfiguration().getTemplate("template-freemarker.ftlh");
+    public void sendEmailForEvent(String to, Map<String, Object> templateModel) throws Exception {
+        Template freemarkerTemplate = freemarkerConfigurer.getConfiguration().getTemplate("template-event.ftlh");
         String htmlBody = FreeMarkerTemplateUtils.processTemplateIntoString(freemarkerTemplate, templateModel);
-        sendHtmlEmail(to, subject, htmlBody);
+        sendHtmlEmail(to, htmlBody);
+    }
+
+    public void sendEmailForTasks (String to, Map<String, String> templateModel) throws Exception {
+        Template freemarkerTemplate = freemarkerConfigurer.getConfiguration().getTemplate("template-tasks.ftlh");
+        String htmlBody = FreeMarkerTemplateUtils.processTemplateIntoString(freemarkerTemplate, templateModel);
+        sendHtmlEmail(to, htmlBody);
     }
 
 //    public void sendMailAttach(String filePath) throws Exception {

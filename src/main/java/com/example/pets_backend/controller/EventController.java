@@ -45,7 +45,7 @@ public class EventController {
         templateModel.put("eventStartTime", mapIn.get("eventStartTime"));
         templateModel.put("eventLocation", mapIn.get("eventLocation"));
         templateModel.put("petAvatar", mapIn.get("petAvatar"));
-        sendMailService.sendEmailForEvent(email, "Pet Pocket Reminder", templateModel);
+        sendMailService.sendEmailForEvent(email, templateModel);
     }
 
     @PostMapping("/user/event/add")
@@ -68,7 +68,7 @@ public class EventController {
             log.info("Event has ended, do not notify the user");
         } else {
             log.info("Adding notification at {} into scheduler", remindTime);
-            scheduleTaskService.addTaskToScheduler(event.getEventId(), new Runnable() {
+            scheduleTaskService.addJobToScheduler(event.getEventId(), new Runnable() {
                 @Override
                 public void run() {
                     try {

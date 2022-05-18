@@ -61,4 +61,13 @@ public class Task {
         map.put("taskTitle", this.getTaskTitle());
         return map;
     }
+
+    @JsonIgnore
+    public List<String> getPetNameList() {
+        List<String> petNameList = new ArrayList<>();
+        for (String petId:this.petIdList) {
+            petNameList.add(user.getPetByPetId(petId).getPetName());
+        }
+        return petNameList;
+    }
 }

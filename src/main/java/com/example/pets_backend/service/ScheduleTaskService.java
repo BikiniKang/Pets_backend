@@ -30,17 +30,16 @@ public class ScheduleTaskService {
     }
 
 
-    // Schedule Task to be executed every night at 00 or 12 am
-    public void addTaskToScheduler(String id, Runnable task, LocalDateTime triggerTime) {
-        ScheduledFuture<?> scheduledTask = scheduler.schedule(task, triggerTime.atZone(ZoneId.of(TIMEZONE)).toInstant());
-        jobsMap.put(id, scheduledTask);
+    public void addJobToScheduler(String id, Runnable task, LocalDateTime triggerTime) {
+        ScheduledFuture<?> scheduledJob = scheduler.schedule(task, triggerTime.atZone(ZoneId.of(TIMEZONE)).toInstant());
+        jobsMap.put(id, scheduledJob);
     }
 
     // Remove scheduled task
-    public void removeTaskFromScheduler(String id) {
-        ScheduledFuture<?> scheduledTask = jobsMap.get(id);
-        if(scheduledTask != null) {
-            scheduledTask.cancel(true);
+    public void removeJobFromScheduler(String id) {
+        ScheduledFuture<?> scheduledJob = jobsMap.get(id);
+        if(scheduledJob != null) {
+            scheduledJob.cancel(true);
             jobsMap.put(id, null);
         }
     }

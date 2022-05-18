@@ -1,21 +1,29 @@
 package com.example.pets_backend.entity;
 
 import com.aventrix.jnanoid.jnanoid.NanoIdUtils;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
+import com.sun.istack.NotNull;
+import lombok.*;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import java.time.LocalDateTime;
 
 @Entity
 @Data
 @AllArgsConstructor
 @RequiredArgsConstructor
 @NoArgsConstructor
-public class Notification {
+public class NtfEvent {
 
     @Id
     private String ntfId = NanoIdUtils.randomNanoId();
+
+    @NotNull
+    private String uid;
+
+    @NonNull
+    private String taskId;
+
+    @NotNull
+    private LocalDateTime ntfTime;
 }
