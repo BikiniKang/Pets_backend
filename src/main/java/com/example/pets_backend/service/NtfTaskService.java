@@ -22,10 +22,10 @@ import static com.example.pets_backend.ConstantValues.DATETIME_PATTERN;
 @RequiredArgsConstructor
 @Transactional
 @Slf4j
-public class NtfTaskServiceImpl implements NotificationService {
+public class NtfTaskService {
 
     private final NtfTaskRepository ntfRepo;
-    private final ScheduleTaskService scheduleTaskService;
+    private final SchedulerService schedulerService;
     private final SendMailService sendMailService;
 
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATETIME_PATTERN);
@@ -34,16 +34,18 @@ public class NtfTaskServiceImpl implements NotificationService {
     public void addTasksNtfForOneUser(User user, String dueDate) {
         List<Task> taskList = user.getTasksByDate(dueDate);
         String email = user.getEmail();
+        String firstName = user.getFirstName();
+        Map<String, String> templateModel = generateTemplateModel(firstName, taskList);
         LocalDateTime ntfTime = LocalDateTime.parse(dueDate + " " + user.getTaskNtfTime(), formatter);
-        Map<String, String> templateModel = generateTemplateModel(user.getFirstName(), taskList);
 
         NtfTask ntfTask = new NtfTask();
         ntfTask.setNtfDate(dueDate);
         ntfTask.setUid(user.getUid());
         ntfTask.setTaskIdList(taskList.stream().map(Task::getTaskId).toList());
         ntfRepo.save(ntfTask);
+        String ntfId = ntfTask.getNtfId();
 
-        scheduleTaskService.addJobToScheduler(ntfTask.getNtfId(), new Runnable() {
+        schedulerService.addJobToScheduler(ntfId, new Runnable() {
             @Override
             public void run() {
                 try {

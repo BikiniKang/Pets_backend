@@ -22,7 +22,7 @@ public class NtfEvent {
     private String uid;
 
     @NonNull
-    private String taskId;
+    private String eventId;
 
     @NotNull
     private LocalDateTime ntfTime;
