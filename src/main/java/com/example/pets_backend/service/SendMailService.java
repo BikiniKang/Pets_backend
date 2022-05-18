@@ -1,6 +1,5 @@
 package com.example.pets_backend.service;
 
-import com.example.pets_backend.entity.Event;
 import freemarker.template.Template;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,7 +11,6 @@ import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
 
 import javax.mail.internet.MimeMessage;
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.Map;
 
 import static com.example.pets_backend.ConstantValues.TEAM_EMAIL;
@@ -37,21 +35,7 @@ public class SendMailService {
         log.info("Sent email to '{}' at {}", to, LocalDateTime.now());
     }
 
-    public void sendEmailForEvent(Event event) throws Exception {
-        Map<String, Object> templateModel = new HashMap<>();
-        templateModel.put("firstName", event.getUser().getFirstName());
-        templateModel.put("petNames", String.join(", ", event.getPetNameList()));
-        templateModel.put("eventTitle", event.getEventTitle());
-        templateModel.put("eventStartTime", event.getStartDateTime());
-        templateModel.put("eventLocation", "1 Anthony Rolfe Ave, Gungahlin ACT 2912"); // TODO: Event needs to have a Location attribute!!
-        templateModel.put("petAvatar", "https://i.ibb.co/P6Cz8CS/image-6.png");       // TODO: use the pet's real avatar
-        Template freemarkerTemplate = freemarkerConfigurer.getConfiguration().getTemplate("template-event.ftlh");
-        String htmlBody = FreeMarkerTemplateUtils.processTemplateIntoString(freemarkerTemplate, templateModel);
-        sendHtmlEmail(event.getUser().getEmail(),  htmlBody);
-    }
-
-    // Temporary method to support testing
-    public void sendEmailForEvent(String to, Map<String, Object> templateModel) throws Exception {
+    public void sendEmailForEvent(String to, Map<String, String> templateModel) throws Exception {
         Template freemarkerTemplate = freemarkerConfigurer.getConfiguration().getTemplate("template-event.ftlh");
         String htmlBody = FreeMarkerTemplateUtils.processTemplateIntoString(freemarkerTemplate, templateModel);
         sendHtmlEmail(to, htmlBody);

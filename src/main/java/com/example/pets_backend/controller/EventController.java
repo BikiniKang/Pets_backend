@@ -4,7 +4,7 @@ import com.aventrix.jnanoid.jnanoid.NanoIdUtils;
 import com.example.pets_backend.entity.Event;
 import com.example.pets_backend.entity.User;
 import com.example.pets_backend.service.EventService;
-import com.example.pets_backend.service.ScheduleTaskService;
+import com.example.pets_backend.service.SchedulerService;
 import com.example.pets_backend.service.SendMailService;
 import com.example.pets_backend.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -28,7 +28,7 @@ public class EventController {
 
     private final UserService userService;
     private final EventService eventService;
-    private final ScheduleTaskService scheduleTaskService;
+    private final SchedulerService schedulerService;
     private final ObjectMapper mapper = new ObjectMapper();
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATETIME_PATTERN);
     private final SendMailService sendMailService;
@@ -38,13 +38,13 @@ public class EventController {
     public void sendHtmlEmail(@RequestBody Map<String, Object> mapIn) throws Exception {
         String email = (String) mapIn.get("email");
         List<String> petNameList = (List<String>) mapIn.get("petNameList");
-        Map<String, Object> templateModel = new HashMap<>();
-        templateModel.put("firstName", mapIn.get("name"));
+        Map<String, String> templateModel = new HashMap<>();
+        templateModel.put("firstName", (String) mapIn.get("name"));
         templateModel.put("petNames", String.join(", ", petNameList));
-        templateModel.put("eventTitle", mapIn.get("eventTitle"));
-        templateModel.put("eventStartTime", mapIn.get("eventStartTime"));
-        templateModel.put("eventLocation", mapIn.get("eventLocation"));
-        templateModel.put("petAvatar", mapIn.get("petAvatar"));
+        templateModel.put("eventTitle", (String) mapIn.get("eventTitle"));
+        templateModel.put("eventStartTime", (String) mapIn.get("eventStartTime"));
+        templateModel.put("eventLocation", (String) mapIn.get("eventLocation"));
+        templateModel.put("petAvatar", (String) mapIn.get("petAvatar"));
         sendMailService.sendEmailForEvent(email, templateModel);
     }
 
@@ -63,22 +63,22 @@ public class EventController {
         event.setUser(user);
         eventService.save(event);
 
-        LocalDateTime remindTime = LocalDateTime.parse(event.getStartDateTime(), formatter).minus(REMIND_BEFORE, ChronoUnit.MINUTES);
-        if (timeNow.isAfter(LocalDateTime.parse(event.getEndDateTime(), formatter))) {  // if the event end time is before now, do not notify
-            log.info("Event has ended, do not notify the user");
-        } else {
-            log.info("Adding notification at {} into scheduler", remindTime);
-            scheduleTaskService.addJobToScheduler(event.getEventId(), new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        sendMailService.sendEmailForEvent(event);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            }, remindTime); // remind time is 1 hour before the event begins. If remind time is before 'now', send the notification directly
-        }
+//        LocalDateTime remindTime = LocalDateTime.parse(event.getStartDateTime(), formatter).minus(REMIND_BEFORE, ChronoUnit.MINUTES);
+//        if (timeNow.isAfter(LocalDateTime.parse(event.getEndDateTime(), formatter))) {  // if the event end time is before now, do not notify
+//            log.info("Event has ended, do not notify the user");
+//        } else {
+//            log.info("Adding notification at {} into scheduler", remindTime);
+//            schedulerService.addJobToScheduler(event.getEventId(), new Runnable() {
+//                @Override
+//                public void run() {
+//                    try {
+//                        sendMailService.sendEmailForEvent(event);
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            }, remindTime); // remind time is 1 hour before the event begins. If remind time is before 'now', send the notification directly
+//        }
 
         Map<String, Object> mapOut = new HashMap<>();
         mapOut.put("event", event);
