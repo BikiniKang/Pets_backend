@@ -17,8 +17,8 @@ public class ConstantValues {
     public static final String TOKEN_REFRESH = "/token_refresh";
     public static final String REGISTER = "/register";
     public static final Algorithm ALGORITHM = Algorithm.HMAC256(SECRET.getBytes(StandardCharsets.UTF_8));
-    public static final String DEFAULT_IMAGE = "http://dummyimage.com/400x400";
-    public static final String DEFAULT_IMAGE_PET = "http://dummyimage.com/400x400";
+    public static final String DEFAULT_IMAGE = "https://i.ibb.co/b3w8hXF/Png-Item-223968.png";
+    public static final String DEFAULT_IMAGE_PET = "https://i.ibb.co/P6Cz8CS/image-6.png";
     public static final String DEFAULT_ADDRESS = "";
     public static final String DEFAULT_PHONE = "";
     public static final String DEFAULT_EVENT_TYPE = "";
