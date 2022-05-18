@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ScheduledFuture;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.TaskScheduler;
@@ -16,18 +17,12 @@ import static com.example.pets_backend.ConstantValues.TIMEZONE;
 /**
  * reference: https://allaboutspringframework.com/spring-schedule-tasks-or-cron-jobs-dynamically/#:~:text=Spring%20provides%20Task%20Scheduler%20API,different%20methods%20to%20schedule%20task.
  */
+@RequiredArgsConstructor
 @Service
-public class ScheduleTaskService {
+public class SchedulerService {
 
-    // Task Scheduler
-    TaskScheduler scheduler;
-
-    // A map for keeping scheduled tasks
-    Map<String, ScheduledFuture<?>> jobsMap = new HashMap<>();
-
-    public ScheduleTaskService(TaskScheduler scheduler) {
-        this.scheduler = scheduler;
-    }
+    private final TaskScheduler scheduler;
+    private final Map<String, ScheduledFuture<?>> jobsMap = new HashMap<>();
 
 
     public void addJobToScheduler(String id, Runnable task, LocalDateTime triggerTime) {
@@ -35,7 +30,6 @@ public class ScheduleTaskService {
         jobsMap.put(id, scheduledJob);
     }
 
-    // Remove scheduled task
     public void removeJobFromScheduler(String id) {
         ScheduledFuture<?> scheduledJob = jobsMap.get(id);
         if(scheduledJob != null) {
@@ -44,7 +38,6 @@ public class ScheduleTaskService {
         }
     }
 
-    // A context refresh event listener
     @EventListener({ ContextRefreshedEvent.class })
     public void contextRefreshedEvent() {
         // Get all tasks from DB and reschedule them in case of context restarted
