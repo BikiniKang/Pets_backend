@@ -7,6 +7,7 @@ import lombok.*;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,6 +27,12 @@ public class NtfTask {
     @NonNull
     @ElementCollection
     private List<String> taskIdList = new ArrayList<>();
+
+    @NotNull
+    private LocalDateTime ntfTime;
+
+    @NotNull
+    private String ntfType;
 
     @NonNull
     private String ntfDate;

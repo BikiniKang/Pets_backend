@@ -1,6 +1,7 @@
 package com.example.pets_backend.service;
 
 
+import com.aventrix.jnanoid.jnanoid.NanoIdUtils;
 import com.example.pets_backend.entity.NtfTask;
 import com.example.pets_backend.entity.Task;
 import com.example.pets_backend.entity.User;
@@ -40,11 +41,14 @@ public class NtfTaskService {
         Map<String, String> templateModel = generateTemplateModel(firstName, taskList);
         LocalDateTime sendTime = LocalDateTime.parse(today + " " + user.getTaskNtfTime(), formatter);
 
-        NtfTask ntfTask = new NtfTask();
-        ntfTask.setNtfDate(today);
-        ntfTask.setUid(user.getUid());
-        ntfTask.setTaskIdList(taskList.stream().map(Task::getTaskId).toList());
+        NtfTask ntfTask = new NtfTask(NanoIdUtils.randomNanoId(),
+                user.getUid(),
+                taskList.stream().map(Task::getTaskId).toList(),
+                sendTime,
+                "UPCOMING_TASKS",
+                today, false);
         ntfTask = ntfRepo.save(ntfTask);
+
         String ntfId = ntfTask.getNtfId();
         String templateName = isOverdue ? TEMPLATE_OVERDUE_TASKS:TEMPLATE_UPCOMING_TASKS;
         addEmailJobToScheduler(ntfId, email, templateModel, templateName, sendTime);
