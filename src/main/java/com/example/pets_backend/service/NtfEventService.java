@@ -33,9 +33,15 @@ public class NtfEventService {
     public void addNotification(Event event) {
         User user = event.getUser();
         // check whether the event notification setting is 'ON'
-        if (!user.isEventNtfOn()) return;
+        if (!user.isEventNtfOn() || event.getNotifyBefore() == 0) {
+            log.info("The Event Notification Setting is OFF, do not notify '{}'", user.getEmail());
+            return;
+        }
         // check whether the event is ended
-        if (LocalDateTime.parse(event.getEndDateTime(), formatter).isBefore(LocalDateTime.now())) return;
+        if (LocalDateTime.parse(event.getEndDateTime(), formatter).isBefore(LocalDateTime.now())) {
+            log.info("Event '{}' has ended, do not notify '{}'", event.getEventId(), user.getEmail());
+            return;
+        }
         String email = user.getEmail();
         String firstName = user.getFirstName();
         Map<String, String> templateModel = generateTemplateModel(firstName, event);
@@ -57,6 +63,8 @@ public class NtfEventService {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+                ntfRepo.deleteByNtfId(ntfId);
+                log.info("Job finished, delete Notification entry '{}'", ntfId);
             }
         }, remindTime);
         log.info("Added notification '{}' into scheduler", ntfId);

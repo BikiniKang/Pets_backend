@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.concurrent.ScheduledFuture;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.TaskScheduler;
@@ -19,6 +20,7 @@ import static com.example.pets_backend.ConstantValues.TIMEZONE;
  */
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class SchedulerService {
 
     private final TaskScheduler scheduler;
@@ -34,7 +36,8 @@ public class SchedulerService {
         ScheduledFuture<?> scheduledJob = jobsMap.get(id);
         if(scheduledJob != null) {
             scheduledJob.cancel(true);
-            jobsMap.put(id, null);
+            jobsMap.remove(id);
+            log.info("Job '{}' cancelled", id);
         }
     }
 

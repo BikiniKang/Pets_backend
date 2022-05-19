@@ -10,7 +10,6 @@ import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
 
 import javax.mail.internet.MimeMessage;
-import java.time.LocalDateTime;
 import java.util.Map;
 
 import static com.example.pets_backend.ConstantValues.TEAM_EMAIL;
@@ -32,16 +31,18 @@ public class SendMailService {
         helper.setSubject("Pet Pocket Reminder");
         helper.setText(htmlBody, true);
         mailSender.send(message);
-        log.info("Sent email to '{}' at {}", to, LocalDateTime.now());
+        log.info("Email has been sent to '{}'", to);
     }
 
     public void sendEmailForEvent(String to, Map<String, String> templateModel) throws Exception {
+        log.info("Sending email to '{}'", to);
         Template freemarkerTemplate = freemarkerConfigurer.getConfiguration().getTemplate("template-event.ftlh");
         String htmlBody = FreeMarkerTemplateUtils.processTemplateIntoString(freemarkerTemplate, templateModel);
         sendHtmlEmail(to, htmlBody);
     }
 
     public void sendEmailForTasks (String to, Map<String, String> templateModel) throws Exception {
+        log.info("Sending email to '{}'", to);
         Template freemarkerTemplate = freemarkerConfigurer.getConfiguration().getTemplate("template-tasks.ftlh");
         String htmlBody = FreeMarkerTemplateUtils.processTemplateIntoString(freemarkerTemplate, templateModel);
         sendHtmlEmail(to, htmlBody);
