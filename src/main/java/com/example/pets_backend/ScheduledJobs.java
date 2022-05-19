@@ -21,7 +21,17 @@ public class ScheduledJobs {
         List<User> users = userRepository.findAll();
         for (User user:users) {
             if (user.isTaskNtfOn()) {
-                ntfTaskService.addTasksNtfForOneUser(user);
+                ntfTaskService.addTasksNotification(user, false);
+            }
+        }
+    }
+
+    @Scheduled(cron = "0 0 9 * * *")    // repeat 9am everyday
+    public void ntfOverdueTasks() {
+        List<User> users = userRepository.findAll();
+        for (User user:users) {
+            if (user.isTaskNtfOn()) {
+                ntfTaskService.addTasksNotification(user, true);
             }
         }
     }
