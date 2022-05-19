@@ -22,6 +22,7 @@ public class EventServiceImpl implements EventService{
     public Event save(Event event) {
         event = eventRepository.save(event);
         log.info("New event '{}' saved into database", event.getEventId());
+        // add a notification
         ntfService.addNotification(event);
         return event;
     }
@@ -38,6 +39,7 @@ public class EventServiceImpl implements EventService{
         Event event = eventRepository.findByEventId(eventId);
         checkEventInDB(event, eventId);
         eventRepository.deleteByEventId(eventId);
+        // delete the notification
         ntfService.deleteNotification(eventId);
     }
 
@@ -51,6 +53,7 @@ public class EventServiceImpl implements EventService{
         event.setDescription(eventNew.getDescription());
         event.setStartDateTime(eventNew.getStartDateTime());
         event.setEndDateTime(eventNew.getEndDateTime());
+        // delete old notification for the event, add a new notification
         ntfService.deleteNotification(eventId);
         ntfService.addNotification(event);
         return event;
