@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
@@ -31,18 +32,19 @@ public class NtfTaskService {
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATETIME_PATTERN);
 
 
-    public void addTasksNtfForOneUser(User user, String dueDate) {
-        List<Task> taskList = user.getTasksByDate(dueDate);
+    public void addTasksNtfForOneUser(User user) {
+        String today = LocalDate.now().toString();
+        List<Task> taskList = user.getTasksByDate(today);
         String email = user.getEmail();
         String firstName = user.getFirstName();
         Map<String, String> templateModel = generateTemplateModel(firstName, taskList);
-        LocalDateTime ntfTime = LocalDateTime.parse(dueDate + " " + user.getTaskNtfTime(), formatter);
+        LocalDateTime ntfTime = LocalDateTime.parse(today + " " + user.getTaskNtfTime(), formatter);
 
         NtfTask ntfTask = new NtfTask();
-        ntfTask.setNtfDate(dueDate);
+        ntfTask.setNtfDate(today);
         ntfTask.setUid(user.getUid());
         ntfTask.setTaskIdList(taskList.stream().map(Task::getTaskId).toList());
-        ntfRepo.save(ntfTask);
+        ntfTask = ntfRepo.save(ntfTask);
         String ntfId = ntfTask.getNtfId();
 
         schedulerService.addJobToScheduler(ntfId, new Runnable() {
@@ -55,6 +57,7 @@ public class NtfTaskService {
                 }
             }
         }, ntfTime);
+
     }
 
     private Map<String, String> generateTemplateModel(String firstName, List<Task> taskList) {
