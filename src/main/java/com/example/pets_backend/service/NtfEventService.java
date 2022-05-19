@@ -32,7 +32,10 @@ public class NtfEventService {
 
     public void addNotification(Event event) {
         User user = event.getUser();
-        if (!user.isEventNtfOn()) return;   // check whether the event notification setting is 'ON'
+        // check whether the event notification setting is 'ON'
+        if (!user.isEventNtfOn()) return;
+        // check whether the event is ended
+        if (LocalDateTime.parse(event.getEndDateTime(), formatter).isBefore(LocalDateTime.now())) return;
         String email = user.getEmail();
         String firstName = user.getFirstName();
         Map<String, String> templateModel = generateTemplateModel(firstName, event);
