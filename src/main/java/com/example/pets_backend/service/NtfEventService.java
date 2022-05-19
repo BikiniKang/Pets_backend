@@ -1,5 +1,6 @@
 package com.example.pets_backend.service;
 
+import com.aventrix.jnanoid.jnanoid.NanoIdUtils;
 import com.example.pets_backend.entity.Event;
 import com.example.pets_backend.entity.NtfEvent;
 import com.example.pets_backend.entity.User;
@@ -48,11 +49,13 @@ public class NtfEventService {
         LocalDateTime remindTime = LocalDateTime.parse(event.getStartDateTime(), formatter)
                 .minus(event.getNotifyBefore(), ChronoUnit.HOURS);
 
-        NtfEvent ntfEvent = new NtfEvent();
-        ntfEvent.setUid(user.getUid());
-        ntfEvent.setEventId(event.getEventId());
-        ntfEvent.setNtfTime(remindTime);
+        NtfEvent ntfEvent = new NtfEvent(NanoIdUtils.randomNanoId(),
+                user.getUid(),
+                event.getEventId(),
+                remindTime,
+                false);
         ntfEvent = ntfRepo.save(ntfEvent);
+
         String ntfId = ntfEvent.getNtfId();
         String templateName = TEMPLATE_EVENT;
         addEmailJobToScheduler(ntfId, email, templateModel, templateName, remindTime);
