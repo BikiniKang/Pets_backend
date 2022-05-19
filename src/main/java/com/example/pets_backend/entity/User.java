@@ -46,9 +46,9 @@ public class User {
 
     private boolean isPetSitter = false;
 
-    private boolean eventNtfSetting = true;
+    private boolean eventNtfOn = true;
 
-    private boolean taskNtfSetting = true;
+    private boolean taskNtfOn = true;
 
     private String taskNtfTime  = "18:00";
 
