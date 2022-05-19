@@ -38,7 +38,7 @@ public class NtfTaskService {
         String email = user.getEmail();
         String firstName = user.getFirstName();
         Map<String, String> templateModel = generateTemplateModel(firstName, taskList);
-        LocalDateTime ntfTime = LocalDateTime.parse(today + " " + user.getTaskNtfTime(), formatter);
+        LocalDateTime sendTime = LocalDateTime.parse(today + " " + user.getTaskNtfTime(), formatter);
 
         NtfTask ntfTask = new NtfTask();
         ntfTask.setNtfDate(today);
@@ -47,7 +47,11 @@ public class NtfTaskService {
         ntfTask = ntfRepo.save(ntfTask);
         String ntfId = ntfTask.getNtfId();
         String templateName = isOverdue ? TEMPLATE_OVERDUE_TASKS:TEMPLATE_UPCOMING_TASKS;
+        addEmailJobToScheduler(ntfId, email, templateModel, templateName, sendTime);
+        log.info("Added notification '{}' into scheduler", ntfId);
+    }
 
+    private void addEmailJobToScheduler(String ntfId, String email, Map<String, String> templateModel, String templateName, LocalDateTime sendTime) {
         schedulerService.addJobToScheduler(ntfId, new Runnable() {
             @Override
             public void run() {
@@ -59,9 +63,9 @@ public class NtfTaskService {
                 ntfRepo.deleteByNtfId(ntfId);
                 log.info("Job finished, delete Notification entry '{}'", ntfId);
             }
-        }, ntfTime);
-
+        }, sendTime);
     }
+
 
     private Map<String, String> generateTemplateModel(String firstName, List<Task> taskList) {
         Map<String, String> templateModel = new HashMap<>();

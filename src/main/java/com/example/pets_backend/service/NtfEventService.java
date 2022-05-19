@@ -54,19 +54,8 @@ public class NtfEventService {
         ntfEvent.setNtfTime(remindTime);
         ntfEvent = ntfRepo.save(ntfEvent);
         String ntfId = ntfEvent.getNtfId();
-
-        schedulerService.addJobToScheduler(ntfId, new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    sendMailService.sendEmail(email, templateModel, TEMPLATE_EVENT);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                ntfRepo.deleteByNtfId(ntfId);
-                log.info("Job finished, delete Notification entry '{}'", ntfId);
-            }
-        }, remindTime);
+        String templateName = TEMPLATE_EVENT;
+        addEmailJobToScheduler(ntfId, email, templateModel, templateName, remindTime);
         log.info("Added notification '{}' into scheduler", ntfId);
     }
 
@@ -80,6 +69,21 @@ public class NtfEventService {
         schedulerService.removeJobFromScheduler(ntfId);
         ntfRepo.deleteByNtfId(ntfId);
         log.info("Deleted notification '{}' from scheduler", ntfId);
+    }
+
+    private void addEmailJobToScheduler(String ntfId, String email, Map<String, String> templateModel, String templateName, LocalDateTime sendTime) {
+        schedulerService.addJobToScheduler(ntfId, new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    sendMailService.sendEmail(email, templateModel, templateName);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                ntfRepo.deleteByNtfId(ntfId);
+                log.info("Job finished, delete Notification entry '{}'", ntfId);
+            }
+        }, sendTime);
     }
 
     private Map<String, String> generateTemplateModel(String firstName, Event event) {
