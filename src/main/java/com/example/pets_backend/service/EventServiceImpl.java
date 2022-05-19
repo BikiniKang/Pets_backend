@@ -16,11 +16,14 @@ import javax.persistence.EntityNotFoundException;
 public class EventServiceImpl implements EventService{
 
     private final EventRepository eventRepository;
+    private final NtfEventService ntfService;
 
     @Override
     public Event save(Event event) {
+        event = eventRepository.save(event);
         log.info("New event '{}' saved into database", event.getEventId());
-        return eventRepository.save(event);
+        ntfService.addNotification(event);
+        return event;
     }
 
     @Override
@@ -35,6 +38,22 @@ public class EventServiceImpl implements EventService{
         Event event = eventRepository.findByEventId(eventId);
         checkEventInDB(event, eventId);
         eventRepository.deleteByEventId(eventId);
+        ntfService.deleteNotification(eventId);
+    }
+
+    @Override
+    public Event editEvent(String eventId, Event eventNew) {
+        Event event = eventRepository.findByEventId(eventId);
+        // update all attributes except eventId, user
+        event.setEventType(eventNew.getEventType());
+        event.setEventTitle(eventNew.getEventTitle());
+        event.setPetIdList(eventNew.getPetIdList());
+        event.setDescription(eventNew.getDescription());
+        event.setStartDateTime(eventNew.getStartDateTime());
+        event.setEndDateTime(eventNew.getEndDateTime());
+        ntfService.deleteNotification(eventId);
+        ntfService.addNotification(event);
+        return event;
     }
 
     private void checkEventInDB(Event event, String eventId) {

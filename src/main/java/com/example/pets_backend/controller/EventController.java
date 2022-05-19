@@ -3,19 +3,14 @@ package com.example.pets_backend.controller;
 import com.aventrix.jnanoid.jnanoid.NanoIdUtils;
 import com.example.pets_backend.entity.Event;
 import com.example.pets_backend.entity.User;
-import com.example.pets_backend.service.EventService;
-import com.example.pets_backend.service.SchedulerService;
-import com.example.pets_backend.service.SendMailService;
-import com.example.pets_backend.service.UserService;
+import com.example.pets_backend.service.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 import static com.example.pets_backend.ConstantValues.*;
@@ -28,10 +23,12 @@ public class EventController {
 
     private final UserService userService;
     private final EventService eventService;
-    private final SchedulerService schedulerService;
+    private final NtfEventService ntfService;
+
     private final ObjectMapper mapper = new ObjectMapper();
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATETIME_PATTERN);
     private final SendMailService sendMailService;
+
 
     // Temporary API for testing
     @PostMapping("/user/send/email/html")
@@ -50,7 +47,6 @@ public class EventController {
 
     @PostMapping("/user/event/add")
     public Map<String, Object> addEvent(@RequestBody Map<String, Object> mapIn) {
-        LocalDateTime timeNow = LocalDateTime.now();
         String uid = (String) mapIn.get("uid");
         User user = userService.findByUid(uid);
         Event event = mapper.convertValue(mapIn.get("eventData"), Event.class);
@@ -61,24 +57,7 @@ public class EventController {
         }
         event.setEventId(NanoIdUtils.randomNanoId());
         event.setUser(user);
-        eventService.save(event);
-
-//        LocalDateTime remindTime = LocalDateTime.parse(event.getStartDateTime(), formatter).minus(REMIND_BEFORE, ChronoUnit.MINUTES);
-//        if (timeNow.isAfter(LocalDateTime.parse(event.getEndDateTime(), formatter))) {  // if the event end time is before now, do not notify
-//            log.info("Event has ended, do not notify the user");
-//        } else {
-//            log.info("Adding notification at {} into scheduler", remindTime);
-//            schedulerService.addJobToScheduler(event.getEventId(), new Runnable() {
-//                @Override
-//                public void run() {
-//                    try {
-//                        sendMailService.sendEmailForEvent(event);
-//                    } catch (Exception e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//            }, remindTime); // remind time is 1 hour before the event begins. If remind time is before 'now', send the notification directly
-//        }
+        event = eventService.save(event);
 
         Map<String, Object> mapOut = new HashMap<>();
         mapOut.put("event", event);
@@ -100,16 +79,9 @@ public class EventController {
         String uid = (String) mapIn.get("uid");
         Event eventNew = mapper.convertValue(mapIn.get("eventData"), Event.class);
         String eventId = eventNew.getEventId();
-
-        Event event = userService.getEventByUidAndEventId(uid, eventId);
-        // update all attributes except eventId, user
-        event.setEventType(eventNew.getEventType());
-        event.setEventTitle(eventNew.getEventTitle());
-        event.setPetIdList(eventNew.getPetIdList());
-        event.setDescription(eventNew.getDescription());
-        event.setStartDateTime(eventNew.getStartDateTime());
-        event.setEndDateTime(eventNew.getEndDateTime());
-
+        // check whether the event exists and belongs to the user
+        userService.getEventByUidAndEventId(uid, eventId);
+        Event event = eventService.editEvent(eventId, eventNew);
         Map<String, Object> mapOut = new HashMap<>();
         mapOut.put("event", event);
         return mapOut;

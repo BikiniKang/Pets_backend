@@ -10,8 +10,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.example.pets_backend.ConstantValues.DATETIME_PATTERN;
 
 @Service
 @RequiredArgsConstructor
@@ -23,17 +27,23 @@ public class NtfEventService {
     private final SchedulerService schedulerService;
     private final SendMailService sendMailService;
 
-    public void addEventNotification (Event event, LocalDateTime remindTime) {
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATETIME_PATTERN);
+
+
+    public void addNotification(Event event) {
         User user = event.getUser();
+        if (!user.isEventNtfOn()) return;   // check whether the event notification setting is 'ON'
         String email = user.getEmail();
         String firstName = user.getFirstName();
         Map<String, String> templateModel = generateTemplateModel(firstName, event);
+        LocalDateTime remindTime = LocalDateTime.parse(event.getStartDateTime(), formatter)
+                .minus(event.getNotifyBefore(), ChronoUnit.HOURS);
 
         NtfEvent ntfEvent = new NtfEvent();
         ntfEvent.setUid(user.getUid());
         ntfEvent.setEventId(event.getEventId());
         ntfEvent.setNtfTime(remindTime);
-        ntfRepo.save(ntfEvent);
+        ntfEvent = ntfRepo.save(ntfEvent);
         String ntfId = ntfEvent.getNtfId();
 
         schedulerService.addJobToScheduler(ntfId, new Runnable() {
@@ -46,6 +56,19 @@ public class NtfEventService {
                 }
             }
         }, remindTime);
+        log.info("Added notification '{}' into scheduler", ntfId);
+    }
+
+    public void deleteNotification (String eventId) {
+        NtfEvent ntfEvent = ntfRepo.findByEventId(eventId);
+        if (ntfEvent == null) {
+            log.error("Notification for event '{}' not found", eventId);
+            return;
+        }
+        String ntfId = ntfEvent.getNtfId();
+        schedulerService.removeJobFromScheduler(ntfId);
+        ntfRepo.deleteByNtfId(ntfId);
+        log.info("Deleted notification '{}' from scheduler", ntfId);
     }
 
     private Map<String, String> generateTemplateModel(String firstName, Event event) {

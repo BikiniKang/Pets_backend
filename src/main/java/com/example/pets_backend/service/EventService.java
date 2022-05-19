@@ -9,4 +9,6 @@ public interface EventService {
     Event findByEventId(String eventId);
 
     void deleteByEventId(String eventId);
+
+    Event editEvent(String eventId, Event eventNew);
 }
