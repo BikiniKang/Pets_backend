@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 import static com.example.pets_backend.ConstantValues.*;
@@ -22,10 +21,8 @@ public class EventController {
 
     private final UserService userService;
     private final EventService eventService;
-    private final NtfEventService ntfService;
 
     private final ObjectMapper mapper = new ObjectMapper();
-    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATETIME_PATTERN);
     private final SendMailService sendMailService;
 
 
@@ -41,7 +38,7 @@ public class EventController {
         templateModel.put("eventStartTime", (String) mapIn.get("eventStartTime"));
         templateModel.put("eventLocation", (String) mapIn.get("eventLocation"));
         templateModel.put("petAvatar", (String) mapIn.get("petAvatar"));
-        sendMailService.sendEmailForEvent(email, templateModel);
+        sendMailService.sendEmail(email, templateModel, TEMPLATE_EVENT);
     }
 
     @PostMapping("/user/event/add")

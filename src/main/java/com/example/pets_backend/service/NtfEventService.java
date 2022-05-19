@@ -15,7 +15,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.example.pets_backend.ConstantValues.DATETIME_PATTERN;
+import static com.example.pets_backend.ConstantValues.*;
 
 @Service
 @RequiredArgsConstructor
@@ -59,7 +59,7 @@ public class NtfEventService {
             @Override
             public void run() {
                 try {
-                    sendMailService.sendEmailForEvent(email, templateModel);
+                    sendMailService.sendEmail(email, templateModel, TEMPLATE_EVENT);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

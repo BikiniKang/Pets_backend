@@ -31,4 +31,7 @@ public class ConstantValues {
     public static final String TEAM_EMAIL = "pet_pocket@outlook.com";
     public static final int REMIND_BEFORE = 60;
     public static final String TIMEZONE = "Australia/Sydney";
+    public static final String TEMPLATE_EVENT = "template-event.ftlh";
+    public static final String TEMPLATE_UPCOMING_TASKS = "template-tasks.ftlh";
+    public static final String TEMPLATE_OVERDUE_TASKS = "template-tasks-overdue.ftlh";
 }

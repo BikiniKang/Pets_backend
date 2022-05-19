@@ -22,6 +22,12 @@ public class SendMailService {
     private final JavaMailSenderImpl mailSender;
     private final FreeMarkerConfigurer freemarkerConfigurer;
 
+    public void sendEmail(String to, Map<String, String> templateModel, String templateName) throws Exception {
+        log.info("Sending email to '{}'", to);
+        Template freemarkerTemplate = freemarkerConfigurer.getConfiguration().getTemplate(templateName);
+        String htmlBody = FreeMarkerTemplateUtils.processTemplateIntoString(freemarkerTemplate, templateModel);
+        sendHtmlEmail(to, htmlBody);
+    }
 
     private void sendHtmlEmail(String to, String htmlBody) throws Exception {
         MimeMessage message = mailSender.createMimeMessage();
@@ -34,32 +40,4 @@ public class SendMailService {
         log.info("Email has been sent to '{}'", to);
     }
 
-    public void sendEmailForEvent(String to, Map<String, String> templateModel) throws Exception {
-        log.info("Sending email to '{}'", to);
-        Template freemarkerTemplate = freemarkerConfigurer.getConfiguration().getTemplate("template-event.ftlh");
-        String htmlBody = FreeMarkerTemplateUtils.processTemplateIntoString(freemarkerTemplate, templateModel);
-        sendHtmlEmail(to, htmlBody);
-    }
-
-    public void sendEmailForTasks (String to, Map<String, String> templateModel) throws Exception {
-        log.info("Sending email to '{}'", to);
-        Template freemarkerTemplate = freemarkerConfigurer.getConfiguration().getTemplate("template-tasks.ftlh");
-        String htmlBody = FreeMarkerTemplateUtils.processTemplateIntoString(freemarkerTemplate, templateModel);
-        sendHtmlEmail(to, htmlBody);
-    }
-
-//    public void sendMailAttach(String filePath) throws Exception {
-//        Properties mailProperties = mailSender.getJavaMailProperties();
-//        MimeMessage message = mailSender.createMimeMessage();
-//        MimeMessageHelper helper = new MimeMessageHelper( message, true );
-//        helper.setFrom(mailSender.getUsername());
-//        helper.setTo( receiver.split("," ));
-//        helper.setText("Have a nice day !", true);
-//        helper.setSubject("Test Send Mail with File");
-//
-//        FileSystemResource file = new FileSystemResource(new File(filePath));
-//        helper.addAttachment("required_data_20210824.csv", file);
-//
-//        mailSender.send(message);
-//    }
 }

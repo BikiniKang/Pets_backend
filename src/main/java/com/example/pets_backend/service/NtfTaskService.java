@@ -17,7 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.example.pets_backend.ConstantValues.DATETIME_PATTERN;
+import static com.example.pets_backend.ConstantValues.*;
 
 @Service
 @RequiredArgsConstructor
@@ -32,7 +32,7 @@ public class NtfTaskService {
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATETIME_PATTERN);
 
 
-    public void addTasksNtfForOneUser(User user) {
+    public void upcomingTasksNtf(User user) {
         String today = LocalDate.now().toString();
         List<Task> taskList = user.getTasksByDate(today);
         String email = user.getEmail();
@@ -51,7 +51,7 @@ public class NtfTaskService {
             @Override
             public void run() {
                 try {
-                    sendMailService.sendEmailForTasks(email, templateModel);
+                    sendMailService.sendEmail(email, templateModel, TEMPLATE_UPCOMING_TASKS);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
