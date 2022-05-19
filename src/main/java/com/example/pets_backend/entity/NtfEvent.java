@@ -26,4 +26,6 @@ public class NtfEvent {
 
     @NotNull
     private LocalDateTime ntfTime;
+
+    private boolean done = false;
 }

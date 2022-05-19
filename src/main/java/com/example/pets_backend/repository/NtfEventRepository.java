@@ -12,4 +12,8 @@ public interface NtfEventRepository extends JpaRepository<NtfEvent, String> {
     @Modifying
     @Query("delete from NtfEvent where ntfId = ?1")
     void deleteByNtfId(String ntfId);
+
+    @Modifying
+    @Query("update NtfEvent n set n.done = true where n.ntfId = ?1")
+    void markAsDone(String ntfId);
 }

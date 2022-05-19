@@ -11,4 +11,8 @@ public interface NtfTaskRepository extends JpaRepository<NtfTask, String> {
     @Modifying
     @Query("delete from NtfTask where ntfId = ?1")
     void deleteByNtfId(String ntfId);
+
+    @Modifying
+    @Query("update NtfTask n set n.done = true where n.ntfId = ?1")
+    void markAsDone(String ntfId);
 }

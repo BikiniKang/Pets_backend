@@ -29,4 +29,6 @@ public class NtfTask {
 
     @NonNull
     private String ntfDate;
+
+    private boolean done = false;
 }

@@ -80,8 +80,8 @@ public class NtfEventService {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                ntfRepo.deleteByNtfId(ntfId);
-                log.info("Job finished, delete Notification entry '{}'", ntfId);
+                ntfRepo.markAsDone(ntfId);
+                log.info("Job finished, mark Notification '{}' as done", ntfId);
             }
         }, sendTime);
     }
