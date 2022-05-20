@@ -68,7 +68,6 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Record> recordList = new ArrayList<>();
 
-
     public List<LinkedHashMap<String, Object>> getPetAbList() {
         List<LinkedHashMap<String, Object>> list = new ArrayList<>();
         for (Pet pet:this.petList) {
@@ -108,6 +107,15 @@ public class User {
             petIdList.add(pet.getPetId());
         }
         return petIdList;
+    }
+
+    @JsonIgnore
+    public LinkedHashMap<String, Object> getNotificationSettings() {
+        LinkedHashMap<String, Object> map = new LinkedHashMap<>();
+        map.put("eventNtfOn", eventNtfOn);
+        map.put("taskNtfOn", taskNtfOn);
+        map.put("taskNtfTime", taskNtfTime);
+        return map;
     }
 
     /**

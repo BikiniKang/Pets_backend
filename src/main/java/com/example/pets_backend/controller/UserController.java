@@ -112,4 +112,20 @@ public class UserController {
         User user = userService.findByUid((String) mapIn.get("uid"));
         user.setImage((String) mapIn.get("image"));
     }
+
+    @PostMapping("/user/notification")
+    public LinkedHashMap<String, Object> getUserNtfSettings(@RequestBody Map<String, Object> mapIn) {
+        User user = userService.findByUid((String) mapIn.get("uid"));
+        return user.getNotificationSettings();
+    }
+
+    @PostMapping("/user/notification/edit")
+    @Transactional
+    public LinkedHashMap<String, Object> editUserNtfSettings(@RequestBody Map<String, Object> mapIn) {
+        User user = userService.findByUid((String) mapIn.get("uid"));
+        user.setEventNtfOn((boolean) mapIn.get("eventNtfOn"));
+        user.setTaskNtfOn((boolean) mapIn.get("taskNtfOn"));
+        user.setTaskNtfTime((String) mapIn.get("taskNtfTime"));
+        return user.getNotificationSettings();
+    }
 }
