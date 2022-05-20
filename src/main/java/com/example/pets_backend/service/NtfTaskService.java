@@ -103,8 +103,8 @@ public class NtfTaskService {
             templateModel.put("task2Pets", "(" + String.join(", ", taskList.get(1).getPetNameList()) + ")");
         }
         if (taskList.size() > 2) {
-            templateModel.put("task3", taskList.get(1).getTaskTitle());
-            templateModel.put("task3Pets", "(" + String.join(", ", taskList.get(1).getPetNameList()) + ")");
+            templateModel.put("task3", taskList.get(2).getTaskTitle());
+            templateModel.put("task3Pets", "(" + String.join(", ", taskList.get(2).getPetNameList()) + ")");
         }
         return templateModel;
     }
