@@ -4,6 +4,7 @@ import com.aventrix.jnanoid.jnanoid.NanoIdUtils;
 import com.sun.istack.NotNull;
 import lombok.*;
 
+import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -32,10 +33,12 @@ public class NtfTask {
     private LocalDateTime ntfTime;
 
     @NotNull
+    @Column(length = 32)
     private String ntfType;
 
     @NonNull
-    private String ntfDate;
+    @Column(length = 10)
+    private String ntfDate;     // yyyy-MM-dd
 
     private boolean done = false;
 }

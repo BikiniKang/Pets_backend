@@ -50,6 +50,7 @@ public class User {
 
     private boolean taskNtfOn = true;
 
+    @Column(length = 5)
     private String taskNtfTime  = "18:00";
 
     @JsonIgnore
