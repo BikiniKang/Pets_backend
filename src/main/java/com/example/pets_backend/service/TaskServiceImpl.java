@@ -39,6 +39,13 @@ public class TaskServiceImpl implements TaskService{
         log.info("Task '{}' deleted from database", taskId);
     }
 
+    @Override
+    public void archive(String taskId) {
+        Task task = taskRepository.findByTaskId(taskId);
+        checkTaskInDB(task, taskId);
+        taskRepository.archive(taskId);
+    }
+
     private void checkTaskInDB(Task task, String taskId) {
         if (task == null) {
             log.error("Task '{}' not found in the database", taskId);

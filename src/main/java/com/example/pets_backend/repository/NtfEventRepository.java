@@ -1,7 +1,7 @@
 package com.example.pets_backend.repository;
 
 
-import com.example.pets_backend.entity.Task;
+import com.example.pets_backend.entity.NtfEvent;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -9,15 +9,15 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 @Repository
-public interface TaskRepository extends JpaRepository<Task, String> {
-    Task findByTaskId(String taskId);
+public interface NtfEventRepository extends JpaRepository<NtfEvent, String> {
+    NtfEvent findByEventId(String eventId);
 
     @Modifying
-    @Query("delete from Task where taskId = ?1")
-    void deleteByTaskId(String taskId);
+    @Query("delete from NtfEvent where ntfId = ?1")
+    void deleteByNtfId(String ntfId);
 
     @Transactional
     @Modifying
-    @Query("update Task t set t.archived = true where t.taskId = ?1")
-    void archive(String taskId);
+    @Query("update NtfEvent n set n.done = true where n.ntfId = ?1")
+    void markAsDone(String ntfId);
 }

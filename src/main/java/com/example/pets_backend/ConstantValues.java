@@ -17,8 +17,8 @@ public class ConstantValues {
     public static final String TOKEN_REFRESH = "/token_refresh";
     public static final String REGISTER = "/register";
     public static final Algorithm ALGORITHM = Algorithm.HMAC256(SECRET.getBytes(StandardCharsets.UTF_8));
-    public static final String DEFAULT_IMAGE = "http://dummyimage.com/400x400";
-    public static final String DEFAULT_IMAGE_PET = "http://dummyimage.com/400x400";
+    public static final String DEFAULT_IMAGE = "https://i.ibb.co/b3w8hXF/Png-Item-223968.png";
+    public static final String DEFAULT_IMAGE_PET = "https://i.ibb.co/P6Cz8CS/image-6.png";
     public static final String DEFAULT_ADDRESS = "";
     public static final String DEFAULT_PHONE = "";
     public static final String DEFAULT_EVENT_TYPE = "";
@@ -27,4 +27,12 @@ public class ConstantValues {
     public static final String DATE_PATTERN = "yyyy-MM-dd";
     public static final String DATETIME_PATTERN = "yyyy-MM-dd HH:mm";
     public static final List<String> RECORD_TYPES = Arrays.asList("Invoice", "Medication", "Vaccination");
+    public static final String DELETED_PET_ID = "deleted_pet_id";
+    public static final String TEAM_EMAIL = "pet_pocket@outlook.com";
+    public static final int REMIND_BEFORE = 60;
+    public static final String TIMEZONE = "Australia/Sydney";
+    public static final String TEMPLATE_EVENT = "template-event.ftlh";
+    public static final String TEMPLATE_UPCOMING_TASKS = "template-tasks.ftlh";
+    public static final String TEMPLATE_OVERDUE_TASKS = "template-tasks-overdue.ftlh";
+    public static final String OVERDUE_TASKS_NOTIFY_TIME = "09:00";
 }

@@ -41,14 +41,12 @@ public class Task {
 
     @NonNull
     @Column(length = 16)
-    private String startDate;       // YYYY-MM-DD HH:mm
-
-    @NonNull
-    @Column(length = 16)
     private String dueDate;         // YYYY-MM-DD HH:mm
 
     @NonNull
     private boolean checked;
+
+    private boolean archived = false;
 
     public List<LinkedHashMap<String, Object>> getPetAbList() {
         List<LinkedHashMap<String, Object>> list = new ArrayList<>();
@@ -64,5 +62,14 @@ public class Task {
         map.put("taskId", this.getTaskId());
         map.put("taskTitle", this.getTaskTitle());
         return map;
+    }
+
+    @JsonIgnore
+    public List<String> getPetNameList() {
+        List<String> petNameList = new ArrayList<>();
+        for (String petId:this.petIdList) {
+            petNameList.add(user.getPetByPetId(petId).getPetName());
+        }
+        return petNameList;
     }
 }

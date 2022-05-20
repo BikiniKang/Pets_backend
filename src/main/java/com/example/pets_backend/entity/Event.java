@@ -57,6 +57,8 @@ public class Event {
     @NonNull
     private String description = "";
 
+    private int notifyBefore = 24;
+
     public List<LinkedHashMap<String, Object>> getPetAbList() {
         List<LinkedHashMap<String, Object>> list = new ArrayList<>();
         for (String petId:this.petIdList) {
@@ -73,4 +75,12 @@ public class Event {
         return map;
     }
 
+    @JsonIgnore
+    public List<String> getPetNameList() {
+        List<String> list = new ArrayList<>();
+        for (String petId:petIdList) {
+            list.add(this.user.getPetByPetId(petId).getPetName());
+        }
+        return list;
+    }
 }

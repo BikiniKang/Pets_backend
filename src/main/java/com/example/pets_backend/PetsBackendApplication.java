@@ -1,14 +1,20 @@
 package com.example.pets_backend;
 
-import com.example.pets_backend.entity.User;
-import com.example.pets_backend.service.UserService;
-import org.springframework.boot.CommandLineRunner;
+import freemarker.cache.ClassTemplateLoader;
+import freemarker.cache.TemplateLoader;
+import freemarker.template.Configuration;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
+import org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver;
 
 @SpringBootApplication
+@EnableScheduling
+@EnableAsync
 public class PetsBackendApplication {
 
     public static void main(String[] args) {
@@ -20,12 +26,23 @@ public class PetsBackendApplication {
         return new BCryptPasswordEncoder();
     }
 
-//    @Bean
-//    CommandLineRunner run(UserService userService) {
-//        return args -> {
-//            userService.register(new User("1044159268@qq.com", "1234", "Xinyu", "Kang"));
-//            userService.register(new User("1369977889@qq.com", "1234", "Zeyu", "Gong"));
-//        };
-//    }
+    @Bean
+    public FreeMarkerConfigurer freemarkerConfig() {
+        Configuration configuration = new Configuration(Configuration.VERSION_2_3_27);
+        TemplateLoader templateLoader = new ClassTemplateLoader(this.getClass(), "/templates");
+        configuration.setTemplateLoader(templateLoader);
+        FreeMarkerConfigurer freeMarkerConfigurer = new FreeMarkerConfigurer();
+        freeMarkerConfigurer.setConfiguration(configuration);
+        return freeMarkerConfigurer;
+    }
+
+    @Bean
+    public FreeMarkerViewResolver freemarkerViewResolver() {
+        FreeMarkerViewResolver resolver = new FreeMarkerViewResolver();
+        resolver.setCache(true);
+        resolver.setPrefix("");
+        resolver.setSuffix(".ftl");
+        return resolver;
+    }
 
 }

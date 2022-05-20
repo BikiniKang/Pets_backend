@@ -9,4 +9,6 @@ public interface TaskService {
     Task findByTaskId(String taskId);
 
     void deleteByTaskId(String taskId);
+
+    void archive(String taskId);
 }

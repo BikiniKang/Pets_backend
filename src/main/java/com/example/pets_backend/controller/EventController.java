@@ -3,17 +3,13 @@ package com.example.pets_backend.controller;
 import com.aventrix.jnanoid.jnanoid.NanoIdUtils;
 import com.example.pets_backend.entity.Event;
 import com.example.pets_backend.entity.User;
-import com.example.pets_backend.service.EventService;
-import com.example.pets_backend.service.UserService;
+import com.example.pets_backend.service.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -23,6 +19,7 @@ public class EventController {
 
     private final UserService userService;
     private final EventService eventService;
+
     private final ObjectMapper mapper = new ObjectMapper();
 
     @PostMapping("/user/event/add")
@@ -31,9 +28,13 @@ public class EventController {
         User user = userService.findByUid(uid);
         Event event = mapper.convertValue(mapIn.get("eventData"), Event.class);
 
+        List<String> petIdList = user.getPetIdList();
+        if (!petIdList.containsAll(event.getPetIdList())) {
+            throw new IllegalArgumentException("One or more petIds do not belong to User '" + uid + "'");
+        }
         event.setEventId(NanoIdUtils.randomNanoId());
         event.setUser(user);
-        eventService.save(event);
+        event = eventService.save(event);
 
         Map<String, Object> mapOut = new HashMap<>();
         mapOut.put("event", event);
@@ -50,21 +51,13 @@ public class EventController {
     }
 
     @PostMapping("/user/event/edit")
-    @Transactional
     public Map<String, Object> editEvent(@RequestBody Map<String, Object> mapIn) {
         String uid = (String) mapIn.get("uid");
-        Event eventNew = mapper.convertValue(mapIn.get("newEventData"), Event.class);
+        Event eventNew = mapper.convertValue(mapIn.get("eventData"), Event.class);
         String eventId = eventNew.getEventId();
-
-        Event event = userService.getEventByUidAndEventId(uid, eventId);
-        // update all attributes except eventId, user
-        event.setEventType(eventNew.getEventType());
-        event.setEventTitle(eventNew.getEventTitle());
-        event.setPetIdList(eventNew.getPetIdList());
-        event.setDescription(eventNew.getDescription());
-        event.setStartDateTime(eventNew.getStartDateTime());
-        event.setEndDateTime(eventNew.getEndDateTime());
-
+        // check whether the event exists and belongs to the user
+        userService.getEventByUidAndEventId(uid, eventId);
+        Event event = eventService.editEvent(eventId, eventNew);
         Map<String, Object> mapOut = new HashMap<>();
         mapOut.put("event", event);
         return mapOut;
