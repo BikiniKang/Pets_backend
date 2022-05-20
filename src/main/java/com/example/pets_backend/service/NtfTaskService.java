@@ -17,6 +17,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static com.example.pets_backend.ConstantValues.*;
 
@@ -42,7 +43,8 @@ public class NtfTaskService {
 
         // parse the required values for the notification
         String today = LocalDate.now().toString();
-        List<Task> taskList = isOverdue ? user.getOverdueTasks(today):user.getTasksByDate(today);
+        List<Task> taskList = isOverdue ? user.getOverdueTasks(today):
+                user.getTaskList().stream().filter(task -> task.getDueDate().equals(today) && !task.isChecked()).collect(Collectors.toList());
         String ntfType = isOverdue ? "OVERDUE_TASKS":"UPCOMING_TASKS";
         String templateName = isOverdue ? TEMPLATE_OVERDUE_TASKS:TEMPLATE_UPCOMING_TASKS;
         String theTime = isOverdue ? OVERDUE_TASKS_NOTIFY_TIME:user.getTaskNtfTime();
