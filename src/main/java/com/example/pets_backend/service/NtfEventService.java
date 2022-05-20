@@ -35,10 +35,10 @@ public class NtfEventService {
         User user = event.getUser();
         // check whether the event notification setting is 'ON'
         if (!user.isEventNtfOn() || event.getNotifyBefore() == 0) {
-            log.info("The Event Notification Setting is OFF, do not notify '{}'", user.getEmail());
+            log.info("The Event Notification Setting for User '{}' is OFF, do not notify", user.getEmail());
             return;
         }
-        // check whether the event is ended
+        // check whether the event has ended
         if (LocalDateTime.parse(event.getEndDateTime(), formatter).isBefore(LocalDateTime.now())) {
             log.info("Event '{}' has ended, do not notify '{}'", event.getEventId(), user.getEmail());
             return;
@@ -46,19 +46,18 @@ public class NtfEventService {
         String email = user.getEmail();
         String firstName = user.getFirstName();
         Map<String, String> templateModel = generateTemplateModel(firstName, event);
-        LocalDateTime remindTime = LocalDateTime.parse(event.getStartDateTime(), formatter)
+        LocalDateTime sendTime = LocalDateTime.parse(event.getStartDateTime(), formatter)
                 .minus(event.getNotifyBefore(), ChronoUnit.HOURS);
 
         NtfEvent ntfEvent = new NtfEvent(NanoIdUtils.randomNanoId(),
                 user.getUid(),
                 event.getEventId(),
-                remindTime,
+                sendTime,
                 false);
-        ntfEvent = ntfRepo.save(ntfEvent);
+        ntfRepo.save(ntfEvent);
 
         String ntfId = ntfEvent.getNtfId();
-        String templateName = TEMPLATE_EVENT;
-        addEmailJobToScheduler(ntfId, email, templateModel, templateName, remindTime);
+        addEmailJobToScheduler(ntfId, email, templateModel, TEMPLATE_EVENT, sendTime);
         log.info("Added notification '{}' into scheduler", ntfId);
     }
 
@@ -80,11 +79,11 @@ public class NtfEventService {
             public void run() {
                 try {
                     sendMailService.sendEmail(email, templateModel, templateName);
+                    ntfRepo.markAsDone(ntfId);
+                    log.info("Job finished, mark Notification '{}' as done", ntfId);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                ntfRepo.markAsDone(ntfId);
-                log.info("Job finished, mark Notification '{}' as done", ntfId);
             }
         }, sendTime);
     }
