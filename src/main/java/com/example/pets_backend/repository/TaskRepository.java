@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 public interface TaskRepository extends JpaRepository<Task, String> {
@@ -14,4 +15,9 @@ public interface TaskRepository extends JpaRepository<Task, String> {
     @Modifying
     @Query("delete from Task where taskId = ?1")
     void deleteByTaskId(String taskId);
+
+    @Transactional
+    @Modifying
+    @Query("update Task t set t.archived = true where t.taskId = ?1")
+    void archive(String taskId);
 }

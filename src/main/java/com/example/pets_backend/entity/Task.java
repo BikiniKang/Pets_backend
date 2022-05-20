@@ -46,6 +46,8 @@ public class Task {
     @NonNull
     private boolean checked;
 
+    private boolean archived = false;
+
     public List<LinkedHashMap<String, Object>> getPetAbList() {
         List<LinkedHashMap<String, Object>> list = new ArrayList<>();
         for (String petId:this.petIdList) {
