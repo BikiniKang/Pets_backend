@@ -7,8 +7,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-
 @RequiredArgsConstructor
 @Component
 public class ScheduledJobs {
@@ -18,21 +16,15 @@ public class ScheduledJobs {
 
     @Scheduled(cron = "0 0 4 * * *")    // repeat 4am everyday
     public void ntfUpcomingTasks() {
-        List<User> users = userRepository.findAll();
-        for (User user:users) {
-            if (user.isTaskNtfOn()) {
-                ntfTaskService.addTasksNotification(user, false);
-            }
+        for (User user:userRepository.findAll()) {
+            ntfTaskService.addTasksNotification(user, false);
         }
     }
 
     @Scheduled(cron = "0 0 9 * * *")    // repeat 9am everyday
     public void ntfOverdueTasks() {
-        List<User> users = userRepository.findAll();
-        for (User user:users) {
-            if (user.isTaskNtfOn()) {
-                ntfTaskService.addTasksNotification(user, true);
-            }
+        for (User user:userRepository.findAll()) {
+            ntfTaskService.addTasksNotification(user, true);
         }
     }
 }

@@ -34,23 +34,35 @@ public class NtfTaskService {
 
 
     public void addTasksNotification(User user, boolean isOverdue) {
+        // check whether the task notification setting is 'ON'
+        if (!user.isTaskNtfOn()) {
+            log.info("The Task Notification Setting for User '{}' is OFF, do not notify", user.getEmail());
+            return;
+        }
+
+        // parse the required values for the notification
         String today = LocalDate.now().toString();
         List<Task> taskList = isOverdue ? user.getOverdueTasks(today):user.getTasksByDate(today);
+        String ntfType = isOverdue ? "OVERDUE_TASKS":"UPCOMING_TASKS";
+        String templateName = isOverdue ? TEMPLATE_OVERDUE_TASKS:TEMPLATE_UPCOMING_TASKS;
+        String theTime = isOverdue ? OVERDUE_TASKS_NOTIFY_TIME:user.getTaskNtfTime();
         String email = user.getEmail();
         String firstName = user.getFirstName();
         Map<String, String> templateModel = generateTemplateModel(firstName, taskList);
-        LocalDateTime sendTime = LocalDateTime.parse(today + " " + user.getTaskNtfTime(), formatter);
+        LocalDateTime sendTime = LocalDateTime.parse(today + " " + theTime, formatter);
 
+        // save a new NtfTask instance
         NtfTask ntfTask = new NtfTask(NanoIdUtils.randomNanoId(),
                 user.getUid(),
                 taskList.stream().map(Task::getTaskId).toList(),
                 sendTime,
-                "UPCOMING_TASKS",
-                today, false);
-        ntfTask = ntfRepo.save(ntfTask);
+                ntfType,
+                today,
+                false);
+        ntfRepo.save(ntfTask);
 
+        // add the notification job into scheduler
         String ntfId = ntfTask.getNtfId();
-        String templateName = isOverdue ? TEMPLATE_OVERDUE_TASKS:TEMPLATE_UPCOMING_TASKS;
         addEmailJobToScheduler(ntfId, email, templateModel, templateName, sendTime);
         log.info("Added notification '{}' into scheduler", ntfId);
     }
@@ -61,11 +73,11 @@ public class NtfTaskService {
             public void run() {
                 try {
                     sendMailService.sendEmail(email, templateModel, templateName);
+                    ntfRepo.markAsDone(ntfId);
+                    log.info("Job finished, mark Notification '{}' as done", ntfId);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                ntfRepo.markAsDone(ntfId);
-                log.info("Job finished, mark Notification '{}' as done", ntfId);
             }
         }, sendTime);
     }
