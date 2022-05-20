@@ -28,13 +28,8 @@ public class EmailController {
     @PostMapping("/user/email/task")
     public void sendEmailForTask(@RequestBody Map<String, Object> mapIn) {
         User user = userService.findByUid((String) mapIn.get("uid"));
-        ntfTaskService.addTasksNotification(user, false);
-    }
-
-    @PostMapping("/user/email/task/overdue")
-    public void sendEmailForTaskOverdue(@RequestBody Map<String, Object> mapIn) {
-        User user = userService.findByUid((String) mapIn.get("uid"));
-        ntfTaskService.addTasksNotification(user, true);
+        boolean isOverdue = (boolean) mapIn.get("isOverdue");
+        ntfTaskService.addTasksNotification(user, isOverdue);
     }
 
 
