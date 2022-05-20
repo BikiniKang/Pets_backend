@@ -11,8 +11,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
-import static com.example.pets_backend.ConstantValues.*;
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping
@@ -23,23 +21,6 @@ public class EventController {
     private final EventService eventService;
 
     private final ObjectMapper mapper = new ObjectMapper();
-    private final SendMailService sendMailService;
-
-
-    // Temporary API for testing
-    @PostMapping("/user/send/email/html")
-    public void sendHtmlEmail(@RequestBody Map<String, Object> mapIn) throws Exception {
-        String email = (String) mapIn.get("email");
-        List<String> petNameList = (List<String>) mapIn.get("petNameList");
-        Map<String, String> templateModel = new HashMap<>();
-        templateModel.put("firstName", (String) mapIn.get("name"));
-        templateModel.put("petNames", String.join(", ", petNameList));
-        templateModel.put("eventTitle", (String) mapIn.get("eventTitle"));
-        templateModel.put("eventStartTime", (String) mapIn.get("eventStartTime"));
-        templateModel.put("eventLocation", (String) mapIn.get("eventLocation"));
-        templateModel.put("petAvatar", (String) mapIn.get("petAvatar"));
-        sendMailService.sendEmail(email, templateModel, TEMPLATE_EVENT);
-    }
 
     @PostMapping("/user/event/add")
     public Map<String, Object> addEvent(@RequestBody Map<String, Object> mapIn) {
