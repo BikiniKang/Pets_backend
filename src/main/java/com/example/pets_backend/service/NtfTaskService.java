@@ -45,6 +45,10 @@ public class NtfTaskService {
         String today = LocalDate.now().toString();
         List<Task> taskList = isOverdue ? user.getOverdueTasks(today):
                 user.getTaskList().stream().filter(task -> task.getDueDate().equals(today) && !task.isChecked()).collect(Collectors.toList());
+        if (taskList.isEmpty()) {
+            log.info("No upcoming/overdue tasks detected, do not notify");
+            return;
+        }
         String ntfType = isOverdue ? "OVERDUE_TASKS":"UPCOMING_TASKS";
         String templateName = isOverdue ? TEMPLATE_OVERDUE_TASKS:TEMPLATE_UPCOMING_TASKS;
         String theTime = isOverdue ? OVERDUE_TASKS_NOTIFY_TIME:user.getTaskNtfTime();
