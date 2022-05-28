@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -44,6 +45,16 @@ public class TaskServiceImpl implements TaskService{
         Task task = taskRepository.findByTaskId(taskId);
         checkTaskInDB(task, taskId);
         taskRepository.archive(taskId);
+    }
+
+    @Override
+    public List<Task> findUpcomingTasks(String uid, String today) {
+        return taskRepository.findUpcomingTasks(uid, today);
+    }
+
+    @Override
+    public List<Task> findOverdueTasks(String uid, String today) {
+        return taskRepository.findOverdueTasks(uid, today);
     }
 
     private void checkTaskInDB(Task task, String taskId) {

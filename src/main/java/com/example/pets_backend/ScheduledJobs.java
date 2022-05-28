@@ -14,7 +14,7 @@ public class ScheduledJobs {
     private final UserRepository userRepository;
     private final NtfTaskService ntfTaskService;
 
-    @Scheduled(cron = "0 0 4 * * *")    // repeat 4am everyday
+    @Scheduled(cron = "0 48 14 * * *")    // repeat 4am everyday
     public void ntfUpcomingTasks() {
         for (User user:userRepository.findAll()) {
             ntfTaskService.addTasksNotification(user, false);
