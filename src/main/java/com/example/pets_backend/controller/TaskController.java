@@ -20,6 +20,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static com.example.pets_backend.ConstantValues.DAYS_TO_ARCHIVE;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping
@@ -89,7 +91,7 @@ public class TaskController {
         task.setChecked(isChecked);
 
         if (isChecked) {
-            LocalDateTime archiveTime = LocalDateTime.now().plusDays(3);
+            LocalDateTime archiveTime = LocalDateTime.now().plusDays(DAYS_TO_ARCHIVE);
             schedulerService.addJobToScheduler(taskId, new Runnable() {
                 @Override
                 public void run() {

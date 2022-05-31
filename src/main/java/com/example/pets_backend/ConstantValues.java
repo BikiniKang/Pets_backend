@@ -35,4 +35,5 @@ public class ConstantValues {
     public static final String TEMPLATE_UPCOMING_TASKS = "template-tasks.ftlh";
     public static final String TEMPLATE_OVERDUE_TASKS = "template-tasks-overdue.ftlh";
     public static final String OVERDUE_TASKS_NOTIFY_TIME = "09:00";
+    public static final int DAYS_TO_ARCHIVE = 3;
 }

@@ -303,4 +303,20 @@ public class User {
         }
         return list;
     }
+
+    /**
+     * Get all unchecked tasks due today
+     * @param today 'yyyy-MM-dd'
+     * @return a list of upcoming Task objects
+     */
+    @JsonIgnore
+    public List<Task> getUpcomingTasks(String today) {
+        List<Task> list = new ArrayList<>();
+        for (Task task:taskList) {
+            if (task.getDueDate().compareTo(today) == 0 && !task.isArchived()) {
+                list.add(task);
+            }
+        }
+        return list;
+    }
 }
