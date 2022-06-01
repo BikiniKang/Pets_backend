@@ -1,7 +1,10 @@
 # Backend of PetPocket
-Database diagram: https://drive.google.com/file/d/1Cs3jKnpNoz63v5a1WWfViAFKYdjYEvz5/view?usp=sharing
-## Development Environment
-Below is an instruction of how to set up the development environment on your own devices.
+(updated on June 1 2022)
+Important documentation for the backend of PetPocket: 
+* [API Documentation](https://petsapidoc.blob.core.windows.net/$web/Pets-tracking-app-1-0-6.html)
+* [Database Diagram](https://drive.google.com/file/d/1Cs3jKnpNoz63v5a1WWfViAFKYdjYEvz5/view?usp=sharing)
+
+Below is an instruction of *how to set up the development environment* on your own devices:
 ### Prerequisites
 #### Java
 Check your JDK version by running ```java version``` in a terminal window.\
