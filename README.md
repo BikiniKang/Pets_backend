@@ -1,19 +1,21 @@
 # Backend of PetPocket
-Follow this document to set up the development environment on your own devices. 
-## Prerequisites
-### Java
+Database diagram: https://drive.google.com/file/d/1Cs3jKnpNoz63v5a1WWfViAFKYdjYEvz5/view?usp=sharing
+## Development Environment
+Below is an instruction of how to set up the development environment on your own devices.
+### Prerequisites
+#### Java
 Check your JDK version by running ```java version``` in a terminal window.\
 If you do not have JDK installed, download from https://www.oracle.com/java/technologies/downloads/#java17.
-### IntelliJ IDEA
+#### IntelliJ IDEA
 You can download *IntelliJ IDEA Ultimate* from https://www.jetbrains.com/idea/download \
 (You may want to apply for a Free Educational License at https://www.jetbrains.com/community/education/#students by validating your ANU student email address).
-### Git
+#### Git
 Check your Git version by running ```git version``` in a terminal window.\
 If you do not have Git installed, download from https://git-scm.com/downloads.
-## Installation
-### Clone the Git repository
+### Installation
+#### Clone the Git repository
 Clone the repository by running ```git clone https://github.com/BikiniKang/pets-backend.git``` in a terminal window and open it with IntelliJ IDEA. 
-### Connect to Database
+#### Connect to Database
 If you would like to view or modify the database of the project, open the Database tool window (View | Tool Windows | Database) in IntelliJ IDEA and find the *Data Source Properties* icon, add a data source with following information:
 ```
 Host:     pets-server.mysql.database.azure.com
