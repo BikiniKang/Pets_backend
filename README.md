@@ -24,7 +24,7 @@ If you would like to view or modify the database of the project, open the Databa
 Host:     pets-server.mysql.database.azure.com
 Port:     3306
 User:     petsteam
-Password: pets00
+Password: **** (please ask the Backend Manager to access)
 Database: appdb
 URL:      jdbc:mysql://pets-server.mysql.database.azure.com:3306/appdb?sslmode=required
 ```
