@@ -19,10 +19,12 @@ public class Booking {
     @Id
     private String booking_id = NanoIdUtils.randomNanoId();
 
-    @JsonIncludeProperties("uid")
     @ManyToOne
-    @JoinColumn(name = "uid", nullable = false, foreignKey = @ForeignKey(name = "fk_booking_uid"))
+    @JoinColumn(name = "user_uid", nullable = false, foreignKey = @ForeignKey(name = "fk_booking_uid"))
     private User user;
+
+    @NonNull
+    private String uid;
 
     @ElementCollection
     @CollectionTable(

@@ -27,6 +27,7 @@ public class BookingController {
     @PostMapping("/user/booking/invite")
     public Booking inviteBooking(@RequestBody Booking booking) {
         booking.setBooking_id(NanoIdUtils.randomNanoId());
+        booking.setUser(userService.findByUid(booking.getUid()));
         bookingService.save(booking);
         /*
         send invite email
