@@ -1,10 +1,13 @@
 # Backend of PetPocket
-(updated on June 1 2022)
+(updated on Aug 29 2022)
 Important documentation for the backend of PetPocket: 
-* [API Documentation](https://petsapidoc.blob.core.windows.net/$web/Pets-tracking-app-1-0-6.html)
-* [Database Diagram](https://drive.google.com/file/d/1Cs3jKnpNoz63v5a1WWfViAFKYdjYEvz5/view?usp=sharing)
+* [API Documentation](https://petsapidoc.blob.core.windows.net/$web/Pets-tracking-app-1-1-2.html)
+* [Database Diagram](https://drive.google.com/file/d/1SKr-YTJUhAyQewe16b6HvqFJvcW7C1Lz/view?usp=sharing)
 
-Below is an instruction of *how to set up the development environment* on your own devices:
+Below is an instruction of *how to set up the development environment* on your own devices: \
+ \
+``DOCKER COMING SOON...``
+
 ### Prerequisites
 #### Java
 Check your JDK version by running ```java version``` in a terminal window.\
