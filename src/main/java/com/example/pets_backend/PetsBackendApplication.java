@@ -50,19 +50,4 @@ public class PetsBackendApplication {
         return resolver;
     }
 
-//    @Bean
-//    CommandLineRunner bkTest(UserService userService, BookingService bookingService) {
-//        return args -> {
-//            User user = new User();
-//            user.setEmail("1234");
-//            user.setPassword("1234456");
-//            user.setFirstName("xinyu");
-//            user.setLastName("kang");
-//            userService.save(user);
-//            Booking booking = new Booking(user.getUid(),"12345@qq.com", "a booking", "2020-08-30 22:23", "2020-08-31 10:23", "my home", "something", "pending");
-//            booking.setUser(userService.findByUid(user.getUid()));
-//            bookingService.save(booking);
-//        };
-//    }
-
 }

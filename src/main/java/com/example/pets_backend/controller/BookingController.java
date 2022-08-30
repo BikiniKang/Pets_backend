@@ -14,6 +14,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Map;
+
+import static com.example.pets_backend.ConstantValues.TEMPLATE_BOOKING_CONFIRM;
+import static com.example.pets_backend.ConstantValues.TEMPLATE_BOOKING_INVITE;
 
 @RestController
 @RequiredArgsConstructor
@@ -29,17 +33,17 @@ public class BookingController {
         booking.setBooking_id(NanoIdUtils.randomNanoId());
         booking.setUser(userService.findByUid(booking.getUid()));
         booking = bookingService.save(booking);
-        // send the invite email asynchronously
-        Booking finalBooking = booking;
-        bookingService.sendInviteEmail(finalBooking);
+        bookingService.sendEmail(booking, TEMPLATE_BOOKING_INVITE);
         return booking;
     }
 
     @Transactional
     @PostMapping("/user/booking/confirm")
-    public Booking confirmBooking(@RequestBody String booking_id) {
+    public Booking confirmBooking(@RequestBody Map<String, String> mapIn) {
+        String booking_id = mapIn.get("booking_id");
         Booking booking = bookingService.findById(booking_id);
         booking.setStatus("confirmed");
+        bookingService.sendEmail(booking, TEMPLATE_BOOKING_CONFIRM);
         return booking;
     }
 

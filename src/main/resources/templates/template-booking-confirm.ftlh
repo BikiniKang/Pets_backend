@@ -266,7 +266,7 @@ table, td { color: #000000; } #u_body a { color: #0000ee; text-decoration: under
       <td style="overflow-wrap:break-word;word-break:break-word;padding:30px 10px 30px 25px;font-family:arial,helvetica,sans-serif;" align="left">
         
   <div style="line-height: 140%; text-align: center; word-wrap: break-word;">
-    <p style="line-height: 140%; text-align: center; font-size: 14px;"><span style="color: #000000; font-size: 30px; line-height: 42px;"><span style="font-family: 'book antiqua', palatino; line-height: 42px; font-size: 30px;"><span style="line-height: 42px; font-size: 30px;">Booking Confirmation</span></span></span></p>
+    <p style="line-height: 140%; text-align: center; font-size: 14px;"><span style="color: #000000; font-size: 30px; line-height: 42px;"><span style="font-family: 'book antiqua', palatino; line-height: 42px; font-size: 30px;"><span style="line-height: 42px; font-size: 30px;">Booking Details</span></span></span></p>
   </div>
 
       </td>
@@ -305,7 +305,7 @@ table, td { color: #000000; } #u_body a { color: #0000ee; text-decoration: under
     <td style="padding-right: 0px;padding-left: 0px;" align="right">
       
 <!--      <img align="right" border="0" src="https://i.ibb.co/TqVyD7v/avatar1.png" alt="avatar1" title="Image" style="outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;display: inline-block !important;border: none;height: auto;float: none;width: 100%;max-width: 128px;" width="128"/>-->
-      <img align="right" border="0" src=${avatar1} alt="avatar1" title="Image" style="outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;display: inline-block !important;border: none;height: auto;float: none;width: 100%;max-width: 128px;" width="128"/>
+      <img align="right" border="0" src=${avatar_sender} alt="avatar_sender" title="Image" style="outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;display: inline-block !important;border: none;height: auto;float: none;width: 100%;max-width: 128px;" width="128"/>
       
     </td>
   </tr>
@@ -364,7 +364,7 @@ table, td { color: #000000; } #u_body a { color: #0000ee; text-decoration: under
     <td style="padding-right: 0px;padding-left: 0px;" align="left">
       
 <!--      <img align="left" border="0" src="https://i.ibb.co/6rgpSkF/avatar2.png" alt="avatar2" title="Image" style="outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;display: inline-block !important;border: none;height: auto;float: none;width: 100%;max-width: 128px;" width="128"/>-->
-      <img align="left" border="0" src=${avatar2} alt="avatar2" title="Image" style="outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;display: inline-block !important;border: none;height: auto;float: none;width: 100%;max-width: 128px;" width="128"/>
+      <img align="left" border="0" src=${avatar_invitee} alt="avatar_invitee" title="Image" style="outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;display: inline-block !important;border: none;height: auto;float: none;width: 100%;max-width: 128px;" width="128"/>
     </td>
   </tr>
 </table>
@@ -401,7 +401,7 @@ table, td { color: #000000; } #u_body a { color: #0000ee; text-decoration: under
       <td style="overflow-wrap:break-word;word-break:break-word;padding:10px 30px;font-family:arial,helvetica,sans-serif;" align="left">
 
   <div style="line-height: 140%; text-align: center; word-wrap: break-word;">
-    <p style="font-size: 14px; line-height: 140%;"><span style="font-family: 'book antiqua', palatino; font-size: 14px; line-height: 19.6px;"><span style="font-size: 12px; line-height: 16.8px;"><span style="color: #169179; font-size: 12px; line-height: 16.8px;"><em><strong>${invitee}</strong></em></span> accepted your invitation. </span></span></p>
+    <p style="font-size: 14px; line-height: 140%;"><span style="font-family: 'book antiqua', palatino; font-size: 14px; line-height: 19.6px;"><span style="font-size: 12px; line-height: 16.8px;"><span style="color: #169179; font-size: 12px; line-height: 16.8px;"><em><strong>${invitee}</strong></em></span> accepted your request. </span></span></p>
 <p style="font-size: 14px; line-height: 140%;"><span style="font-family: 'book antiqua', palatino; font-size: 14px; line-height: 19.6px;"><span style="font-size: 12px; line-height: 16.8px;">Please find the following details of your booking</span>. </span></p>
   </div>
 
@@ -612,7 +612,7 @@ table, td { color: #000000; } #u_body a { color: #0000ee; text-decoration: under
       <td style="overflow-wrap:break-word;word-break:break-word;padding:10px;font-family:arial,helvetica,sans-serif;" align="left">
         
   <div style="line-height: 140%; text-align: left; word-wrap: break-word;">
-    <p style="font-size: 14px; line-height: 140%;"><span style="font-family: 'book antiqua', palatino; font-size: 14px; line-height: 19.6px;"> <strong>${start_time}</strong> </span></p>
+    <p style="font-size: 14px; line-height: 140%;"><span style="font-family: 'book antiqua', palatino; font-size: 14px; line-height: 19.6px;"> <u>${time_range}</u> </span></p>
 <!--    <p style="font-size: 14px; line-height: 140%;"><span style="font-family: 'book antiqua', palatino; font-size: 14px; line-height: 19.6px;">Thu 25 Aug 13:00 - 15:00</span></p>-->
   </div>
 
@@ -701,7 +701,7 @@ table, td { color: #000000; } #u_body a { color: #0000ee; text-decoration: under
         
   <div style="line-height: 140%; text-align: left; word-wrap: break-word;">
 <!--    <p style="font-size: 14px; line-height: 140%;"><span style="font-family: 'book antiqua', palatino; font-size: 14px; line-height: 19.6px;">1 Anthony Rolfe Ave, Gungahlin, ACT 2912</span></p>-->
-    <p style="font-size: 14px; line-height: 140%;"><span style="font-family: 'book antiqua', palatino; font-size: 14px; line-height: 19.6px;"> <strong>${location}</strong> </span></p>
+    <p style="font-size: 14px; line-height: 140%;"><span style="font-family: 'book antiqua', palatino; font-size: 14px; line-height: 19.6px;"> ${location} </span></p>
   </div>
 
       </td>
@@ -789,7 +789,7 @@ table, td { color: #000000; } #u_body a { color: #0000ee; text-decoration: under
         
   <div style="line-height: 140%; text-align: left; word-wrap: break-word;">
 <!--    <p style="font-size: 14px; line-height: 140%;"><span style="font-family: 'book antiqua', palatino; font-size: 14px; line-height: 19.6px;">Bernard, Olive</span></p>-->
-    <p style="font-size: 14px; line-height: 140%;"><span style="font-family: 'book antiqua', palatino; font-size: 14px; line-height: 19.6px;"> <strong>${pets}</strong> </span></p>
+    <p style="font-size: 14px; line-height: 140%;"><span style="font-family: 'book antiqua', palatino; font-size: 14px; line-height: 19.6px;"> ${pets} </span></p>
   </div>
 
       </td>

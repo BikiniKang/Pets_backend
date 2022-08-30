@@ -239,7 +239,7 @@ table, td { color: #000000; } #u_body a { color: #0000ee; text-decoration: under
       <td style="overflow-wrap:break-word;word-break:break-word;padding:30px 10px 15px 25px;font-family:arial,helvetica,sans-serif;" align="left">
         
   <div style="line-height: 140%; text-align: center; word-wrap: break-word;">
-    <p style="line-height: 140%; text-align: center; font-size: 14px;"><span style="font-size: 28px; line-height: 39.2px;"><span style="font-family: 'book antiqua', palatino; font-size: 28px; line-height: 39.2px;"><span style="line-height: 39.2px; font-size: 28px;">New Invitation from <em><span style="color: #169179; font-size: 28px; line-height: 39.2px;"><strong><span style="font-size: 28px; line-height: 39.2px;">${sender}</span></strong></span></em></span></span></span></p>
+    <p style="line-height: 140%; text-align: center; font-size: 14px;"><span style="font-size: 28px; line-height: 39.2px;"><span style="font-family: 'book antiqua', palatino; font-size: 28px; line-height: 39.2px;"><span style="line-height: 39.2px; font-size: 28px;">Booking Request from <em><span style="color: #169179; font-size: 28px; line-height: 39.2px;"><strong><span style="font-size: 28px; line-height: 39.2px;">${sender}</span></strong></span></em></span></span></span></p>
   </div>
 
       </td>
@@ -256,7 +256,7 @@ table, td { color: #000000; } #u_body a { color: #0000ee; text-decoration: under
   <tr>
     <td style="padding-right: 0px;padding-left: 0px;" align="center">
       
-      <img align="center" border="0" src=${avatar} alt="avatar" title="Image" style="outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;display: inline-block !important;border: none;height: auto;float: none;width: 100%;max-width: 128px;" width="128"/>
+      <img align="center" border="0" src=${avatar_sender} alt="avatar_sender" title="Image" style="outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;display: inline-block !important;border: none;height: auto;float: none;width: 100%;max-width: 128px;" width="128"/>
       
     </td>
   </tr>
@@ -717,7 +717,7 @@ table, td { color: #000000; } #u_body a { color: #0000ee; text-decoration: under
 <div align="center">
   <!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-spacing: 0; border-collapse: collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;font-family:arial,helvetica,sans-serif;"><tr><td style="font-family:arial,helvetica,sans-serif;" align="center"><v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="" style="height:44px; v-text-anchor:middle; width:232px;" arcsize="0%" stroke="f" fillcolor="#169179"><w:anchorlock/><center style="color:#FFFFFF;font-family:arial,helvetica,sans-serif;"><![endif]-->
     <a class="reject" href=${reject_link} target="_blank" style="box-sizing: border-box;display: inline-block;font-family:arial,helvetica,sans-serif;text-decoration: none;-webkit-text-size-adjust: none;text-align: center;color: #FFFFFF; background-color: #ee674f; border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px; width:40%; max-width:100%; overflow-wrap: break-word; word-break: break-word; word-wrap:break-word; mso-border-alt: none;">
-      <span style="display:block;padding:13px 28px;line-height:120%;"><span style="font-size: 14px; line-height: 16.8px; font-family: Lato, sans-serif;">REJECT</span></span>
+      <span style="display:block;padding:13px 28px;line-height:120%;"><span style="font-size: 14px; line-height: 16.8px; font-family: Lato, sans-serif;">DECLINE</span></span>
     </a>
   <!--[if mso]></center></v:roundrect></td></tr></table><![endif]-->
 </div>

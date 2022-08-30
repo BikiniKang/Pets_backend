@@ -47,13 +47,34 @@ public class BookingServiceImpl implements BookingService{
     }
 
     @Override
-    public void sendInviteEmail(Booking booking) {
-        Map<String, String> model = makeInviteModel(booking);
+    public void sendEmail(Booking booking, String template) {
+        Map<String, String> model = basicModel(booking);
+        switch (template) {
+            case TEMPLATE_BOOKING_INVITE:
+                model.put("accept_link", WEB_PREFIX + "accept/" + booking.getBooking_id());
+                model.put("reject_link", WEB_PREFIX + "reject/" + booking.getBooking_id());
+                break;
+            case TEMPLATE_BOOKING_CONFIRM:
+                User invitee = userService.findByEmail(booking.getInvitee());
+                if (invitee == null) {
+                    model.put("invitee", booking.getInvitee());
+                    model.put("avatar_invitee", DEFAULT_IMAGE);
+                } else {
+                    model.put("invitee", invitee.getFirstName() + " " + invitee.getLastName());
+                    model.put("avatar_invitee", invitee.getImage());
+                }
+                model.put("cancel_link", WEB_PREFIX + "cancel/" + booking.getBooking_id());
+                break;
+            case TEMPLATE_BOOKING_CANCEL:
+                break;
+            default:
+                throw new IllegalArgumentException("Template " + template + " not found");
+        }
         schedulerService.addJobToScheduler(null, new Runnable() {
             @Override
             public void run() {
                 try {
-                    sendMailService.sendEmail(booking.getInvitee(), model, TEMPLATE_BOOKING_INVITE);
+                    sendMailService.sendEmail(booking.getInvitee(), model, template);
                 } catch (Exception e) {
                     // todo: handle exception (i.e., notify user that email sending failed)
                     e.printStackTrace();
@@ -62,9 +83,11 @@ public class BookingServiceImpl implements BookingService{
         }, LocalDateTime.now());
     }
 
-    private Map<String, String> makeInviteModel(Booking booking) {
+    private Map<String, String> basicModel(Booking booking) {
         Map<String, String> model = new HashMap<>();
-        model.put("sender", booking.getUser().getFirstName() + " " + booking.getUser().getLastName());
+        User user = booking.getUser();
+        model.put("sender", user.getFirstName() + " " + user.getLastName());
+        model.put("avatar_sender", user.getImage());
         model.put("title", booking.getTitle());
         String start_time = booking.getStart_time();
         String end_time = booking.getEnd_time();
@@ -82,17 +105,6 @@ public class BookingServiceImpl implements BookingService{
         }
         model.put("pets", String.join(", ", petNameList));
         model.put("description", booking.getDescription());
-        model.put("accept_link", WEB_PREFIX + "accept/" + booking.getBooking_id());
-        model.put("reject_link", WEB_PREFIX + "reject/" + booking.getBooking_id());
-        String invitee_email = booking.getInvitee();
-        User invitee = userService.findByEmail(invitee_email);
-        if (invitee == null) {
-            // if the invitee is NOT a user of our app, use the default image as avatar
-            model.put("avatar", DEFAULT_IMAGE);
-        } else {
-            // if the invitee is a user of our app, use the user's uploaded avatar
-            model.put("avatar", invitee.getImage());
-        }
         return model;
     }
 

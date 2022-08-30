@@ -8,5 +8,5 @@ public interface BookingService {
 
     Booking findById(String booking_id);
 
-    void sendInviteEmail(Booking booking);
+    void sendEmail(Booking booking, String template);
 }
