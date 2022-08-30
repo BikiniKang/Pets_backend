@@ -93,7 +93,7 @@ public class BookingServiceImpl implements BookingService{
         String end_time = booking.getEnd_time();
         if (start_time.substring(0, 10).equals(end_time.substring(0, 10))) {
             // if start & end are in the same day, use format "yyyy-MM-dd HH:mm - HH:mm"
-            model.put("time_range", start_time + " - " + end_time.substring(11));
+            model.put("time_range", start_time + "-" + end_time.substring(11));
         } else {
             // if start & end are in different days, use format "yyyy-MM-dd HH:mm - yyyy-MM-dd HH:mm"
             model.put("time_range", start_time + " - " + end_time);

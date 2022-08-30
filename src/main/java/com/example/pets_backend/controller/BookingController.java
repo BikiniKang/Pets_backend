@@ -16,8 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.Map;
 
-import static com.example.pets_backend.ConstantValues.TEMPLATE_BOOKING_CONFIRM;
-import static com.example.pets_backend.ConstantValues.TEMPLATE_BOOKING_INVITE;
+import static com.example.pets_backend.ConstantValues.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -32,6 +31,7 @@ public class BookingController {
     public Booking inviteBooking(@RequestBody Booking booking) {
         booking.setBooking_id(NanoIdUtils.randomNanoId());
         booking.setUser(userService.findByUid(booking.getUid()));
+        booking.setStatus("pending");
         booking = bookingService.save(booking);
         bookingService.sendEmail(booking, TEMPLATE_BOOKING_INVITE);
         return booking;
@@ -49,33 +49,32 @@ public class BookingController {
 
     @Transactional
     @PostMapping("/user/booking/reject")
-    public Booking rejectBooking(@RequestBody String booking_id) {
+    public Booking rejectBooking(@RequestBody Map<String, String> mapIn) {
+        String booking_id = mapIn.get("booking_id");
         Booking booking = bookingService.findById(booking_id);
         booking.setStatus("rejected");
-        /*
-        send reject email
-         */
         return booking;
     }
 
     @Transactional
     @PostMapping("/user/booking/cancel")
-    public Booking cancelBooking(@RequestBody String booking_id) {
+    public Booking cancelBooking(@RequestBody Map<String, String> mapIn) {
+        String booking_id = mapIn.get("booking_id");
         Booking booking = bookingService.findById(booking_id);
         booking.setStatus("cancelled");
-        /*
-        send cancel email
-         */
+        bookingService.sendEmail(booking, TEMPLATE_BOOKING_CANCEL);
         return booking;
     }
 
     @PostMapping("/user/booking/get/by_id")
-    public Booking get1Booking(@RequestBody String booking_id) {
+    public Booking get1Booking(@RequestBody Map<String, String> mapIn) {
+        String booking_id = mapIn.get("booking_id");
         return bookingService.findById(booking_id);
     }
 
     @PostMapping("/user/booking/get")
-    public List<Booking> getBookings(@RequestBody String uid) {
+    public List<Booking> getBookings(@RequestBody Map<String, String> mapIn) {
+        String uid = mapIn.get("uid");
         User user = userService.findByUid(uid);
         return user.getBookingList()
                 .stream()
