@@ -51,8 +51,9 @@ public class BookingServiceImpl implements BookingService{
         Map<String, String> model = basicModel(booking);
         switch (template) {
             case TEMPLATE_BOOKING_INVITE:
-                model.put("accept_link", WEB_PREFIX + "accept/" + booking.getBooking_id());
-                model.put("reject_link", WEB_PREFIX + "reject/" + booking.getBooking_id());
+                // todo: need to be fixed
+                model.put("accept_link", WEB_PREFIX + "accept?booking_id=" + booking.getBooking_id());
+                model.put("reject_link", WEB_PREFIX + "reject?booking_id=" + booking.getBooking_id());
                 break;
             case TEMPLATE_BOOKING_CONFIRM:
                 User invitee = userService.findByEmail(booking.getInvitee());
@@ -63,7 +64,7 @@ public class BookingServiceImpl implements BookingService{
                     model.put("invitee", invitee.getFirstName() + " " + invitee.getLastName());
                     model.put("avatar_invitee", invitee.getImage());
                 }
-                model.put("cancel_link", WEB_PREFIX + "cancel/" + booking.getBooking_id());
+                model.put("cancel_link", WEB_PREFIX + "cancel?booking_id=" + booking.getBooking_id());
                 break;
             case TEMPLATE_BOOKING_CANCEL:
                 break;

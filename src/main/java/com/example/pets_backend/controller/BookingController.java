@@ -8,10 +8,7 @@ import com.example.pets_backend.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
@@ -39,9 +36,11 @@ public class BookingController {
 
     @Transactional
     @PostMapping("/user/booking/confirm")
-    public Booking confirmBooking(@RequestBody Map<String, String> mapIn) {
-        String booking_id = mapIn.get("booking_id");
+    public Booking confirmBooking(@RequestParam String booking_id) {
         Booking booking = bookingService.findById(booking_id);
+        if (!booking.getStatus().equals("pending")) {
+            throw new IllegalStateException("The booking is not pending");
+        }
         booking.setStatus("confirmed");
         bookingService.sendEmail(booking, TEMPLATE_BOOKING_CONFIRM);
         return booking;
@@ -52,6 +51,9 @@ public class BookingController {
     public Booking rejectBooking(@RequestBody Map<String, String> mapIn) {
         String booking_id = mapIn.get("booking_id");
         Booking booking = bookingService.findById(booking_id);
+        if (!booking.getStatus().equals("pending")) {
+            throw new IllegalStateException("The booking is not pending");
+        }
         booking.setStatus("rejected");
         return booking;
     }
@@ -61,6 +63,9 @@ public class BookingController {
     public Booking cancelBooking(@RequestBody Map<String, String> mapIn) {
         String booking_id = mapIn.get("booking_id");
         Booking booking = bookingService.findById(booking_id);
+        if (!booking.getStatus().equals("confirmed")) {
+            throw new IllegalStateException("The booking is not confirmed");
+        }
         booking.setStatus("cancelled");
         bookingService.sendEmail(booking, TEMPLATE_BOOKING_CANCEL);
         return booking;
