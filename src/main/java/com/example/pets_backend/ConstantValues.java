@@ -34,6 +34,10 @@ public class ConstantValues {
     public static final String TEMPLATE_EVENT = "template-event.ftlh";
     public static final String TEMPLATE_UPCOMING_TASKS = "template-tasks.ftlh";
     public static final String TEMPLATE_OVERDUE_TASKS = "template-tasks-overdue.ftlh";
+    public static final String TEMPLATE_BOOKING_INVITE = "template-booking-invite.ftlh";
+    public static final String TEMPLATE_BOOKING_CONFIRM = "template-booking-confirm.ftlh";
+    public static final String TEMPLATE_BOOKING_CANCEL = "template-booking-cancel.ftlh";
     public static final String OVERDUE_TASKS_NOTIFY_TIME = "09:00";
     public static final int DAYS_TO_ARCHIVE = 3;
+    public static final String WEB_PREFIX = "https://pets-tracking.azurewebsites.net/";
 }

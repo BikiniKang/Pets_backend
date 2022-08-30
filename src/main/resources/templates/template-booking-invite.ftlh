@@ -256,7 +256,7 @@ table, td { color: #000000; } #u_body a { color: #0000ee; text-decoration: under
   <tr>
     <td style="padding-right: 0px;padding-left: 0px;" align="center">
       
-      <img align="center" border="0" src="https://i.ibb.co/TqVyD7v/avatar1.png" alt="avatar" title="Image" style="outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;display: inline-block !important;border: none;height: auto;float: none;width: 100%;max-width: 128px;" width="128"/>
+      <img align="center" border="0" src=${avatar} alt="avatar" title="Image" style="outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;display: inline-block !important;border: none;height: auto;float: none;width: 100%;max-width: 128px;" width="128"/>
       
     </td>
   </tr>
@@ -381,7 +381,7 @@ table, td { color: #000000; } #u_body a { color: #0000ee; text-decoration: under
       <td style="overflow-wrap:break-word;word-break:break-word;padding:10px;font-family:arial,helvetica,sans-serif;" align="left">
         
   <div style="line-height: 140%; text-align: left; word-wrap: break-word;">
-    <p style="font-size: 14px; line-height: 140%;"><span style="font-family: 'book antiqua', palatino; font-size: 14px; line-height: 19.6px;">${start_time}}</span></p>
+    <p style="font-size: 14px; line-height: 140%;"><span style="font-family: 'book antiqua', palatino; font-size: 14px; line-height: 19.6px;">${time_range}</span></p>
   </div>
 
       </td>

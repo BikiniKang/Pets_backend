@@ -1,8 +1,13 @@
 package com.example.pets_backend;
 
+import com.example.pets_backend.entity.Booking;
+import com.example.pets_backend.entity.User;
+import com.example.pets_backend.service.BookingService;
+import com.example.pets_backend.service.UserService;
 import freemarker.cache.ClassTemplateLoader;
 import freemarker.cache.TemplateLoader;
 import freemarker.template.Configuration;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -44,5 +49,20 @@ public class PetsBackendApplication {
         resolver.setSuffix(".ftl");
         return resolver;
     }
+
+//    @Bean
+//    CommandLineRunner bkTest(UserService userService, BookingService bookingService) {
+//        return args -> {
+//            User user = new User();
+//            user.setEmail("1234");
+//            user.setPassword("1234456");
+//            user.setFirstName("xinyu");
+//            user.setLastName("kang");
+//            userService.save(user);
+//            Booking booking = new Booking(user.getUid(),"12345@qq.com", "a booking", "2020-08-30 22:23", "2020-08-31 10:23", "my home", "something", "pending");
+//            booking.setUser(userService.findByUid(user.getUid()));
+//            bookingService.save(booking);
+//        };
+//    }
 
 }
