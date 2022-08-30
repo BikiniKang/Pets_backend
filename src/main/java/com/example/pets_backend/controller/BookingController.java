@@ -28,10 +28,10 @@ public class BookingController {
     public Booking inviteBooking(@RequestBody Booking booking) {
         booking.setBooking_id(NanoIdUtils.randomNanoId());
         booking.setUser(userService.findByUid(booking.getUid()));
-        bookingService.save(booking);
-        /*
-        send invite email
-         */
+        booking = bookingService.save(booking);
+        // send the invite email asynchronously
+        Booking finalBooking = booking;
+        bookingService.sendInviteEmail(finalBooking);
         return booking;
     }
 

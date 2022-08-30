@@ -2,13 +2,13 @@ package com.example.pets_backend.entity;
 
 import com.aventrix.jnanoid.jnanoid.NanoIdUtils;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 @Entity
@@ -19,6 +19,7 @@ public class Booking {
     @Id
     private String booking_id = NanoIdUtils.randomNanoId();
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "user_uid", nullable = false, foreignKey = @ForeignKey(name = "fk_booking_uid"))
     private User user;
@@ -33,7 +34,7 @@ public class Booking {
     )
     @JoinColumn
     @OnDelete(action = OnDeleteAction.CASCADE)
-    private List<String> petIdList = new ArrayList<>();
+    private List<String> pet_id_list = new ArrayList<>();
 
     @NonNull
     @Column(length = 32)
@@ -60,4 +61,12 @@ public class Booking {
     @NonNull
     @Column(length = 16)
     private String status;
+
+    public List<LinkedHashMap<String, Object>> getPetAbList() {
+        List<LinkedHashMap<String, Object>> petAbList = new ArrayList<>();
+        for (String petId:this.pet_id_list) {
+            petAbList.add(this.user.getPetByPetId(petId).getPetAb());
+        }
+        return petAbList;
+    }
 }

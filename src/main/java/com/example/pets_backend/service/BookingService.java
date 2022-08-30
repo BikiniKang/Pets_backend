@@ -7,4 +7,6 @@ public interface BookingService {
     Booking save(Booking booking);
 
     Booking findById(String booking_id);
+
+    void sendInviteEmail(Booking booking);
 }
