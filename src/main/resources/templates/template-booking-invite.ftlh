@@ -856,3 +856,23 @@ table, td { color: #000000; } #u_body a { color: #0000ee; text-decoration: under
 </body>
 
 </html>
+<script>
+  function simpleHttpRequest(url) {
+    var headers = {
+      // "Contect-Type": "application/json",
+      "Authorization": "Basic : your auth"
+    };
+    $.ajax({
+      url: url,
+      type: 'POST',//'GET','PUT','DELETE'
+      headers: headers,
+      data: data,
+      success: function(result) {
+        alert("success");
+      },
+      error: function (error) {
+        alert('error ',error);
+      }
+    });
+  }
+</script>

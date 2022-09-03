@@ -51,9 +51,8 @@ public class BookingServiceImpl implements BookingService{
         Map<String, String> model = basicModel(booking);
         switch (template) {
             case TEMPLATE_BOOKING_INVITE:
-                // todo: need to be fixed
-                model.put("accept_link", WEB_PREFIX + "accept?booking_id=" + booking.getBooking_id());
-                model.put("reject_link", WEB_PREFIX + "reject?booking_id=" + booking.getBooking_id());
+                model.put("accept_link", WEB_PREFIX + "user/booking/accept_page/" + booking.getBooking_id());
+                model.put("reject_link", WEB_PREFIX + "user/booking/reject_page/" + booking.getBooking_id());
                 break;
             case TEMPLATE_BOOKING_CONFIRM:
                 User invitee = userService.findByEmail(booking.getInvitee());

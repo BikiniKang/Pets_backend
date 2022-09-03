@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 import static com.example.pets_backend.ConstantValues.*;
 
@@ -24,6 +23,7 @@ public class BookingController {
     private final BookingService bookingService;
     private final UserService userService;
 
+    @Transactional
     @PostMapping("/user/booking/invite")
     public Booking inviteBooking(@RequestBody Booking booking) {
         booking.setBooking_id(NanoIdUtils.randomNanoId());
@@ -42,26 +42,32 @@ public class BookingController {
             throw new IllegalStateException("The booking is not pending");
         }
         booking.setStatus("confirmed");
+        /*
+        todo: if the invitee is a user of our app, add the booking into the invitee's calendar
+         */
         bookingService.sendEmail(booking, TEMPLATE_BOOKING_CONFIRM);
         return booking;
     }
 
     @Transactional
     @PostMapping("/user/booking/reject")
-    public Booking rejectBooking(@RequestBody Map<String, String> mapIn) {
-        String booking_id = mapIn.get("booking_id");
+    public Booking rejectBooking(@RequestParam String booking_id) {
         Booking booking = bookingService.findById(booking_id);
         if (!booking.getStatus().equals("pending")) {
             throw new IllegalStateException("The booking is not pending");
         }
         booking.setStatus("rejected");
+        /*
+        Currently, if the invitee rejected the booking request, the booking will just disappear from
+        the sender's calendar.
+        In the future, we may need to notify the sender (i.e., in-app/email notification).
+         */
         return booking;
     }
 
     @Transactional
     @PostMapping("/user/booking/cancel")
-    public Booking cancelBooking(@RequestBody Map<String, String> mapIn) {
-        String booking_id = mapIn.get("booking_id");
+    public Booking cancelBooking(@RequestParam String booking_id) {
         Booking booking = bookingService.findById(booking_id);
         if (!booking.getStatus().equals("confirmed")) {
             throw new IllegalStateException("The booking is not confirmed");
@@ -72,14 +78,12 @@ public class BookingController {
     }
 
     @PostMapping("/user/booking/get/by_id")
-    public Booking get1Booking(@RequestBody Map<String, String> mapIn) {
-        String booking_id = mapIn.get("booking_id");
+    public Booking get1Booking(@RequestParam String booking_id) {
         return bookingService.findById(booking_id);
     }
 
     @PostMapping("/user/booking/get")
-    public List<Booking> getBookings(@RequestBody Map<String, String> mapIn) {
-        String uid = mapIn.get("uid");
+    public List<Booking> getBookings(@RequestParam String uid) {
         User user = userService.findByUid(uid);
         return user.getBookingList()
                 .stream()
