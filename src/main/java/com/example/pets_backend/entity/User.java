@@ -240,6 +240,23 @@ public class User {
     }
 
     /**
+     * Get all Booking objects in a given date
+     * @param date 'yyyy-MM-dd'
+     * @return a list of Booking objects
+     */
+    public List<Booking> getBookingsByDate(String date) {
+        List<Booking> bookingList = new ArrayList<>();
+        for (Booking booking:this.bookingList) {
+            if (date.equals(booking.getStart_time().substring(0, DATE_PATTERN.length())) ||
+                    date.equals(booking.getEnd_time().substring(0, DATE_PATTERN.length()))) {
+                bookingList.add(booking);
+            }
+        }
+        bookingList.sort(Comparator.comparing(Booking::getStart_time));
+        return bookingList;
+    }
+
+    /**
      * Get a list of Calendar objects containing information of events and tasks
      * @param month 'yyyy-MM'
      * @return a list of maps, where each map represents a calendar day in the given month
@@ -252,10 +269,12 @@ public class User {
         List<String> dateSpan = getDateSpanOfMonth(month);
         Map<String, List<Event>> eventCal = new HashMap<>();
         Map<String, List<Task>> taskCal = new HashMap<>();
+        Map<String, List<Booking>> bookingCal = new HashMap<>();
         // initialize the event and task calendar map (key: date, value: a list of event/task entities)
         for (String date:dateSpan) {
             eventCal.put(date, new ArrayList<>());
             taskCal.put(date, new ArrayList<>());
+            bookingCal.put(date, new ArrayList<>());
         }
         for (Event event:eventList) {
             // extract 'yyyy-MM-dd' from startDateTime and endDateTime
@@ -274,19 +293,33 @@ public class User {
                 taskCal.get(dueDate).add(task);
             }
         }
+        for (Booking booking:bookingList) {
+            String startDate = booking.getStart_time().substring(0, DATE_PATTERN.length());
+            String endDate = booking.getEnd_time().substring(0, DATE_PATTERN.length());
+            if (bookingCal.containsKey(startDate)) {
+                bookingCal.get(startDate).add(booking);
+            }
+            if (!endDate.equals(startDate) && bookingCal.containsKey(endDate)) {
+                bookingCal.get(endDate).add(booking);
+            }
+        }
         // create a list of map, each map contains 'date', 'eventList', and 'taskList' for a specific day in the given month
         List<Map<String, Object>> list = new ArrayList<>();
         for (String date:dateSpan) {
             Map<String, Object> map = new HashMap<>();
             List<Event> eventList = eventCal.get(date);
             List<Task> taskList = taskCal.get(date);
+            List<Booking> bookingList = bookingCal.get(date);
             // sort the events in this day by startDateTime
             eventList.sort(Comparator.comparing(Event::getStartDateTime));
             // sort the tasks in this day by dueDate
             taskList.sort(Comparator.comparing(Task::getDueDate));
+            // sort the bookings in this day by start_time
+            bookingList.sort(Comparator.comparing(Booking::getStart_time));
             map.put("date", date);
             map.put("eventList", eventList);
             map.put("taskList", taskList);
+            map.put("bookingList", bookingList);
             list.add(map);
         }
         return list;
