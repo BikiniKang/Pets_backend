@@ -83,6 +83,18 @@ public class BookingServiceImpl implements BookingService{
         }, LocalDateTime.now());
     }
 
+    @Override
+    public Booking findByPairBkId(String pair_bk_id) {
+        Optional<Booking> booking = bookingRepository.findByPair_bk_id(pair_bk_id);
+        if (booking.isPresent()) {
+            log.info("Booking with pair_bk_id '{}' found in database", pair_bk_id);
+            return booking.get();
+        } else {
+            log.info("Booking with pair_bk_id '{}' not found in database", pair_bk_id);
+            return null;
+        }
+    }
+
     private Map<String, String> basicModel(Booking booking) {
         Map<String, String> model = new HashMap<>();
         User user = booking.getUser();

@@ -65,6 +65,8 @@ public class Booking {
     @NonNull
     private Boolean request_sender; // true if the user is the request sender, false if the user is the recipient
 
+    private String pair_bk_id;  // the booking id shown in invitee/invitor 's database
+
     public List<LinkedHashMap<String, Object>> getPetAbList() {
         List<LinkedHashMap<String, Object>> petAbList = new ArrayList<>();
         for (String petId:this.pet_id_list) {

@@ -9,4 +9,6 @@ public interface BookingService {
     Booking findById(String booking_id);
 
     void sendEmail(Booking booking, String template);
+
+    Booking findByPairBkId(String pair_bk_id);
 }
