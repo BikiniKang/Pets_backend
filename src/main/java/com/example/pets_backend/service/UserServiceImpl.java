@@ -79,7 +79,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     @Override
     public User findByEmail(String email) {
         User user = userRepo.findByEmail(email);
-        checkUserInDB(user, email);
+//        checkUserInDB(user, email);
         return user;
     }
 

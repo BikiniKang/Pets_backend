@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ScheduledFuture;
 
+import com.aventrix.jnanoid.jnanoid.NanoIdUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -27,8 +28,12 @@ public class SchedulerService {
     private final Map<String, ScheduledFuture<?>> jobsMap = new HashMap<>();
 
 
-    public void addJobToScheduler(String id, Runnable task, LocalDateTime triggerTime) {
-        ScheduledFuture<?> scheduledJob = scheduler.schedule(task, triggerTime.atZone(ZoneId.of(TIMEZONE)).toInstant());
+    public void addJobToScheduler(String id, Runnable job, LocalDateTime triggerTime) {
+        ScheduledFuture<?> scheduledJob = scheduler.schedule(job, triggerTime.atZone(ZoneId.of(TIMEZONE)).toInstant());
+        // todo: figure out better way to manage scheduled job ids
+        if (id == null) {
+            id = NanoIdUtils.randomNanoId();
+        }
         jobsMap.put(id, scheduledJob);
     }
 

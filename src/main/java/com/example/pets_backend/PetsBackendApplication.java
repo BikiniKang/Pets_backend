@@ -1,8 +1,13 @@
 package com.example.pets_backend;
 
+import com.example.pets_backend.entity.Booking;
+import com.example.pets_backend.entity.User;
+import com.example.pets_backend.service.BookingService;
+import com.example.pets_backend.service.UserService;
 import freemarker.cache.ClassTemplateLoader;
 import freemarker.cache.TemplateLoader;
 import freemarker.template.Configuration;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
