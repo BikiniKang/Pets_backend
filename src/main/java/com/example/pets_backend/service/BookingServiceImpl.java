@@ -55,9 +55,9 @@ public class BookingServiceImpl implements BookingService{
                 model.put("reject_link", WEB_PREFIX + "user/booking/reject_page/" + booking.getBooking_id());
                 break;
             case TEMPLATE_BOOKING_CONFIRM:
-                User invitee = userService.findByEmail(booking.getInvitee());
+                User invitee = userService.findByEmail(booking.getAttendee());
                 if (invitee == null) {
-                    model.put("invitee", booking.getInvitee());
+                    model.put("invitee", booking.getAttendee());
                     model.put("avatar_invitee", DEFAULT_IMAGE);
                 } else {
                     model.put("invitee", invitee.getFirstName() + " " + invitee.getLastName());
@@ -74,7 +74,7 @@ public class BookingServiceImpl implements BookingService{
             @Override
             public void run() {
                 try {
-                    sendMailService.sendEmail(booking.getInvitee(), model, template);
+                    sendMailService.sendEmail(booking.getAttendee(), model, template);
                 } catch (Exception e) {
                     // todo: handle exception (i.e., notify user that email sending failed)
                     e.printStackTrace();

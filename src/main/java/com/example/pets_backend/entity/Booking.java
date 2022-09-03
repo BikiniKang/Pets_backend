@@ -38,7 +38,7 @@ public class Booking {
 
     @NonNull
     @Column(length = 32)
-    private String invitee;
+    private String attendee;    // email of the request sender/recipient
 
     @NonNull
     @Column(length = 64)
@@ -61,6 +61,9 @@ public class Booking {
     @NonNull
     @Column(length = 16)
     private String status;
+
+    @NonNull
+    private Boolean request_sender; // true if the user is the request sender, false if the user is the recipient
 
     public List<LinkedHashMap<String, Object>> getPetAbList() {
         List<LinkedHashMap<String, Object>> petAbList = new ArrayList<>();
