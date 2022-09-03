@@ -70,12 +70,6 @@ public class BookingController {
         the sender's calendar.
         In the future, we may need to notify the sender (i.e., in-app/email notification).
          */
-
-        // sync the booking pair
-        Booking pair_booking = bookingService.findByPairBkId(booking_id);
-        if (pair_booking != null) {
-            pair_booking.setStatus("rejected");
-        }
         return booking;
     }
 
