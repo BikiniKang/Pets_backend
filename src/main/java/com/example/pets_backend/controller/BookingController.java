@@ -103,4 +103,13 @@ public class BookingController {
                 .filter(b -> b.getStatus().equals("pending") || b.getStatus().equals("confirmed"))
                 .toList();
     }
+
+    @PostMapping("/user/booking/get/by_date")
+    public List<Booking> getBookingsByDate(@RequestParam String uid, @RequestParam String date) {
+        User user = userService.findByUid(uid);
+        return user.getBookingsByDate(date)
+                .stream()
+                .filter(b -> b.getStatus().equals("pending") || b.getStatus().equals("confirmed"))
+                .toList();
+    }
 }
