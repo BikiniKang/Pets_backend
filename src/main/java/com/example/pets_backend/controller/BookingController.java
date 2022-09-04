@@ -95,19 +95,19 @@ public class BookingController {
         return bookingService.findById(booking_id);
     }
 
-    @PostMapping("/user/booking/get")
-    public List<Booking> getBookings(@RequestParam String uid) {
+    @PostMapping("/user/booking/get/by_date")
+    public List<Booking> getBookingsByDate(@RequestParam String uid, @RequestParam String date) {
         User user = userService.findByUid(uid);
-        return user.getBookingList()
+        return user.getBookingsByDate(date)
                 .stream()
                 .filter(b -> b.getStatus().equals("pending") || b.getStatus().equals("confirmed"))
                 .toList();
     }
 
-    @PostMapping("/user/booking/get/by_date")
-    public List<Booking> getBookingsByDate(@RequestParam String uid, @RequestParam String date) {
+    @PostMapping("/user/booking/get")
+    public List<Booking> getBookings(@RequestParam String uid) {
         User user = userService.findByUid(uid);
-        return user.getBookingsByDate(date)
+        return user.getBookingList()
                 .stream()
                 .filter(b -> b.getStatus().equals("pending") || b.getStatus().equals("confirmed"))
                 .toList();
