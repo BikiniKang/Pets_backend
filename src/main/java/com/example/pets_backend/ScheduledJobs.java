@@ -38,6 +38,7 @@ public class ScheduledJobs {
         }
     }
 
+    // update sample user
     @Scheduled(cron = "0 0 0 * * *")    // repeat 0am everyday
     @Transactional
     public void updateSampleUser() {
@@ -49,5 +50,11 @@ public class ScheduledJobs {
         for (Task task:sampleUser.getTaskList()) {
             task.setDueDate(LocalDate.parse(task.getDueDate()).plusDays(1).toString());
         }
+    }
+
+    // keep server awake
+    @Scheduled(cron = "* */10 * * * *")  // repeat every 10 minutes
+    public void keepAwake() {
+        System.out.println("Keep awake");
     }
 }
