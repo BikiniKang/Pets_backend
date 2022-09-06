@@ -78,5 +78,43 @@
       <artifactId>freemarker</artifactId>  
       <scope>compile</scope> 
     </dependency> 
-  </dependencies>
+  </dependencies>  
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>com.microsoft.azure</groupId>
+        <artifactId>azure-webapp-maven-plugin</artifactId>
+        <version>2.5.0</version>
+        <configuration>
+          <schemaVersion>v2</schemaVersion>
+          <subscriptionId>cbe8d77b-5379-4045-9b71-b54d9270f22f</subscriptionId>
+          <resourceGroup>pets</resourceGroup>
+          <appName>pets-app</appName>
+          <pricingTier>F1</pricingTier>
+          <region>australiaeast</region>
+          <appServicePlanName>asp-pets-app</appServicePlanName>
+          <appServicePlanResourceGroup>pets</appServicePlanResourceGroup>
+          <runtime>
+            <os>Windows</os>
+            <javaVersion>Java 17</javaVersion>
+            <webContainer>Java SE</webContainer>
+          </runtime>
+          <deployment>
+            <resources>
+              <resource>
+                <directory>${project.basedir}/target</directory>
+                <includes>
+                  <include>*.jar</include>
+                </includes>
+              </resource>
+            </resources>
+          </deployment>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>

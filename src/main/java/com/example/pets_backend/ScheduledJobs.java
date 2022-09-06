@@ -51,10 +51,4 @@ public class ScheduledJobs {
             task.setDueDate(LocalDate.parse(task.getDueDate()).plusDays(1).toString());
         }
     }
-
-    // keep server awake
-    @Scheduled(cron = "* */10 * * * *")  // repeat every 10 minutes
-    public void keepAwake() {
-        System.out.println("Keep awake");
-    }
 }
