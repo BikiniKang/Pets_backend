@@ -50,37 +50,56 @@ public class BookingServiceImpl implements BookingService{
     public void sendEmail(Booking booking, String template) {
         Map<String, String> model = basicModel(booking);
         switch (template) {
-            case TEMPLATE_BOOKING_INVITE:
+            case TEMPLATE_BOOKING_INVITE -> {
                 model.put("accept_link", WEB_PREFIX + "user/booking/accept_page/" + booking.getBooking_id());
                 model.put("reject_link", WEB_PREFIX + "user/booking/reject_page/" + booking.getBooking_id());
-                break;
-            case TEMPLATE_BOOKING_CONFIRM:
-                User invitee = userService.findByEmail(booking.getAttendee());
-                if (invitee == null) {
+                schedulerService.addJobToScheduler(null, new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            sendMailService.sendEmail(booking.getAttendee(), model, template);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, LocalDateTime.now());
+            }
+            case TEMPLATE_BOOKING_CONFIRM -> {
+                String fromName = booking.getAttendee();
+                User attendee = userService.findByEmail(booking.getAttendee());
+                if (attendee == null) {
                     model.put("invitee", booking.getAttendee());
                     model.put("avatar_invitee", DEFAULT_IMAGE);
                 } else {
-                    model.put("invitee", invitee.getFirstName() + " " + invitee.getLastName());
-                    model.put("avatar_invitee", invitee.getImage());
+                    fromName = attendee.getFirstName() + " " + attendee.getLastName();
+                    model.put("invitee", fromName);
+                    model.put("avatar_invitee", attendee.getImage());
                 }
-                model.put("cancel_link", WEB_PREFIX + "cancel?booking_id=" + booking.getBooking_id());
-                break;
-            case TEMPLATE_BOOKING_CANCEL:
-                break;
-            default:
-                throw new IllegalArgumentException("Template " + template + " not found");
-        }
-        schedulerService.addJobToScheduler(null, new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    sendMailService.sendEmail(booking.getAttendee(), model, template);
-                } catch (Exception e) {
-                    // todo: handle exception (i.e., notify user that email sending failed)
-                    e.printStackTrace();
-                }
+                model.put("cancel_link", WEB_PREFIX + "user/booking/cancel_page/" + booking.getBooking_id());
+                String finalFromName = fromName;
+                schedulerService.addJobToScheduler(null, new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            sendMailService.sendBookingConfirmEmail(booking, booking.getAttendee(), model, finalFromName);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, LocalDateTime.now());
             }
-        }, LocalDateTime.now());
+            case TEMPLATE_BOOKING_CANCEL -> schedulerService.addJobToScheduler(null, new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        sendMailService.sendEmail(booking.getAttendee(), model, template);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }, LocalDateTime.now());
+            default -> throw new IllegalArgumentException("Template " + template + " not found");
+        }
     }
 
     @Override
