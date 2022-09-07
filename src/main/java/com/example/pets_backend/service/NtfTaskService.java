@@ -78,7 +78,7 @@ public class NtfTaskService {
             @Override
             public void run() {
                 try {
-                    sendMailService.sendEmail(email, templateModel, templateName);
+                    sendMailService.sendEmail(email, templateModel, templateName, "");
                     ntfRepo.markAsDone(ntfId);
                     log.info("Job finished, mark Notification '{}' as done", ntfId);
                 } catch (Exception e) {
