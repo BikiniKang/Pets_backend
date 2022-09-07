@@ -401,7 +401,7 @@ table, td { color: #000000; } #u_body a { color: #0000ee; text-decoration: under
       <td style="overflow-wrap:break-word;word-break:break-word;padding:10px 30px;font-family:arial,helvetica,sans-serif;" align="left">
 
   <div style="line-height: 140%; text-align: center; word-wrap: break-word;">
-    <p style="font-size: 14px; line-height: 140%;"><span style="font-family: 'book antiqua', palatino; font-size: 14px; line-height: 19.6px;"><span style="font-size: 12px; line-height: 16.8px;"><span style="color: #169179; font-size: 12px; line-height: 16.8px;"><em><strong>${invitee}</strong></em></span> accepted your request. </span></span></p>
+    <p style="font-size: 14px; line-height: 140%;"><span style="font-family: 'book antiqua', palatino; font-size: 14px; line-height: 19.6px;"><span style="font-size: 12px; line-height: 16.8px;"><span style="color: #169179; font-size: 12px; line-height: 16.8px;"><em><strong>${invitee}</strong></em></span> accepted the booking request. </span></span></p>
 <p style="font-size: 14px; line-height: 140%;"><span style="font-family: 'book antiqua', palatino; font-size: 14px; line-height: 19.6px;"><span style="font-size: 12px; line-height: 16.8px;">Please find the following details of your booking</span>. </span></p>
   </div>
 

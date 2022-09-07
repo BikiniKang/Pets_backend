@@ -11,6 +11,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 import static com.example.pets_backend.ConstantValues.*;
@@ -49,13 +52,17 @@ public class BookingServiceImpl implements BookingService{
     @Override
     public void sendEmail(Booking booking, String template) {
         Map<String, String> model = basicModel(booking);
+        User organizer = booking.getUser();
         switch (template) {
-            case TEMPLATE_BOOKING_INVITE:
+            case TEMPLATE_BOOKING_INVITE -> {
                 model.put("accept_link", WEB_PREFIX + "user/booking/accept_page/" + booking.getBooking_id());
                 model.put("reject_link", WEB_PREFIX + "user/booking/reject_page/" + booking.getBooking_id());
-                break;
-            case TEMPLATE_BOOKING_CONFIRM:
+                addSendEmailJob(booking.getAttendee(), model, template, "");
+            }
+            case TEMPLATE_BOOKING_CONFIRM -> {
                 User invitee = userService.findByEmail(booking.getAttendee());
+                model.put("cancel_link", WEB_PREFIX + "user/booking/cancel_page/" + booking.getBooking_id());
+                // check if the invitee is an internal user
                 if (invitee == null) {
                     model.put("invitee", booking.getAttendee());
                     model.put("avatar_invitee", DEFAULT_IMAGE);
@@ -63,29 +70,29 @@ public class BookingServiceImpl implements BookingService{
                     model.put("invitee", invitee.getFirstName() + " " + invitee.getLastName());
                     model.put("avatar_invitee", invitee.getImage());
                 }
-                model.put("cancel_link", WEB_PREFIX + "cancel?booking_id=" + booking.getBooking_id());
-                break;
-            case TEMPLATE_BOOKING_CANCEL:
-                break;
-            default:
-                throw new IllegalArgumentException("Template " + template + " not found");
+                String rawIcs = getRawIcs(booking);
+                addSendEmailJob(organizer.getEmail(), model, template, rawIcs);
+                addSendEmailJob(booking.getAttendee(), model, template, rawIcs);
+            }
+            case TEMPLATE_BOOKING_CANCEL -> {
+                addSendEmailJob(organizer.getEmail(), model, template, "");
+                addSendEmailJob(booking.getAttendee(), model, template, "");
+            }
+            default -> throw new IllegalArgumentException("Template " + template + " not found");
         }
+    }
+
+    private void addSendEmailJob(String to, Map<String, String> templateModel, String templateName, String rawIcs) {
         schedulerService.addJobToScheduler(null, new Runnable() {
             @Override
             public void run() {
                 try {
-                    sendMailService.sendEmail(booking.getAttendee(), model, template);
+                    sendMailService.sendEmail(to, templateModel, templateName, rawIcs);
                 } catch (Exception e) {
-                    // todo: handle exception (i.e., notify user that email sending failed)
                     e.printStackTrace();
                 }
             }
         }, LocalDateTime.now());
-    }
-
-    @Override
-    public Booking findByPairBkId(String pair_bk_id) {
-        return bookingRepository.findBookingByPair_bk_id(pair_bk_id);
     }
 
     private Map<String, String> basicModel(Booking booking) {
@@ -111,6 +118,45 @@ public class BookingServiceImpl implements BookingService{
         model.put("pets", String.join(", ", petNameList));
         model.put("description", booking.getDescription());
         return model;
+    }
+
+    private String getRawIcs(Booking booking) {
+        String start = transformTimeFormat(booking.getStart_time());
+        String end = transformTimeFormat(booking.getEnd_time());
+        String stamp = ZonedDateTime.now().withZoneSameInstant(ZoneId.of("UTC"))
+                .format(DateTimeFormatter.ofPattern(ICS_TIME_PATTERN));
+        String description = booking.getDescription();
+        String id = booking.getBooking_id();
+        String location = booking.getLocation();
+        User organizer = booking.getUser();
+        String organizerName = organizer.getFirstName() + " " + organizer.getLastName();
+        String organizerEmail = organizer.getEmail();
+        return "BEGIN:VCALENDAR\n" +
+                "VERSION:2.0\n" +
+                "PRODID:-//TechLauncher//Pets Pocket//EN\n" +
+                "METHOD:PUBLISH\n" +
+                "BEGIN:VEVENT\n" +
+                "DTSTART:" + start + "\n" +
+                "DTEND:" + end + "\n" +
+                "DTSTAMP:" + stamp + "\n" +
+                "SUMMARY:Pet Pocket - Appointment\n" +
+                "DESCRIPTION:" + description + "\n" +
+                "UID:" + id + "\n" +
+                "CATEGORIES:Pet Pocket\n" +
+                "LOCATION:" + location + "\n" +
+                "CREATED:00010101T000000\n" +
+                "LAST-MODIFIED:00010101T000000\n" +
+                "ORGANIZER;CN=" + organizerName + ":MAILTO:" + organizerEmail + "\n" +
+                "END:VEVENT\n" +
+                "END:VCALENDAR";
+    }
+
+    private String transformTimeFormat(String dateTime) {
+        ZonedDateTime utcTime = LocalDateTime.parse(dateTime,
+                        DateTimeFormatter.ofPattern(DATETIME_PATTERN))
+                .atZone(ZoneId.of("Australia/Sydney"))
+                .withZoneSameInstant(ZoneId.of("UTC"));
+        return utcTime.format(DateTimeFormatter.ofPattern(ICS_TIME_PATTERN));
     }
 
 }

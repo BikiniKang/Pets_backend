@@ -30,6 +30,17 @@ public class BookingController {
         booking.setUser(userService.findByUid(booking.getUid()));
         booking.setStatus("pending");
         booking = bookingService.save(booking);
+        // if the invitee is a user of our app, add the booking into the invitee's calendar
+        User invitee = userService.findByEmail(booking.getAttendee());
+        if (invitee != null) {
+            Booking pair_booking = new Booking(invitee.getUid(), booking.getUser().getEmail(), booking.getTitle(),
+                    booking.getStart_time(), booking.getEnd_time(), booking.getLocation(), booking.getDescription(),
+                    "pending", false);
+            pair_booking.setUser(invitee);
+            pair_booking.setPair_bk_id(booking.getBooking_id());
+            pair_booking = bookingService.save(pair_booking);
+            booking.setPair_bk_id(pair_booking.getBooking_id());
+        }
         bookingService.sendEmail(booking, TEMPLATE_BOOKING_INVITE);
         return booking;
     }
@@ -42,16 +53,10 @@ public class BookingController {
             throw new IllegalStateException("The booking is not pending");
         }
         booking.setStatus("confirmed");
-        // if the invitee is a user of our app, add the booking into the invitee's calendar
-        User invitee = userService.findByEmail(booking.getAttendee());
-        if (invitee != null) {
-            Booking pair_booking = new Booking(invitee.getUid(), booking.getUser().getEmail(), booking.getTitle(),
-                    booking.getStart_time(), booking.getEnd_time(), booking.getLocation(), booking.getDescription(),
-                    booking.getStatus(), false);
-            pair_booking.setUser(invitee);
-            pair_booking.setPair_bk_id(booking_id);
-            pair_booking = bookingService.save(pair_booking);
-            booking.setPair_bk_id(pair_booking.getBooking_id());
+        // update the booking on the invitee's calendar
+        if (booking.getPair_bk_id() != null) {
+            Booking pair_booking = bookingService.findById(booking.getPair_bk_id());
+            pair_booking.setStatus("confirmed");
         }
         bookingService.sendEmail(booking, TEMPLATE_BOOKING_CONFIRM);
         return booking;
@@ -65,6 +70,11 @@ public class BookingController {
             throw new IllegalStateException("The booking is not pending");
         }
         booking.setStatus("rejected");
+        // update the booking on the invitee's calendar
+        if (booking.getPair_bk_id() != null) {
+            Booking pair_booking = bookingService.findById(booking.getPair_bk_id());
+            pair_booking.setStatus("rejected");
+        }
         /*
         Currently, if the invitee rejected the booking request, the booking will just disappear from
         the sender's calendar.
@@ -81,9 +91,9 @@ public class BookingController {
             throw new IllegalStateException("The booking is not confirmed");
         }
         booking.setStatus("cancelled");
-        // sync the booking pair
-        Booking pair_booking = bookingService.findByPairBkId(booking_id);
-        if (pair_booking != null) {
+        // update the booking on the invitee's calendar
+        if (booking.getPair_bk_id() != null) {
+            Booking pair_booking = bookingService.findById(booking.getPair_bk_id());
             pair_booking.setStatus("cancelled");
         }
         bookingService.sendEmail(booking, TEMPLATE_BOOKING_CANCEL);
