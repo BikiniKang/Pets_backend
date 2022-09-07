@@ -82,11 +82,6 @@ public class BookingServiceImpl implements BookingService{
         }
     }
 
-    @Override
-    public Booking findByPairBkId(String pair_bk_id) {
-        return bookingRepository.findBookingByPair_bk_id(pair_bk_id);
-    }
-
     private void addSendEmailJob(String to, Map<String, String> templateModel, String templateName, String rawIcs) {
         schedulerService.addJobToScheduler(null, new Runnable() {
             @Override
