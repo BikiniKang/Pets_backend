@@ -28,38 +28,38 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 public class CustomAuthorizationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException, TokenExpiredException {
-
-        // TODO: (temporarily closed the Authorization for all developed requests)
-        if (request.getServletPath().equals(LOGIN)
-                || request.getServletPath().equals(REGISTER)
-                || request.getServletPath().startsWith("/data")
-                || request.getServletPath().startsWith("/user")) {
-            filterChain.doFilter(request, response);
-        } else {
-            String authorizationHeader = request.getHeader(AUTHORIZATION);
-            try {
-                String token = authorizationHeader.substring(AUTHORIZATION_PREFIX.length());
-                JWTVerifier verifier = JWT.require(ALGORITHM).build();
-                DecodedJWT decodedJWT = verifier.verify(token);
-                String email = decodedJWT.getSubject();
-                String password = decodedJWT.getClaim("password").asString();
-                Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
-                authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
-                UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(email, password, authorities);
-                SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-                filterChain.doFilter(request, response);
-            } catch (TokenExpiredException exception) {
-                log.error(exception.getMessage());
-                response.setContentType(APPLICATION_JSON_VALUE);
-                response.setStatus(401);
-                new ObjectMapper().writeValue(response.getOutputStream(), ResultData.fail(401, exception.getMessage()));
-            } catch (Exception exception) {
-                log.error(exception.getMessage());
-                response.setContentType(APPLICATION_JSON_VALUE);
-                response.setStatus(500);
-                new ObjectMapper().writeValue(response.getOutputStream(), ResultData.fail(500, "Invalid token"));
-            }
-
-        }
+        filterChain.doFilter(request, response);
+//        // TODO: (temporarily closed the Authorization for all developed requests)
+//        if (request.getServletPath().equals(LOGIN)
+//                || request.getServletPath().equals(REGISTER)
+//                || request.getServletPath().startsWith("/data")
+//                || request.getServletPath().startsWith("/user")) {
+//            filterChain.doFilter(request, response);
+//        } else {
+//            String authorizationHeader = request.getHeader(AUTHORIZATION);
+//            try {
+//                String token = authorizationHeader.substring(AUTHORIZATION_PREFIX.length());
+//                JWTVerifier verifier = JWT.require(ALGORITHM).build();
+//                DecodedJWT decodedJWT = verifier.verify(token);
+//                String email = decodedJWT.getSubject();
+//                String password = decodedJWT.getClaim("password").asString();
+//                Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
+//                authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
+//                UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(email, password, authorities);
+//                SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+//                filterChain.doFilter(request, response);
+//            } catch (TokenExpiredException exception) {
+//                log.error(exception.getMessage());
+//                response.setContentType(APPLICATION_JSON_VALUE);
+//                response.setStatus(401);
+//                new ObjectMapper().writeValue(response.getOutputStream(), ResultData.fail(401, exception.getMessage()));
+//            } catch (Exception exception) {
+//                log.error(exception.getMessage());
+//                response.setContentType(APPLICATION_JSON_VALUE);
+//                response.setStatus(500);
+//                new ObjectMapper().writeValue(response.getOutputStream(), ResultData.fail(500, "Invalid token"));
+//            }
+//
+//        }
     }
 }
