@@ -25,13 +25,10 @@ jobs:
         env:
           DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
           EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
-        run: mvn clean install
+        run: mvn package --file pom.xml
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
-        env:
-          DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
-          EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
         with:
           name: java-app
           path: '${{ github.workspace }}/target/*.jar'
