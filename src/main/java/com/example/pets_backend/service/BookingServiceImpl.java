@@ -55,13 +55,13 @@ public class BookingServiceImpl implements BookingService{
         User organizer = booking.getUser();
         switch (template) {
             case TEMPLATE_BOOKING_INVITE -> {
-                model.put("accept_link", WEB_PREFIX + "user/booking/accept_page/" + booking.getBooking_id());
-                model.put("reject_link", WEB_PREFIX + "user/booking/reject_page/" + booking.getBooking_id());
+                model.put("accept_link", WEB_PREFIX + "user/booking/accept_page?id=" + booking.getBooking_id());
+                model.put("reject_link", WEB_PREFIX + "user/booking/reject_page?id=" + booking.getBooking_id());
                 addSendEmailJob(booking.getAttendee(), model, template, "");
             }
             case TEMPLATE_BOOKING_CONFIRM -> {
                 User invitee = userService.findByEmail(booking.getAttendee());
-                model.put("cancel_link", WEB_PREFIX + "user/booking/cancel_page/" + booking.getBooking_id());
+                model.put("cancel_link", WEB_PREFIX + "user/booking/cancel_page?id=" + booking.getBooking_id());
                 // check if the invitee is an internal user
                 if (invitee == null) {
                     model.put("invitee", booking.getAttendee());
