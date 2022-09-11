@@ -1126,7 +1126,7 @@ table, td { color: #000000; } #u_body a { color: #0000ee; text-decoration: under
       <td style="overflow-wrap:break-word;word-break:break-word;padding:7px 40px 5px;font-family:arial,helvetica,sans-serif;" align="left">
         
   <div style="line-height: 140%; text-align: left; word-wrap: break-word;">
-    <p style="font-size: 14px; line-height: 140%; text-align: center;"><span style="color: #ffffff; font-size: 12px; line-height: 16.8px; font-family: Lato, sans-serif;">© PetPocket  |  All Rights Reserved</span></p>
+    <p style="font-size: 14px; line-height: 140%; text-align: center;"><span style="color: #ffffff; font-size: 12px; line-height: 16.8px; font-family: Lato, sans-serif;"> PetPocket | All Rights Reserved</span></p>
   </div>
 
       </td>
