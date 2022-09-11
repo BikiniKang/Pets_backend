@@ -1,4 +1,4 @@
-# Backend of PetPocket
+# Backend of PetPocket [![Build and deploy JAR app to Azure Web App - pets-backend](https://github.com/BikiniKang/pets-backend/actions/workflows/master_pets-backend.yml/badge.svg?branch=master)](https://github.com/BikiniKang/pets-backend/actions/workflows/master_pets-backend.yml)
 (updated on Aug 29 2022)
 Important documentation for the backend of PetPocket: 
 * [API Documentation](https://petsapidoc.blob.core.windows.net/$web/Pets-tracking-app-1-1-2.html)
