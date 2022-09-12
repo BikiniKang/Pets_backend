@@ -402,7 +402,7 @@ table, td { color: #000000; } #u_body a { color: #0000ee; text-decoration: under
 
   <div style="line-height: 140%; text-align: center; word-wrap: break-word;">
     <p style="font-size: 14px; line-height: 140%;"><span style="font-family: 'book antiqua', palatino; font-size: 14px; line-height: 19.6px;"><span style="font-size: 12px; line-height: 16.8px;"><span style="color: #169179; font-size: 12px; line-height: 16.8px;"><em><strong>${invitee}</strong></em></span> accepted the booking request. </span></span></p>
-<p style="font-size: 14px; line-height: 140%;"><span style="font-family: 'book antiqua', palatino; font-size: 14px; line-height: 19.6px;"><span style="font-size: 12px; line-height: 16.8px;">Please find the following details of your booking</span>. </span></p>
+<p style="font-size: 14px; line-height: 140%;"><span style="font-family: 'book antiqua', palatino; font-size: 14px; line-height: 19.6px;"><span style="font-size: 12px; line-height: 16.8px;">Please find the following details of your booking</span>. </span></p>
   </div>
 
       </td>
@@ -1140,7 +1140,7 @@ table, td { color: #000000; } #u_body a { color: #0000ee; text-decoration: under
       <td style="overflow-wrap:break-word;word-break:break-word;padding:7px 40px 20px;font-family:arial,helvetica,sans-serif;" align="left">
         
   <div style="line-height: 140%; text-align: left; word-wrap: break-word;">
-    <p style="line-height: 140%; text-align: center; font-size: 14px;"><span style="color: #7e8c8d; font-family: Lato, sans-serif; font-size: 14px; line-height: 19.6px;"><span style="font-size: 12px; line-height: 16.8px;">Visit <a rel="noopener" href="https://pets-tracking.azurewebsites.net" target="_blank" style="color: #7e8c8d;">https://pets-tracking.azurewebsites.net</a> to see more</span></span></p>
+    <p style="line-height: 140%; text-align: center; font-size: 14px;"><span style="color: #7e8c8d; font-family: Lato, sans-serif; font-size: 14px; line-height: 19.6px;"><span style="font-size: 12px; line-height: 16.8px;">Visit <a rel="noopener" href="https://pets-tracking.azurewebsites.net" target="_blank" style="color: #7e8c8d;">https://pets-tracking.azurewebsites.net</a> to see more</span></span></p>
   </div>
 
       </td>
