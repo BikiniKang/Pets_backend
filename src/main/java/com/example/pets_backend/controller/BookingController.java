@@ -46,7 +46,7 @@ public class BookingController {
     }
 
     @Transactional
-    @PostMapping("/user/booking/confirm")
+    @RequestMapping("/user/booking/confirm")
     public Booking confirmBooking(@RequestParam String booking_id) {
         Booking booking = bookingService.findById(booking_id);
         if (!booking.getStatus().equals("pending")) {
@@ -63,7 +63,7 @@ public class BookingController {
     }
 
     @Transactional
-    @PostMapping("/user/booking/reject")
+    @RequestMapping("/user/booking/reject")
     public Booking rejectBooking(@RequestParam String booking_id) {
         Booking booking = bookingService.findById(booking_id);
         if (!booking.getStatus().equals("pending")) {
@@ -84,7 +84,7 @@ public class BookingController {
     }
 
     @Transactional
-    @PostMapping("/user/booking/cancel")
+    @RequestMapping("/user/booking/cancel")
     public Booking cancelBooking(@RequestParam String booking_id) {
         Booking booking = bookingService.findById(booking_id);
         if (!booking.getStatus().equals("confirmed")) {
@@ -100,12 +100,12 @@ public class BookingController {
         return booking;
     }
 
-    @PostMapping("/user/booking/get/by_id")
+    @RequestMapping("/user/booking/get/by_id")
     public Booking get1Booking(@RequestParam String booking_id) {
         return bookingService.findById(booking_id);
     }
 
-    @PostMapping("/user/booking/get/by_date")
+    @RequestMapping("/user/booking/get/by_date")
     public List<Booking> getBookingsByDate(@RequestParam String uid, @RequestParam String date) {
         User user = userService.findByUid(uid);
         return user.getBookingsByDate(date)
@@ -114,7 +114,7 @@ public class BookingController {
                 .toList();
     }
 
-    @PostMapping("/user/booking/get")
+    @RequestMapping("/user/booking/get")
     public List<Booking> getBookings(@RequestParam String uid) {
         User user = userService.findByUid(uid);
         return user.getBookingList()
