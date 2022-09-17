@@ -10,8 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 import static com.example.pets_backend.ConstantValues.*;
 
@@ -123,5 +122,13 @@ public class BookingController {
                 .filter(b -> b.getStatus().equals("pending") || b.getStatus().equals("confirmed"))
                 .sorted(Comparator.comparing(Booking::getStart_time))
                 .toList();
+    }
+
+    @PostMapping("/user/booking/get/by_month")
+    public List<Map<String, Object>> getBookingsByMonth(@RequestBody Map<String, String> body) {
+        String uid = body.get("uid");
+        String month = body.get("month");
+        User user = userService.findByUid(uid);
+        return user.getBookingsByMonth(month);
     }
 }

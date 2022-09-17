@@ -256,6 +256,37 @@ public class User {
         return bookingList;
     }
 
+    @JsonIgnore
+    public List<Map<String, Object>> getBookingsByMonth(String month) {
+        // get all dates in the given month
+        List<String> dateSpan = getDateSpanOfMonth(month);
+        Map<String, List<Booking>> cal = new HashMap<>();
+        for (String date:dateSpan) {
+            cal.put(date, new ArrayList<>());
+        }
+        for (Booking b:this.bookingList) {
+            String startDate = b.getStart_time().substring(0, DATE_PATTERN.length());
+            String endDate = b.getEnd_time().substring(0, DATE_PATTERN.length());
+            if (cal.containsKey(startDate)) {
+                cal.get(startDate).add(b);
+            }
+            if (!endDate.equals(startDate) && cal.containsKey(endDate)) {
+                cal.get(endDate).add(b);
+            }
+        }
+        // create a list of map, each map contains 'date' and 'bookingList' for a specific day in the given month
+        List<Map<String, Object>> list = new ArrayList<>();
+        for (String date:dateSpan) {
+            Map<String, Object> map = new HashMap<>();
+            List<Booking> bookingList = cal.get(date);
+            bookingList.sort(Comparator.comparing(Booking::getStart_time));
+            map.put("date", date);
+            map.put("bookingList", bookingList);
+            list.add(map);
+        }
+        return list;
+    }
+
     /**
      * Get a list of Calendar objects containing information of events and tasks
      * @param month 'yyyy-MM'
