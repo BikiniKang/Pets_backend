@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Comparator;
 import java.util.List;
 
 import static com.example.pets_backend.ConstantValues.*;
@@ -120,6 +121,7 @@ public class BookingController {
         return user.getBookingList()
                 .stream()
                 .filter(b -> b.getStatus().equals("pending") || b.getStatus().equals("confirmed"))
+                .sorted(Comparator.comparing(Booking::getStart_time))
                 .toList();
     }
 }
