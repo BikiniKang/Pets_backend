@@ -1,5 +1,6 @@
 package com.example.pets_backend;
 
+import com.example.pets_backend.entity.Booking;
 import com.example.pets_backend.entity.Event;
 import com.example.pets_backend.entity.Task;
 import com.example.pets_backend.entity.User;
@@ -49,6 +50,10 @@ public class ScheduledJobs {
         }
         for (Task task:sampleUser.getTaskList()) {
             task.setDueDate(LocalDate.parse(task.getDueDate()).plusDays(1).toString());
+        }
+        for (Booking booking:sampleUser.getBookingList()) {
+            booking.setStart_time(LocalDateTime.parse(booking.getStart_time(), formatter).plusDays(1).format(formatter));
+            booking.setStart_time(LocalDateTime.parse(booking.getEnd_time(), formatter).plusDays(1).format(formatter));
         }
     }
 }

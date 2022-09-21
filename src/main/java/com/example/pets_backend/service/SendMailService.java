@@ -27,10 +27,10 @@ public class SendMailService {
     private final JavaMailSenderImpl mailSender;
     private final FreeMarkerConfigurer freemarkerConfigurer;
 
-    public void sendEmail(String to, Map<String, String> templateModel, String templateName, String rawIcs) throws Exception {
+    public void sendEmail(String to, Map<String, String> model, String template, String rawIcs) throws Exception {
         log.info("Sending email to '{}'", to);
-        Template freemarkerTemplate = freemarkerConfigurer.getConfiguration().getTemplate(templateName);
-        String htmlBody = FreeMarkerTemplateUtils.processTemplateIntoString(freemarkerTemplate, templateModel);
+        Template freemarkerTemplate = freemarkerConfigurer.getConfiguration().getTemplate(template);
+        String htmlBody = FreeMarkerTemplateUtils.processTemplateIntoString(freemarkerTemplate, model);
         sendHtmlEmail(to, htmlBody, rawIcs);
     }
 
@@ -40,6 +40,7 @@ public class SendMailService {
         helper.setFrom(TEAM_EMAIL);
         helper.setTo(to);
         helper.setSubject("Pet Pocket Reminder");
+        // check whether the email has an ics attachment
         if (rawIcs.isEmpty()) {
             helper.setText(htmlBody, true);
         } else {
