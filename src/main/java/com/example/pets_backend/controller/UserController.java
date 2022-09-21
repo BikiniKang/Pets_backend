@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.MessagingException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -33,6 +34,26 @@ public class UserController {
         LinkedHashMap<String, Object> map = new LinkedHashMap<>();
         map.put("uid", savedUser.getUid());
         return map;
+    }
+
+    @PostMapping("/user/verify/send")
+    public void sendVerifyEmail(@RequestParam String uid) throws MessagingException {
+        User user = userService.findByUid(uid);
+        userService.sendVerifyEmail(user);
+    }
+
+    @PostMapping("/user/verify")
+    public void verifyAccount(@RequestParam String uid, @RequestParam String token) throws Exception {
+        User user = userService.findByUid(uid);
+        if (user.isEmail_verified()) {
+            throw new Exception("This email has been verified");
+        }
+        if (token.equals(user.getVerify_token())) {
+            user.setVerify_token("");
+            user.setEmail_verified(true);
+        } else {
+            throw new Exception("Email verification failed");
+        }
     }
 
     /**

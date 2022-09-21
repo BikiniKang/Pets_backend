@@ -26,6 +26,12 @@ public class User {
     @Column(length = 32)  //TODO: might can be defined as 'unique' instead of manually check duplicates in user service
     private String email;
 
+    @JsonIgnore
+    private boolean email_verified = false;
+
+    @JsonIgnore
+    private String verify_token;
+
     @NonNull
     private String password;
 

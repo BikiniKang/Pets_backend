@@ -1,5 +1,6 @@
 package com.example.pets_backend.service;
 
+import com.aventrix.jnanoid.jnanoid.NanoIdUtils;
 import com.example.pets_backend.entity.Event;
 import com.example.pets_backend.entity.Task;
 import com.example.pets_backend.entity.User;
@@ -14,9 +15,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.mail.MessagingException;
 import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.example.pets_backend.ConstantValues.WEB_PREFIX;
 
 @Service
 @RequiredArgsConstructor
@@ -26,6 +30,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
     private final UserRepository userRepo;
     private final PasswordEncoder passwordEncoder;
+    private final SendMailService sendMailService;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
@@ -45,6 +50,18 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepo.save(user);
+    }
+
+    @Transactional
+    @Override
+    public void sendVerifyEmail(User user) throws MessagingException {
+        String email = user.getEmail();
+        String token = NanoIdUtils.randomNanoId();
+        user.setVerify_token(token);
+        String text = "Hi " + user.getFirstName() + ", \n\n" +
+                "Click the following link to verify your email: \n" +
+                WEB_PREFIX + "#/user/verify?token=" + token + "\n\n";
+        sendMailService.sendVerifyEmail(email, text);
     }
 
     @Override
