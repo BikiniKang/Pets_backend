@@ -4,17 +4,19 @@ package com.example.pets_backend;
 import com.auth0.jwt.algorithms.Algorithm;
 
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class ConstantValues {
+import static java.time.temporal.TemporalAdjusters.lastDayOfMonth;
 
+public class ConstantValues {
     public static final String AUTHORIZATION_PREFIX = "Bearer ";
     public static final String SECRET = "secret";
     public static final Long EXPIRATION_TIME_MILLIS = 1000L * 60 * 120;
     public static final Long EXPIRATION_TIME_MILLIS_REFRESH = 1000L * 60 * 60 * 24 * 30;
     public static final String LOGIN = "/login";
-    public static final String TOKEN_REFRESH = "/token_refresh";
     public static final String REGISTER = "/register";
     public static final Algorithm ALGORITHM = Algorithm.HMAC256(SECRET.getBytes(StandardCharsets.UTF_8));
     public static final String DEFAULT_IMAGE = "https://i.ibb.co/b3w8hXF/Png-Item-223968.png";
@@ -38,4 +40,32 @@ public class ConstantValues {
     public static final String OVERDUE_TASKS_NOTIFY_TIME = "09:00";
     public static final int DAYS_TO_ARCHIVE = 3;
     public static final String WEB_PREFIX = "https://pets-tracking.azurewebsites.net/";
+
+    public static List<String> getDateSpanOfMonth(String month) {
+        LocalDate beginDate = LocalDate.parse(month + "-01");
+        LocalDate endDate = beginDate.with(lastDayOfMonth());
+        return getDateSpan(beginDate, endDate);
+    }
+    private static List<String> getDateSpan(LocalDate dateFrom, LocalDate dateTo) {
+        if (dateFrom.equals(dateTo)) {
+            return List.of(dateFrom.toString());
+        }
+        return dateFrom.datesUntil(dateTo.plusDays(1)).map(LocalDate::toString).toList();
+    }
+
+    public static List<String> getDateSpan(String from, String to, String month) {
+        if (from.substring(0, 7).compareTo(month) <= 0 && to.substring(0, 7).compareTo(month) >= 0) {
+            if (from.equals(to)) { // if the start and the end are in the same day, just return this day
+                return List.of(from);
+            }
+            LocalDate dateFrom = LocalDate.parse(from);
+            LocalDate dateTo = LocalDate.parse(to).plusDays(1); // plus 1 day to make sure that dateTo is included in the list
+            return dateFrom.datesUntil(dateTo)
+                    .map(LocalDate::toString)
+                    .filter(s -> s.startsWith(month))
+                    .toList();
+        } else {
+            return new ArrayList<>();
+        }
+    }
 }

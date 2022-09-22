@@ -1,6 +1,6 @@
 package com.example.pets_backend.security;
 
-import com.example.pets_backend.util.ResultData;
+import com.example.pets_backend.response.ResultData;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;

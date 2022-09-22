@@ -9,7 +9,6 @@ import javax.persistence.*;
 import java.util.*;
 
 import static com.example.pets_backend.ConstantValues.*;
-import static com.example.pets_backend.util.GeneralHelperMethods.*;
 
 @Entity
 @Data
