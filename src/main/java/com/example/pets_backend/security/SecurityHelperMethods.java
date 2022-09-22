@@ -1,4 +1,4 @@
-package com.example.pets_backend.util;
+package com.example.pets_backend.security;
 
 
 import com.auth0.jwt.JWT;
