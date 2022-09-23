@@ -1,6 +1,5 @@
 package com.example.pets_backend.service;
 
-import com.aventrix.jnanoid.jnanoid.NanoIdUtils;
 import com.example.pets_backend.entity.Event;
 import com.example.pets_backend.entity.Task;
 import com.example.pets_backend.entity.User;
@@ -17,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.mail.MessagingException;
 import javax.persistence.EntityNotFoundException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,6 +31,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     private final UserRepository userRepo;
     private final PasswordEncoder passwordEncoder;
     private final SendMailService sendMailService;
+    private final SchedulerService schedulerService;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
@@ -61,16 +62,20 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         return userRepo.save(user);
     }
 
-    @Transactional
     @Override
-    public void sendVerifyEmail(User user) throws MessagingException {
+    public void sendVerifyEmail(User user) {
         String email = user.getEmail();
-        String token = NanoIdUtils.randomNanoId();
-        user.setVerify_token(token);
+        String token = user.getVerify_token();
         String text = "Hi " + user.getFirstName() + ", \n\n" +
                 "Click the following link to verify your email: \n" +
                 WEB_PREFIX + "#/user/verify?token=" + token + "\n\n";
-        sendMailService.sendVerifyEmail(email, text);
+        schedulerService.addJobToScheduler(token, () -> {
+            try {
+                sendMailService.sendVerifyEmail(email, text);
+            } catch (MessagingException e) {
+                e.printStackTrace();
+            }
+        }, LocalDateTime.now());
     }
 
     @Override
