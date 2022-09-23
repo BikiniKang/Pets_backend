@@ -12,8 +12,9 @@ public class RestExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public void globalExceptionHandler(Exception e) {
+    public ResultData<Object> globalExceptionHandler(Exception e) {
         log.error(e.getMessage());
         e.printStackTrace();
+        return ResultData.fail(500, e.getMessage());
     }
 }

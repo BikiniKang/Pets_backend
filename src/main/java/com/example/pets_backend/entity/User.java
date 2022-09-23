@@ -29,7 +29,7 @@ public class User {
     private boolean email_verified = false;
 
     @JsonIgnore
-    private String verify_token;
+    private String verify_token = NanoIdUtils.randomNanoId();
 
     @NonNull
     private String password;
