@@ -35,8 +35,17 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         User user = userRepo.findByEmail(email);
-        checkUserInDB(user, email);
+        checkUserForLogin(user);
         return new org.springframework.security.core.userdetails.User(email, user.getPassword(), new ArrayList<>());
+    }
+
+    private void checkUserForLogin(User user) {
+        if (user == null) {
+            throw new EntityNotFoundException("User not found");
+        }
+        if (!user.isEmail_verified()) {
+            throw new EntityNotFoundException("Email not verified");
+        }
     }
 
     @Override
@@ -95,9 +104,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
     @Override
     public User findByEmail(String email) {
-        User user = userRepo.findByEmail(email);
-//        checkUserInDB(user, email);
-        return user;
+        return userRepo.findByEmail(email);
     }
 
     @Override

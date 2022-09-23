@@ -1,5 +1,7 @@
 package com.example.pets_backend.security;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
 import com.example.pets_backend.response.ResultData;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -12,9 +14,11 @@ import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.Date;
 import java.util.LinkedHashMap;
 
-import static com.example.pets_backend.ConstantValues.LOGIN;
+import static com.example.pets_backend.ConstantValues.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
@@ -27,7 +31,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException {
         User scUser = (User) authResult.getPrincipal();
-        String access_token = "Bearer " + SecurityHelperMethods.generateAccessToken(request, scUser.getUsername(), scUser.getPassword());
+        String access_token = "Bearer " + generateAccessToken(request, scUser.getUsername(), scUser.getPassword());
         LinkedHashMap<String, Object> map = new LinkedHashMap<>();
         map.put("token", access_token);
         response.setContentType(APPLICATION_JSON_VALUE);
@@ -39,5 +43,14 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         response.setContentType(APPLICATION_JSON_VALUE);
         response.setStatus(500);
         new ObjectMapper().writeValue(response.getOutputStream(), ResultData.fail(500, failed.getMessage()));
+    }
+
+    private String generateAccessToken(HttpServletRequest request, String username, String password) {
+        return JWT.create()
+                .withSubject(username)
+                .withClaim("password", password)
+                .withIssuer(request.getRequestURL().toString())
+                .withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME_MILLIS))
+                .sign(Algorithm.HMAC256(SECRET.getBytes(StandardCharsets.UTF_8)));
     }
 }

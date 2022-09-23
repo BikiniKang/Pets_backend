@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import static com.example.pets_backend.ConstantValues.*;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
@@ -34,7 +35,7 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws IOException, TokenExpiredException, ServletException {
-        if (request.getServletPath().equals(LOGIN) || request.getServletPath().equals(REGISTER)) {
+        if (List.of(LOGIN, REGISTER, VERIFY).contains(request.getServletPath())) {
             filterChain.doFilter(request, response);
             return;
         }

@@ -14,10 +14,10 @@ import static java.time.temporal.TemporalAdjusters.lastDayOfMonth;
 public class ConstantValues {
     public static final String AUTHORIZATION_PREFIX = "Bearer ";
     public static final String SECRET = "secret";
-    public static final Long EXPIRATION_TIME_MILLIS = 1000L * 60 * 120;
-    public static final Long EXPIRATION_TIME_MILLIS_REFRESH = 1000L * 60 * 60 * 24 * 30;
+    public static final Long EXPIRATION_TIME_MILLIS = 1000L * 60 * 60 * 24;
     public static final String LOGIN = "/login";
     public static final String REGISTER = "/register";
+    public static final String VERIFY = "/verify";
     public static final Algorithm ALGORITHM = Algorithm.HMAC256(SECRET.getBytes(StandardCharsets.UTF_8));
     public static final String DEFAULT_IMAGE = "https://i.ibb.co/b3w8hXF/Png-Item-223968.png";
     public static final String DEFAULT_IMAGE_PET = "https://i.ibb.co/P6Cz8CS/image-6.png";
