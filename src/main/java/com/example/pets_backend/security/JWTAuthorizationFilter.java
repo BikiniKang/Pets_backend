@@ -35,35 +35,37 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws IOException, TokenExpiredException, ServletException {
-        if (List.of(LOGIN, REGISTER, VERIFY).contains(request.getServletPath())) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-        try {
-            String authorizationHeader = request.getHeader(AUTHORIZATION);
-            String token = authorizationHeader.substring(AUTHORIZATION_PREFIX.length());
-            // parse the token
-            JWTVerifier verifier = JWT.require(ALGORITHM).build();
-            DecodedJWT decodedJWT = verifier.verify(token);
-            String email = decodedJWT.getSubject();
-            String password = decodedJWT.getClaim("password").asString();
-            Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
-            authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
-            // check the token
-            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(email, password, authorities);
-            SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-            // if no exceptions thrown, pass the filter
-            filterChain.doFilter(request, response);
-        } catch (TokenExpiredException exception) {
-            log.error(exception.getMessage());
-            response.setContentType(APPLICATION_JSON_VALUE);
-            response.setStatus(401);
-            new ObjectMapper().writeValue(response.getOutputStream(), ResultData.fail(401, exception.getMessage()));
-        } catch (Exception exception) {
-            log.error(exception.getMessage());
-            response.setContentType(APPLICATION_JSON_VALUE);
-            response.setStatus(500);
-            new ObjectMapper().writeValue(response.getOutputStream(), ResultData.fail(500, "Invalid token"));
-        }
+        filterChain.doFilter(request, response);
+        // TODO: activate Authorization when required
+//        if (List.of(LOGIN, REGISTER, VERIFY).contains(request.getServletPath())) {
+//            filterChain.doFilter(request, response);
+//            return;
+//        }
+//        try {
+//            String authorizationHeader = request.getHeader(AUTHORIZATION);
+//            String token = authorizationHeader.substring(AUTHORIZATION_PREFIX.length());
+//            // parse the token
+//            JWTVerifier verifier = JWT.require(ALGORITHM).build();
+//            DecodedJWT decodedJWT = verifier.verify(token);
+//            String email = decodedJWT.getSubject();
+//            String password = decodedJWT.getClaim("password").asString();
+//            Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
+//            authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
+//            // check the token
+//            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(email, password, authorities);
+//            SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+//            // if no exceptions thrown, pass the filter
+//            filterChain.doFilter(request, response);
+//        } catch (TokenExpiredException exception) {
+//            log.error(exception.getMessage());
+//            response.setContentType(APPLICATION_JSON_VALUE);
+//            response.setStatus(401);
+//            new ObjectMapper().writeValue(response.getOutputStream(), ResultData.fail(401, exception.getMessage()));
+//        } catch (Exception exception) {
+//            log.error(exception.getMessage());
+//            response.setContentType(APPLICATION_JSON_VALUE);
+//            response.setStatus(500);
+//            new ObjectMapper().writeValue(response.getOutputStream(), ResultData.fail(500, "Invalid token"));
+//        }
     }
 }
