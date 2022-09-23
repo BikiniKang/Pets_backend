@@ -9,8 +9,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.MessagingException;
+import javax.persistence.EntityNotFoundException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -27,12 +28,31 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping(REGISTER)
-    public LinkedHashMap<String, Object> register(@RequestBody Map<String, Object> mapIn) {
+    public LinkedHashMap<String, Object> register(@RequestBody Map<String, Object> mapIn) throws MessagingException {
         User user = new User((String) mapIn.get("email"), (String) mapIn.get("password"), (String) mapIn.get("firstName"), (String) mapIn.get("lastName"));
         User savedUser = userService.save(user);
         LinkedHashMap<String, Object> map = new LinkedHashMap<>();
         map.put("uid", savedUser.getUid());
+        userService.sendVerifyEmail(user);
         return map;
+    }
+
+    @Transactional
+    @PostMapping(VERIFY)
+    public void verifyAccount(@RequestParam String email, @RequestParam String verify_token) throws Exception {
+        User user = userService.findByEmail(email);
+        if (user == null) {
+            throw new EntityNotFoundException("User not found");
+        }
+        if (user.isEmail_verified()) {
+            throw new Exception("This email has been verified before");
+        }
+        if (verify_token.equals(user.getVerify_token())) {
+            user.setVerify_token("");
+            user.setEmail_verified(true);
+        } else {
+            throw new Exception("Email verification failed");
+        }
     }
 
     /**

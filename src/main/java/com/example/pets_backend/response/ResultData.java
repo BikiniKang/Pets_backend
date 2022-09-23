@@ -1,4 +1,4 @@
-package com.example.pets_backend.util;
+package com.example.pets_backend.response;
 
 import lombok.Data;
 
@@ -13,7 +13,7 @@ public class ResultData<T> {
     private String timestamp ;
 
 
-    public ResultData (){
+    public ResultData() {
         this.timestamp = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX").format(new java.util.Date());
     }
 

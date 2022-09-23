@@ -1,4 +1,4 @@
-package com.example.pets_backend.util;
+package com.example.pets_backend.response;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;

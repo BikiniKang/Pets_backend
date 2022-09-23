@@ -1,7 +1,8 @@
-package com.example.pets_backend.filter;
+package com.example.pets_backend.security;
 
-import com.example.pets_backend.util.ResultData;
-import com.example.pets_backend.util.SecurityHelperMethods;
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.example.pets_backend.response.ResultData;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
@@ -13,24 +14,24 @@ import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.Date;
 import java.util.LinkedHashMap;
 
+import static com.example.pets_backend.ConstantValues.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
-public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
+public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
-    public CustomAuthenticationFilter(AuthenticationManager authenticationManager) {
-        super.setAuthenticationManager(authenticationManager);
+    public JWTAuthenticationFilter(AuthenticationManager authenticationManager) {
+        super(authenticationManager);
+        setFilterProcessesUrl(LOGIN);
     }
 
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException {
         User scUser = (User) authResult.getPrincipal();
-        String access_token = "Bearer " + SecurityHelperMethods.generateAccessToken(request, scUser.getUsername(), scUser.getPassword());
-//        String refresh_token = SecurityHelperMethods.generateRefreshToken(request, scUser.getUsername());
-//        Map<String, String> tokens = new HashMap<>();
-//        tokens.put("access_token", access_token);
-//        tokens.put("refresh_token", refresh_token);
+        String access_token = "Bearer " + generateAccessToken(request, scUser.getUsername(), scUser.getPassword());
         LinkedHashMap<String, Object> map = new LinkedHashMap<>();
         map.put("token", access_token);
         response.setContentType(APPLICATION_JSON_VALUE);
@@ -42,5 +43,14 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         response.setContentType(APPLICATION_JSON_VALUE);
         response.setStatus(500);
         new ObjectMapper().writeValue(response.getOutputStream(), ResultData.fail(500, failed.getMessage()));
+    }
+
+    private String generateAccessToken(HttpServletRequest request, String username, String password) {
+        return JWT.create()
+                .withSubject(username)
+                .withClaim("password", password)
+                .withIssuer(request.getRequestURL().toString())
+                .withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME_MILLIS))
+                .sign(Algorithm.HMAC256(SECRET.getBytes(StandardCharsets.UTF_8)));
     }
 }

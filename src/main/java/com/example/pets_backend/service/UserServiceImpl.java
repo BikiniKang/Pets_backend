@@ -14,9 +14,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.mail.MessagingException;
 import javax.persistence.EntityNotFoundException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.example.pets_backend.ConstantValues.WEB_PREFIX;
 
 @Service
 @RequiredArgsConstructor
@@ -26,12 +30,23 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
     private final UserRepository userRepo;
     private final PasswordEncoder passwordEncoder;
+    private final SendMailService sendMailService;
+    private final SchedulerService schedulerService;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         User user = userRepo.findByEmail(email);
-        checkUserInDB(user, email);
+        checkUserForLogin(user);
         return new org.springframework.security.core.userdetails.User(email, user.getPassword(), new ArrayList<>());
+    }
+
+    private void checkUserForLogin(User user) {
+        if (user == null) {
+            throw new EntityNotFoundException("User not found");
+        }
+        if (!user.isEmail_verified()) {
+            throw new EntityNotFoundException("Email not verified");
+        }
     }
 
     @Override
@@ -45,6 +60,22 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepo.save(user);
+    }
+
+    @Override
+    public void sendVerifyEmail(User user) {
+        String email = user.getEmail();
+        String token = user.getVerify_token();
+        String text = "Hi " + user.getFirstName() + ", \n\n" +
+                "Click the following link to verify your email: \n" +
+                WEB_PREFIX + "#/user/verify?token=" + token + "\n\n";
+        schedulerService.addJobToScheduler(token, () -> {
+            try {
+                sendMailService.sendVerifyEmail(email, text);
+            } catch (MessagingException e) {
+                e.printStackTrace();
+            }
+        }, LocalDateTime.now());
     }
 
     @Override
@@ -78,9 +109,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
     @Override
     public User findByEmail(String email) {
-        User user = userRepo.findByEmail(email);
-//        checkUserInDB(user, email);
-        return user;
+        return userRepo.findByEmail(email);
     }
 
     @Override

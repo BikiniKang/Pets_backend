@@ -1,4 +1,4 @@
-package com.example.pets_backend.util;
+package com.example.pets_backend.response;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -12,7 +12,7 @@ public class RestExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ResultData<String> exception(Exception e) {
+    public ResultData<Object> globalExceptionHandler(Exception e) {
         log.error(e.getMessage());
         e.printStackTrace();
         return ResultData.fail(500, e.getMessage());

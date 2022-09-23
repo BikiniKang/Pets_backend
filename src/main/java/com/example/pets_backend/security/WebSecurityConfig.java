@@ -1,7 +1,5 @@
-package com.example.pets_backend.config;
+package com.example.pets_backend.security;
 
-import com.example.pets_backend.filter.CustomAuthenticationFilter;
-import com.example.pets_backend.filter.CustomAuthorizationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,14 +10,11 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import java.util.Arrays;
-
-import static com.example.pets_backend.ConstantValues.*;
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -36,27 +31,20 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        CustomAuthenticationFilter customAuthenticationFilter = new CustomAuthenticationFilter(authenticationManagerBean());
-        // apply the authentication in our login URL
-        customAuthenticationFilter.setFilterProcessesUrl(LOGIN);
-        http.cors().and().csrf().disable();
-        http.cors().and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        // TODO: (temporarily closed the Authorization for all developed requests)
-        http.cors().and().authorizeRequests().antMatchers(LOGIN, REGISTER, "/data/**", "/user/**").permitAll();
-        // bind all the other URLs
-        http.cors().and().authorizeRequests().anyRequest().authenticated();
-        http.cors().and().addFilter(customAuthenticationFilter);
-        http.cors().and().addFilterBefore(new CustomAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.cors().configurationSource(corsConfigurationSource());
+        http.csrf().disable();
+        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        http.addFilter(new JWTAuthorizationFilter(authenticationManager()))
+                .addFilter(new JWTAuthenticationFilter(authenticationManager()));
     }
 
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("*"));
-        configuration.setAllowedMethods(Arrays.asList("*"));
-        configuration.setAllowedHeaders(Arrays.asList("*"));
+        configuration.setAllowedOrigins(List.of("*"));
+        configuration.setAllowedMethods(List.of("*"));
+        configuration.setAllowedHeaders(List.of("*"));
         configuration.setMaxAge(3600L);
-        configuration.setExposedHeaders(Arrays.asList("*"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
