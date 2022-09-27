@@ -5,7 +5,6 @@ import com.example.pets_backend.entity.Pet;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
@@ -27,12 +26,11 @@ public class MediData {
     private String pet_id;
 
     @NonNull
-    @Column(length = 64)
     private String medi_name;
 
     @NonNull
-    @Column(length = 32)
     private String frequency;
 
+    @NonNull
     private String notes = "NA";
 }

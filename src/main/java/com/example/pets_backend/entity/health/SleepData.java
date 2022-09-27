@@ -27,13 +27,10 @@ public class SleepData {
     private String pet_id;
 
     @NonNull
-    @Column(length = 16)
-    private String start_time;      // yyyy-MM-dd HH-mm
+    @Column(length = 10)
+    private String date;    // yyyy-MM-dd
 
     @NonNull
-    @Column(length = 16)
-    private String end_time;        // yyyy-MM-dd HH-mm
-
     @Column(length = 5)
     private String duration_str;    // (H)H:mm
 

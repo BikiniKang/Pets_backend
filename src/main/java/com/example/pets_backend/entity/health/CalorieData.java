@@ -27,9 +27,9 @@ public class CalorieData {
     private String pet_id;
 
     @NonNull
-    private int calorie;     // in Kcal
+    @Column(length = 10)
+    private String date;    // yyyy-MM-dd
 
     @NonNull
-    @Column(length = 16)
-    private String time;    // yyyy-MM-dd HH-mm
+    private int calorie;     // in Kcal
 }

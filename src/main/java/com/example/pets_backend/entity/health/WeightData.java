@@ -27,10 +27,9 @@ public class WeightData {
     private String pet_id;
 
     @NonNull
-    private int weight;     // in kg
-
-    @NonNull
     @Column(length = 10)
     private String date;    // yyyy-MM-dd
 
+    @NonNull
+    private int weight;     // in kg
 }

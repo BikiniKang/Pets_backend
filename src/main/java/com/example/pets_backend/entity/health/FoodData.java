@@ -27,16 +27,15 @@ public class FoodData {
     private String pet_id;
 
     @NonNull
-    @Column(length = 32)
+    @Column(length = 10)
+    private String date;            // yyyy-MM-dd
+
+    @NonNull
     private String food_name;
 
     @NonNull
-    @Column(length = 15)
     private String amount;
 
-    private String notes = "NA";
-
     @NonNull
-    @Column(length = 10)
-    private String date;            // yyyy-MM-dd
+    private String notes = "NA";
 }

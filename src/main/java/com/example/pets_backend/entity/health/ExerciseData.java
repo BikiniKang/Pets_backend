@@ -27,14 +27,15 @@ public class ExerciseData {
     private String pet_id;
 
     @NonNull
+    @Column(length = 10)
+    private String date;            // yyyy-MM-dd
+
+    @NonNull
     private String exercise_type;
 
+    @NonNull
     @Column(length = 5)
     private String duration_str;    // (H)H:mm
 
     private int minutes;
-
-    @NonNull
-    @Column(length = 10)
-    private String date;            // yyyy-MM-dd
 }
