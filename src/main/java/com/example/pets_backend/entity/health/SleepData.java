@@ -1,38 +1,28 @@
 package com.example.pets_backend.entity.health;
 
-import com.aventrix.jnanoid.jnanoid.NanoIdUtils;
-import com.example.pets_backend.entity.Pet;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
 
-@Entity
-@Data
-@AllArgsConstructor
-@RequiredArgsConstructor
 @NoArgsConstructor
-public class SleepData {
-    @JsonIgnore
-    @ManyToOne
-    private Pet pet;
+@Getter
+@Entity
+public class SleepData extends HealthData{
 
-    @Id
-    private String data_id = NanoIdUtils.randomNanoId();
-
-    @NonNull
-    private String pet_id;
-
-    @NonNull
-    @Column(length = 10)
-    private String date;    // yyyy-MM-dd
-
-    @NonNull
     @Column(length = 5)
     private String duration_str;    // (H)H:mm
 
     private int minutes;
+
+
+    public SleepData(String pet_id, String date, String duration_str) {
+        super(pet_id, date);
+        this.duration_str = duration_str;
+    }
+
+    public void setMinutes() {
+        String[] strings = this.duration_str.split(":");
+        this.minutes = Integer.parseInt(strings[0])*60 + Integer.parseInt(strings[1]);
+    }
 }

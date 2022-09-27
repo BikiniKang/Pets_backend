@@ -1,36 +1,28 @@
 package com.example.pets_backend.entity.health;
 
-import com.aventrix.jnanoid.jnanoid.NanoIdUtils;
-import com.example.pets_backend.entity.Pet;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
 
-@Entity
-@Data
-@AllArgsConstructor
-@RequiredArgsConstructor
 @NoArgsConstructor
-public class MediData {
-    @JsonIgnore
-    @ManyToOne
-    private Pet pet;
+@Getter
+@Entity
+public class MediData extends HealthData{
 
-    @Id
-    private String data_id = NanoIdUtils.randomNanoId();
-
-    @NonNull
-    private String pet_id;
-
-    @NonNull
     private String medi_name;
 
-    @NonNull
     private String frequency;
 
-    @NonNull
     private String notes = "NA";
+
+    public MediData(String pet_id, String date, String medi_name, String frequency, String notes) {
+        super(pet_id, date);
+        this.medi_name = medi_name;
+        this.frequency = frequency;
+        this.notes = notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
 }
