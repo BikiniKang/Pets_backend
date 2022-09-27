@@ -66,9 +66,12 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     public void sendVerifyEmail(User user) {
         String email = user.getEmail();
         String token = user.getVerify_token();
+        String verifyUrl = WEB_PREFIX + "#/user/verify?" +
+                "email=" + email + "&" +
+                "token=" + token;
         String text = "Hi " + user.getFirstName() + ", \n\n" +
                 "Click the following link to verify your email: \n" +
-                WEB_PREFIX + "#/user/verify?token=" + token + "\n\n";
+                verifyUrl + "\n\n";
         schedulerService.addJobToScheduler(token, () -> {
             try {
                 sendMailService.sendVerifyEmail(email, text);
