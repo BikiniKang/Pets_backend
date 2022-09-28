@@ -23,75 +23,41 @@ public class HealthController {
 
     @PostMapping("/user/pet/weight/add")
     public HealthData addWeightData(@RequestBody WeightData weightData) {
-        if (weightData.getWeight() == 0) {
-            throw new IllegalArgumentException("Weight cannot be 0 or null");
-        }
-        // adding new WeightData to an existing date will automatically delete the previous one
         healthDataService.deleteSameDateData("WeightData", weightData.getDate());
-        return healthDataService.saveHealthData(weightData);
+        return healthDataService.saveWeightData(weightData);
     }
 
     @PostMapping("/user/pet/calorie/add")
     public HealthData addCalorieData(@RequestBody CalorieData calorieData) {
-        if (calorieData.getCalorie() == 0) {
-            throw new IllegalArgumentException("Calorie cannot be 0 or null");
-        }
-        // adding new CalorieData to an existing date will automatically delete the previous one
         healthDataService.deleteSameDateData("CalorieData", calorieData.getDate());
-        return healthDataService.saveHealthData(calorieData);
+        return healthDataService.saveCalorieData(calorieData);
     }
 
     @PostMapping("/user/pet/sleep/add")
     public HealthData addSleepData(@RequestBody SleepData sleepData) {
-        if (sleepData.getDuration_str() == null) {
-            throw new IllegalArgumentException("Duration cannot be null");
-        }
-        sleepData.setMinutes();
-        // adding new SleepData to an existing date will automatically delete the previous one
         healthDataService.deleteSameDateData("SleepData", sleepData.getDate());
-        return healthDataService.saveHealthData(sleepData);
+        return healthDataService.saveSleepData(sleepData);
     }
 
     @PostMapping("/user/pet/exercise/add")
     public HealthData addExerciseData(@RequestBody ExerciseData exerciseData) {
-        if (exerciseData.getExercise_type() == null) {
-            throw new IllegalArgumentException("Exercise type cannot be null");
-        }
-        if (exerciseData.getDuration_str() == null) {
-            throw new IllegalArgumentException("Duration cannot be null");
-        }
-        exerciseData.setMinutes();
-        // adding new ExerciseData to an existing date will automatically delete the previous one
         healthDataService.deleteSameDateData("ExerciseData", exerciseData.getDate());
-        return healthDataService.saveHealthData(exerciseData);
+        return healthDataService.saveExerciseData(exerciseData);
     }
 
     @PostMapping("/user/pet/food/add")
     public HealthData addFoodData(@RequestBody FoodData foodData) {
-        if (foodData.getFood_name() == null) {
-            throw new IllegalArgumentException("Food name cannot be null");
-        }
-        if (foodData.getAmount() == null) {
-            throw new IllegalArgumentException("Amount cannot be null");
-        }
-        if (foodData.getNotes() == null) {
-            foodData.setNotes("NA");
-        }
-        return healthDataService.saveHealthData(foodData);
+        return healthDataService.saveFoodData(foodData);
     }
 
     @PostMapping("/user/pet/medi/add")
     public HealthData addMediData(@RequestBody MediData mediData) {
-        if (mediData.getMedi_name() == null) {
-            throw new IllegalArgumentException("Medication name cannot be null");
-        }
-        if (mediData.getFrequency() == null) {
-            throw new IllegalArgumentException("Frequency cannot be null");
-        }
-        if (mediData.getNotes() == null) {
-            mediData.setNotes("NA");
-        }
-        return healthDataService.saveHealthData(mediData);
+        return healthDataService.saveMediData(mediData);
+    }
+
+    @PostMapping("/user/pet/food/edit")
+    public HealthData editFoodData (@RequestBody FoodData foodData) {
+        return healthDataService.saveFoodData(foodData);
     }
 
 
