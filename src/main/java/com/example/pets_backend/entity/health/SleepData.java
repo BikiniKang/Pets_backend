@@ -10,7 +10,7 @@ import javax.persistence.Entity;
 @Entity
 public class SleepData extends HealthData{
 
-    @Column(length = 5)
+    @Column(length = 5, nullable = false)
     private String duration_str;    // (H)H:mm
 
     private int minutes;

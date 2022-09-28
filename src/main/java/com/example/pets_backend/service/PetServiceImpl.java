@@ -64,7 +64,7 @@ public class PetServiceImpl implements PetService{
     @Override
     public void checkIfPetIdInDB(String petId) {
         if (!petRepository.existsById(petId)) {
-            throw new IllegalArgumentException("Invalid pet_id");
+            throw new IllegalArgumentException("Invalid pet ID");
         } else {
             log.info("Pet '{}' found", petId);
         }

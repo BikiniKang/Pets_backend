@@ -2,13 +2,15 @@ package com.example.pets_backend.entity.health;
 
 import lombok.*;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 
 @NoArgsConstructor
 @Getter
 @Entity
 public class CalorieData extends HealthData{
-    @NonNull
+
+    @Column(nullable = false)
     private int calorie;     // in Kcal
 
 

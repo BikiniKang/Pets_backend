@@ -10,9 +10,10 @@ import javax.persistence.Entity;
 @Entity
 public class ExerciseData extends HealthData{
 
+    @Column(nullable = false)
     private String exercise_type;
 
-    @Column(length = 5)
+    @Column(length = 5, nullable = false)
     private String duration_str;    // (H)H:mm
 
     private int minutes;

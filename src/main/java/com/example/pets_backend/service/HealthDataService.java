@@ -62,7 +62,7 @@ public class HealthDataService {
             throw new IllegalArgumentException("Amount cannot be null");
         }
         if (foodData.getNotes() == null) {
-            foodData.setNotes("NA");
+            throw new IllegalArgumentException("Notes cannot be null, you can set it as 'NA'");
         }
         return saveHealthData(foodData);
     }
@@ -75,7 +75,7 @@ public class HealthDataService {
             throw new IllegalArgumentException("Frequency cannot be null");
         }
         if (mediData.getNotes() == null) {
-            mediData.setNotes("NA");
+            throw new IllegalArgumentException("Notes cannot be null, you can set it as 'NA'");
         }
         return saveHealthData(mediData);
     }
