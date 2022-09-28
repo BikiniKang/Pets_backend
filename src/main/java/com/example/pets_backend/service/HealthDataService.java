@@ -26,4 +26,18 @@ public class HealthDataService {
         healthDataRepo.deleteById(data_id);
     }
 
+    public void deleteSameDateData (String className, String date) {
+        HealthData sameDateData = null;
+        switch (className) {
+            case "WeightData" -> sameDateData = healthDataRepo.findWeightDataByDate(date);
+            case "CalorieData" -> sameDateData = healthDataRepo.findCalorieDataByDate(date);
+            case "SleepData" -> sameDateData = healthDataRepo.findSleepDataByDate(date);
+            case "ExerciseData" -> sameDateData = healthDataRepo.findExerciseDataByDate(date);
+            default -> {}
+        }
+        if (sameDateData != null) {
+            healthDataRepo.deleteById(sameDateData.getData_id());
+        }
+    }
+
 }

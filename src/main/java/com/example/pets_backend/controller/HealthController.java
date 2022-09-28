@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping
+@Transactional
 @Slf4j
 public class HealthController {
 
@@ -25,6 +26,8 @@ public class HealthController {
         if (weightData.getWeight() == 0) {
             throw new IllegalArgumentException("Weight cannot be 0 or null");
         }
+        // adding new WeightData to an existing date will automatically delete the previous one
+        healthDataService.deleteSameDateData("WeightData", weightData.getDate());
         return healthDataService.saveHealthData(weightData);
     }
 
@@ -33,21 +36,23 @@ public class HealthController {
         if (calorieData.getCalorie() == 0) {
             throw new IllegalArgumentException("Calorie cannot be 0 or null");
         }
+        // adding new CalorieData to an existing date will automatically delete the previous one
+        healthDataService.deleteSameDateData("CalorieData", calorieData.getDate());
         return healthDataService.saveHealthData(calorieData);
     }
 
     @PostMapping("/user/pet/sleep/add")
-    @Transactional
     public HealthData addSleepData(@RequestBody SleepData sleepData) {
         if (sleepData.getDuration_str() == null) {
             throw new IllegalArgumentException("Duration cannot be null");
         }
         sleepData.setMinutes();
+        // adding new SleepData to an existing date will automatically delete the previous one
+        healthDataService.deleteSameDateData("SleepData", sleepData.getDate());
         return healthDataService.saveHealthData(sleepData);
     }
 
     @PostMapping("/user/pet/exercise/add")
-    @Transactional
     public HealthData addExerciseData(@RequestBody ExerciseData exerciseData) {
         if (exerciseData.getExercise_type() == null) {
             throw new IllegalArgumentException("Exercise type cannot be null");
@@ -56,11 +61,12 @@ public class HealthController {
             throw new IllegalArgumentException("Duration cannot be null");
         }
         exerciseData.setMinutes();
+        // adding new ExerciseData to an existing date will automatically delete the previous one
+        healthDataService.deleteSameDateData("ExerciseData", exerciseData.getDate());
         return healthDataService.saveHealthData(exerciseData);
     }
 
     @PostMapping("/user/pet/food/add")
-    @Transactional
     public HealthData addFoodData(@RequestBody FoodData foodData) {
         if (foodData.getFood_name() == null) {
             throw new IllegalArgumentException("Food name cannot be null");
@@ -75,7 +81,6 @@ public class HealthController {
     }
 
     @PostMapping("/user/pet/medi/add")
-    @Transactional
     public HealthData addMediData(@RequestBody MediData mediData) {
         if (mediData.getMedi_name() == null) {
             throw new IllegalArgumentException("Medication name cannot be null");
