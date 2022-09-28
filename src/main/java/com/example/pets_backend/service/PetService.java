@@ -7,4 +7,5 @@ public interface PetService {
     Pet save(Pet pet);
     Pet findByPetId(String petId);
     void deleteByPetId(String petId);
+    void checkIfPetIdInDB(String petId);
 }

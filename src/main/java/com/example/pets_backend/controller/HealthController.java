@@ -1,11 +1,21 @@
 package com.example.pets_backend.controller;
 
+import com.example.pets_backend.entity.Pet;
 import com.example.pets_backend.entity.health.*;
+import com.example.pets_backend.repository.PetRepository;
+import com.example.pets_backend.repository.health.HealthDataRepository;
 import com.example.pets_backend.service.HealthDataService;
+import com.example.pets_backend.service.PetService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -15,6 +25,9 @@ import org.springframework.web.bind.annotation.*;
 public class HealthController {
 
     private final HealthDataService healthDataService;
+    private final PetService petService;
+    private final HealthDataRepository healthDataRepo;
+    private final PetRepository petRepository;
 
     @DeleteMapping("/user/pet/health/delete")
     public void deleteData(@RequestParam String data_id) {
@@ -65,11 +78,46 @@ public class HealthController {
         return healthDataService.saveMediData(mediData);
     }
 
-//    @PostMapping("/user/pet/weight")
-//    public List<WeightData> getWeightList(@RequestParam String pet_id, @RequestParam String range) {
-//        Pet pet = petService.findByPetId(pet_id);
-//        return pet.getWeightListWithRange(range);
-//    }
+    @PostMapping("/user/pet/weight")
+    public List<HealthData> getWeightDataList (@RequestParam String pet_id, @RequestParam String range) {
+        return healthDataService.getHealthData(pet_id, range, "WeightData");
+    }
 
+    @PostMapping("/user/pet/calorie")
+    public List<HealthData> getCalorieDataList (@RequestParam String pet_id, @RequestParam String range) {
+        return healthDataService.getHealthData(pet_id, range, "CalorieData");
+    }
 
+    @PostMapping("/user/pet/sleep")
+    public List<HealthData> getSleepDataList (@RequestParam String pet_id, @RequestParam String range) {
+        return healthDataService.getHealthData(pet_id, range, "SleepData");
+    }
+
+    @PostMapping("/user/pet/exercise")
+    public List<HealthData> getExerciseDataList (@RequestParam String pet_id, @RequestParam String range) {
+        return healthDataService.getHealthData(pet_id, range, "ExerciseData");
+    }
+
+    @PostMapping("/user/pet/food")
+    public List<HealthData> getFoodDataList (@RequestParam String pet_id, @RequestParam String range) {
+        return healthDataService.getHealthData(pet_id, range, "FoodData");
+    }
+
+    @PostMapping("/user/pet/medi")
+    public List<HealthData> getMediDataList (@RequestParam String pet_id, @RequestParam String range) {
+        return healthDataService.getHealthData(pet_id, range, "MediData");
+    }
+
+    @PostMapping("/user/pet/health")
+    public Map<String, List<HealthData>> getHealthDashboard (@RequestParam String pet_id, @RequestParam String range) {
+        Pet pet = petService.findByPetId(pet_id);
+        Map<String, List<HealthData>> map = new HashMap<>();
+        map.put("weight_list", healthDataService.getHealthData(pet_id, range, "WeightData"));
+        map.put("calorie_list", healthDataService.getHealthData(pet_id, range, "CalorieData"));
+        map.put("sleep_list", healthDataService.getHealthData(pet_id, range, "SleepData"));
+        map.put("exercise_list", healthDataService.getHealthData(pet_id, range, "ExerciseData"));
+        map.put("food_list", healthDataService.getHealthData(pet_id, range, "FoodData"));
+        map.put("medi_list", healthDataService.getHealthData(pet_id, range, "MediData"));
+        return map;
+    }
 }

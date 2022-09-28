@@ -12,6 +12,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Getter
 @Entity
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class HealthData {
     @JsonIgnore
     @ManyToOne

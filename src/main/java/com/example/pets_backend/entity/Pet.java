@@ -85,31 +85,41 @@ public class Pet {
         petAb.put("petAvatar", this.petAvatar);
         return petAb;
     }
-
-    @JsonIgnore
-    public List<WeightData> getWeightDataListWithRange(String range) {
-        return switch (range) {
-            case "All" -> this.weightDataList.stream()
-                    .sorted(Comparator.comparing(WeightData::getDate))
-                    .toList();
-            case "Week" -> this.weightDataList.stream()
-                    .filter(weightData -> weightData.getDate().compareTo(LocalDate.now().minusDays(7).toString()) > 0)
-                    .sorted(Comparator.comparing(WeightData::getDate))
-                    .toList();
-            case "Month" -> this.weightDataList.stream()
-                    .filter(weightData -> weightData.getDate().compareTo(LocalDate.now().minusMonths(1).toString()) > 0)
-                    .sorted(Comparator.comparing(WeightData::getDate))
-                    .toList();
-            case "6Month" -> this.weightDataList.stream()
-                    .filter(weightData -> weightData.getDate().compareTo(LocalDate.now().minusMonths(6).toString()) > 0)
-                    .sorted(Comparator.comparing(WeightData::getDate))
-                    .toList();
-            case "Year" -> this.weightDataList.stream()
-                    .filter(weightData -> weightData.getDate().compareTo(LocalDate.now().minusYears(1).toString()) > 0)
-                    .sorted(Comparator.comparing(WeightData::getDate))
-                    .toList();
-            default -> throw new IllegalArgumentException("Range not recognized");
-        };
-    }
+//
+//    @JsonIgnore
+//    public List<HealthData> getHealthDataWithRange(String className, String range) {
+//        List<HealthData> list;
+//        switch (className) {
+//            case "WeightData" -> list = this.weightDataList;
+//            case "CalorieData" -> list = this.calorieDataList;
+//            case "SleepData" -> list = this.sleepDataList;
+//            case "ExerciseData" -> list = this.exerciseDataList;
+//            case "FoodData" -> list = this.foodDataList;
+//            case "MediData" -> list = this.mediDataList;
+//            default -> throw new IllegalArgumentException("Class " + className + " not recognized or not supported in getHealthDataWithRange()");
+//        }
+//        return switch (range) {
+//            case "All" -> list.stream()
+//                    .sorted(Comparator.comparing(HealthData::getDate))
+//                    .toList();
+//            case "Week" -> list.stream()
+//                    .filter(healthData -> healthData.getDate().compareTo(LocalDate.now().minusDays(7).toString()) > 0)
+//                    .sorted(Comparator.comparing(HealthData::getDate))
+//                    .toList();
+//            case "Month" -> list.stream()
+//                    .filter(healthData -> healthData.getDate().compareTo(LocalDate.now().minusMonths(1).toString()) > 0)
+//                    .sorted(Comparator.comparing(HealthData::getDate))
+//                    .toList();
+//            case "6Month" -> list.stream()
+//                    .filter(healthData -> healthData.getDate().compareTo(LocalDate.now().minusMonths(6).toString()) > 0)
+//                    .sorted(Comparator.comparing(HealthData::getDate))
+//                    .toList();
+//            case "Year" -> list.stream()
+//                    .filter(healthData -> healthData.getDate().compareTo(LocalDate.now().minusYears(1).toString()) > 0)
+//                    .sorted(Comparator.comparing(HealthData::getDate))
+//                    .toList();
+//            default -> throw new IllegalArgumentException("Range not recognized");
+//        };
+//    }
 
 }
