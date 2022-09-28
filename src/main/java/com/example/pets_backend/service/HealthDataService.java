@@ -7,6 +7,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -16,6 +18,13 @@ public class HealthDataService {
     private final PetService petService;
     private final HealthDataRepository healthDataRepo;
 
+    public HealthData findById(String data_id) {
+        Optional<HealthData> healthData = healthDataRepo.findById(data_id);
+        if (healthData.isEmpty()) {
+            throw new IllegalArgumentException("Data ID not found");
+        }
+        return healthData.get();
+    }
 
     private HealthData saveHealthData(HealthData healthData) {
         healthData.setPet(petService.findByPetId(healthData.getPet_id()));
@@ -80,7 +89,6 @@ public class HealthDataService {
         }
         return saveHealthData(mediData);
     }
-
 
     public void deleteHealthData(String data_id) {
         healthDataRepo.deleteById(data_id);

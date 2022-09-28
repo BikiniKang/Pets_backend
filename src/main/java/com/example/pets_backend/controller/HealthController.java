@@ -60,6 +60,10 @@ public class HealthController {
         return healthDataService.saveFoodData(foodData);
     }
 
+    @PostMapping("/user/pet/medi/edit")
+    public HealthData editMediData (@RequestBody MediData mediData) {
+        return healthDataService.saveMediData(mediData);
+    }
 
 //    @PostMapping("/user/pet/weight")
 //    public List<WeightData> getWeightList(@RequestParam String pet_id, @RequestParam String range) {
