@@ -1,15 +1,16 @@
 package com.example.pets_backend.service;
 
 import com.example.pets_backend.entity.health.*;
-import com.example.pets_backend.repository.health.*;
+import com.example.pets_backend.repository.HealthDataRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -19,19 +20,6 @@ public class HealthDataService {
 
     private final PetService petService;
     private final HealthDataRepository healthDataRepo;
-
-    public HealthData findById(String data_id) {
-        Optional<HealthData> healthData = healthDataRepo.findById(data_id);
-        if (healthData.isEmpty()) {
-            throw new IllegalArgumentException("Data ID not found");
-        }
-        return healthData.get();
-    }
-
-    private HealthData saveHealthData(HealthData healthData) {
-        healthData.setPet(petService.findByPetId(healthData.getPet_id()));
-        return healthDataRepo.save(healthData);
-    }
 
     public HealthData saveWeightData(WeightData weightData) {
         if (weightData.getWeight() == 0) {
@@ -97,16 +85,16 @@ public class HealthDataService {
     }
 
     public void deleteSameDateData (String className, String date) {
-        HealthData sameDateData = null;
+        String dupDateId;
         switch (className) {
-            case "WeightData" -> sameDateData = healthDataRepo.findWeightDataByDate(date);
-            case "CalorieData" -> sameDateData = healthDataRepo.findCalorieDataByDate(date);
-            case "SleepData" -> sameDateData = healthDataRepo.findSleepDataByDate(date);
-            case "ExerciseData" -> sameDateData = healthDataRepo.findExerciseDataByDate(date);
+            case "WeightData" -> dupDateId = healthDataRepo.findWeightIdByDate(date);
+            case "CalorieData" -> dupDateId = healthDataRepo.findCalorieIdByDate(date);
+            case "SleepData" -> dupDateId = healthDataRepo.findSleepIdByDate(date);
+            case "ExerciseData" -> dupDateId = healthDataRepo.findExerciseIdByDate(date);
             default -> throw new IllegalArgumentException("className not recognized");
         }
-        if (sameDateData != null) {
-            healthDataRepo.deleteById(sameDateData.getData_id());
+        if (dupDateId != null) {
+            healthDataRepo.deleteById(dupDateId);
         }
     }
 
@@ -122,6 +110,24 @@ public class HealthDataService {
             case "MediData" -> healthDataRepo.getMediData(pet_id, startFrom);
             default -> throw new IllegalArgumentException("className not recognized");
         };
+    }
+
+    public Map<String, List<HealthData>> getHealthDashboard (String pet_id, String range) {
+        petService.checkIfPetIdInDB(pet_id);
+        String startFrom = getDateStartFrom(range);
+        Map<String, List<HealthData>> map = new HashMap<>();
+        map.put("weight_list", healthDataRepo.getWeightData(pet_id, startFrom));
+        map.put("calorie_list", healthDataRepo.getCalorieData(pet_id, startFrom));
+        map.put("sleep_list", healthDataRepo.getSleepData(pet_id, startFrom));
+        map.put("exercise_list", healthDataRepo.getExerciseData(pet_id, startFrom));
+        map.put("food_list", healthDataRepo.getFoodData(pet_id, startFrom));
+        map.put("medi_list", healthDataRepo.getMediData(pet_id, startFrom));
+        return map;
+    }
+
+    private HealthData saveHealthData(HealthData healthData) {
+        healthData.setPet(petService.findByPetId(healthData.getPet_id()));
+        return healthDataRepo.save(healthData);
     }
 
     private String getDateStartFrom (String range) {
