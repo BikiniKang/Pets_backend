@@ -1,11 +1,14 @@
 package com.example.pets_backend.entity;
 
 import com.aventrix.jnanoid.jnanoid.NanoIdUtils;
+import com.example.pets_backend.entity.health.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 @Entity
 @Data
@@ -47,6 +50,30 @@ public class Pet {
     private int weight; // in kg
 
     private int height; // in cm
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "pet", cascade = CascadeType.ALL)
+    private List<WeightData> weightDataList = new ArrayList<>();
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "pet", cascade = CascadeType.ALL)
+    private List<CalorieData> calorieDataList = new ArrayList<>();
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "pet", cascade = CascadeType.ALL)
+    private List<SleepData> sleepDataList = new ArrayList<>();
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "pet", cascade = CascadeType.ALL)
+    private List<ExerciseData> exerciseDataList = new ArrayList<>();
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "pet", cascade = CascadeType.ALL)
+    private List<FoodData> foodDataList = new ArrayList<>();
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "pet", cascade = CascadeType.ALL)
+    private List<MediData> mediDataList = new ArrayList<>();
 
 
     public LinkedHashMap<String, Object> getPetAb() {

@@ -38,9 +38,8 @@ public class PetServiceImpl implements PetService{
 
     @Override
     public Pet findByPetId(String petId) {
-        Pet pet = petRepository.findByPetId(petId);
-        checkPetInDB(pet, petId);
-        return pet;
+        checkIfPetIdInDB(petId);
+        return petRepository.findByPetId(petId);
     }
 
     @Override
@@ -60,6 +59,15 @@ public class PetServiceImpl implements PetService{
             }
         }
         log.info("Pet '{}' deleted from database", petId);
+    }
+
+    @Override
+    public void checkIfPetIdInDB(String petId) {
+        if (!petRepository.existsById(petId)) {
+            throw new IllegalArgumentException("Invalid pet ID");
+        } else {
+            log.info("Pet '{}' found", petId);
+        }
     }
 
     private void checkPetInDB(Pet pet, String petId) {
