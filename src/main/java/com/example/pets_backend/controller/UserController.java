@@ -33,8 +33,19 @@ public class UserController {
         User savedUser = userService.save(user);
         LinkedHashMap<String, Object> map = new LinkedHashMap<>();
         map.put("uid", savedUser.getUid());
-        userService.sendVerifyEmail(user);
         return map;
+    }
+
+    @PostMapping( "/verify/send")
+    public void sendVerifyEmail(@RequestParam String email) throws MessagingException {
+        User user = userService.findByEmail(email);
+        if (user == null) {
+            throw new IllegalArgumentException("Account not registered");
+        }
+        if (user.isEmail_verified()) {
+            throw new IllegalArgumentException("Email has been verified already");
+        }
+        userService.sendVerifyEmail(user);
     }
 
     @Transactional
@@ -45,7 +56,7 @@ public class UserController {
             throw new EntityNotFoundException("User not found");
         }
         if (user.isEmail_verified()) {
-            throw new Exception("This email has been verified before");
+            return;
         }
         if (verify_token.equals(user.getVerify_token())) {
             user.setVerify_token("");
