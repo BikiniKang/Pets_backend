@@ -126,6 +126,17 @@ public class HealthDataService {
     }
 
     private HealthData saveHealthData(HealthData healthData) {
+        if (healthData.getPet_id() == null) {
+            throw new IllegalArgumentException("pet_id cannot be null");
+        }
+        if (healthData.getDate() == null) {
+            throw new IllegalArgumentException("date cannot be null");
+        }
+        try {
+            LocalDate date = LocalDate.parse(healthData.getDate());
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Invalid format of date; It should be 'yyyy-MM-dd'");
+        }
         healthData.setPet(petService.findByPetId(healthData.getPet_id()));
         return healthDataRepo.save(healthData);
     }
