@@ -98,6 +98,20 @@ public class HealthDataService {
         }
     }
 
+    public HealthData editFoodData(FoodData foodData) {
+        if (!healthDataRepo.existsById(foodData.getData_id())) {
+            throw new IllegalArgumentException("Missing or invalid data_id");
+        }
+        return saveFoodData(foodData);
+    }
+
+    public HealthData editMediData(MediData mediData) {
+        if (!healthDataRepo.existsById(mediData.getData_id())) {
+            throw new IllegalArgumentException("Missing or invalid data_id");
+        }
+        return saveMediData(mediData);
+    }
+
     public List<HealthData> getHealthData (String pet_id, String range, String className) {
         petService.checkIfPetIdInDB(pet_id);
         String startFrom = getDateStartFrom(range);

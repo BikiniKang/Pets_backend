@@ -60,12 +60,12 @@ public class HealthController {
 
     @PostMapping("/user/pet/food/edit")
     public HealthData editFoodData (@RequestBody FoodData foodData) {
-        return healthDataService.saveFoodData(foodData);
+        return healthDataService.editFoodData(foodData);
     }
 
     @PostMapping("/user/pet/medi/edit")
     public HealthData editMediData (@RequestBody MediData mediData) {
-        return healthDataService.saveMediData(mediData);
+        return healthDataService.editMediData(mediData);
     }
 
     @PostMapping("/user/pet/weight")
