@@ -3,7 +3,9 @@ package com.example.pets_backend.security;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.example.pets_backend.response.ResultData;
+import com.example.pets_backend.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -23,8 +25,11 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
-    public JWTAuthenticationFilter(AuthenticationManager authenticationManager) {
+    private final UserService userService;
+
+    public JWTAuthenticationFilter(AuthenticationManager authenticationManager, UserService userService) {
         super(authenticationManager);
+        this.userService = userService;
         setFilterProcessesUrl(LOGIN);
     }
 
@@ -34,6 +39,8 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         String access_token = "Bearer " + generateAccessToken(request, scUser.getUsername(), scUser.getPassword());
         LinkedHashMap<String, Object> map = new LinkedHashMap<>();
         map.put("token", access_token);
+        String uid = userService.findByEmail(scUser.getUsername()).getUid();
+        map.put("uid", uid);
         response.setContentType(APPLICATION_JSON_VALUE);
         new ObjectMapper().writeValue(response.getOutputStream(), ResultData.success(map));
     }

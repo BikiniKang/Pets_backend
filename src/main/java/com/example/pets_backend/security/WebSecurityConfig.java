@@ -1,5 +1,6 @@
 package com.example.pets_backend.security;
 
+import com.example.pets_backend.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,6 +23,7 @@ import java.util.List;
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final UserDetailsService userDetailsService;
+    private final UserService userService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Override
@@ -35,7 +37,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.addFilter(new JWTAuthorizationFilter(authenticationManager()))
-                .addFilter(new JWTAuthenticationFilter(authenticationManager()));
+                .addFilter(new JWTAuthenticationFilter(authenticationManager(), userService));
     }
 
     @Bean
