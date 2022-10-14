@@ -1,7 +1,7 @@
 # Backend of PetPocket [![Build and deploy JAR app to Azure Web App - pets-backend](https://github.com/BikiniKang/pets-backend/actions/workflows/master_pets-backend.yml/badge.svg?branch=master)](https://github.com/BikiniKang/pets-backend/actions/workflows/master_pets-backend.yml)
-(updated on Aug 29 2022)
+
 Important documentation for the backend of PetPocket: 
-* [API Documentation](https://petsapidoc.blob.core.windows.net/$web/Pets-tracking-app-1-1-2.html)
+* [API Documentation](https://www.apifox.cn/apidoc/shared-3f2c7cf4-280a-4617-af9b-12e61658e23a)
 * [Database Diagram](https://drive.google.com/file/d/1SKr-YTJUhAyQewe16b6HvqFJvcW7C1Lz/view?usp=sharing)
 
 Below is an instruction of *how to set up the development environment* on your own devices: \
