@@ -20,7 +20,9 @@ public class HealthData {
     private Pet pet;
 
     @Id
-    private String data_id = NanoIdUtils.randomNanoId();;
+    private String data_id = NanoIdUtils.randomNanoId();
+
+    private String uid;
 
     @Column(nullable = false)
     private String pet_id;
@@ -29,8 +31,9 @@ public class HealthData {
     private String date;    // yyyy-MM-dd
 
 
-    public HealthData(String pet_id, String date) {
+    public HealthData(String pet_id, String uid, String date) {
         this.pet_id = pet_id;
+        this.uid = uid;
         this.date = date;
     }
 

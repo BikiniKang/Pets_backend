@@ -14,8 +14,8 @@ public class WeightData extends HealthData{
     private int weight;     // in kg
 
 
-    public WeightData(String pet_id, String date, int weight) {
-        super(pet_id, date);
+    public WeightData(String pet_id, String uid, String date, int weight) {
+        super(pet_id, uid, date);
         this.weight = weight;
     }
 }

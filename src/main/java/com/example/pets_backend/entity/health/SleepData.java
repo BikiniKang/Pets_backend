@@ -16,8 +16,8 @@ public class SleepData extends HealthData{
     private int minutes;
 
 
-    public SleepData(String pet_id, String date, String duration_str) {
-        super(pet_id, date);
+    public SleepData(String pet_id, String uid, String date, String duration_str) {
+        super(pet_id, uid, date);
         this.duration_str = duration_str;
     }
 

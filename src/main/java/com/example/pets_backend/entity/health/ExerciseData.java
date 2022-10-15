@@ -19,8 +19,8 @@ public class ExerciseData extends HealthData{
     private int minutes;
 
 
-    public ExerciseData(String pet_id, String date, String exercise_type, String duration_str) {
-        super(pet_id, date);
+    public ExerciseData(String pet_id, String uid, String date, String exercise_type, String duration_str) {
+        super(pet_id, uid, date);
         this.exercise_type = exercise_type;
         this.duration_str = duration_str;
     }

@@ -19,8 +19,8 @@ public class MediData extends HealthData{
     @Column(nullable = false)
     private String notes;
 
-    public MediData(String pet_id, String date, String medi_name, String frequency, String notes) {
-        super(pet_id, date);
+    public MediData(String pet_id, String uid, String date, String medi_name, String frequency, String notes) {
+        super(pet_id, uid, date);
         this.medi_name = medi_name;
         this.frequency = frequency;
         this.notes = notes;

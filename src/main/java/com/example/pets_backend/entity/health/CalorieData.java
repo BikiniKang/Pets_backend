@@ -14,8 +14,8 @@ public class CalorieData extends HealthData{
     private int calorie;     // in Kcal
 
 
-    public CalorieData(String pet_id, String date, int calorie) {
-        super(pet_id, date);
+    public CalorieData(String pet_id, String uid, String date, int calorie) {
+        super(pet_id, uid, date);
         this.calorie = calorie;
     }
 }
