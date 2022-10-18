@@ -1,14 +1,18 @@
 package com.example.pets_backend.controller;
 
 import com.example.pets_backend.entity.health.*;
+import com.example.pets_backend.repository.ThresholdRepository;
 import com.example.pets_backend.service.HealthDataService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.EntityNotFoundException;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -18,6 +22,7 @@ import java.util.Map;
 public class HealthController {
 
     private final HealthDataService healthDataService;
+    private final ThresholdRepository thresholdRepository;
 
     @DeleteMapping("/user/pet/health/delete")
     public void deleteData(@RequestParam String data_id) {
@@ -101,5 +106,95 @@ public class HealthController {
     @PostMapping("/user/pet/health")
     public Map<String, List<HealthData>> getHealthDashboard (@RequestParam String pet_id, @RequestParam String range) {
         return healthDataService.getHealthDashboard(pet_id, range);
+    }
+
+    @Transactional
+    @PostMapping("/user/pet/weight/alert")
+    public void setWeightAlert(@RequestParam String pet_id, @RequestParam int min_thre, @RequestParam int max_thre) {
+        Optional<HealthThreshold> thresholdOptional = thresholdRepository.findById(pet_id);
+        if (thresholdOptional.isPresent()) {
+            HealthThreshold threshold = thresholdOptional.get();
+            threshold.setWeight_min(min_thre);
+            threshold.setWeight_max(max_thre);
+        } else {
+            HealthThreshold threshold = new HealthThreshold(pet_id);
+            threshold.setWeight_min(min_thre);
+            threshold.setWeight_max(max_thre);
+            thresholdRepository.save(threshold);
+        }
+    }
+
+    @Transactional
+    @PostMapping("/user/pet/calorie/alert")
+    public void setCalorieAlert(@RequestParam String pet_id, @RequestParam int min_thre, @RequestParam int max_thre) {
+        Optional<HealthThreshold> thresholdOptional = thresholdRepository.findById(pet_id);
+        if (thresholdOptional.isPresent()) {
+            HealthThreshold threshold = thresholdOptional.get();
+            threshold.setCalorie_min(min_thre);
+            threshold.setCalorie_max(max_thre);
+        } else {
+            HealthThreshold threshold = new HealthThreshold(pet_id);
+            threshold.setCalorie_min(min_thre);
+            threshold.setCalorie_max(max_thre);
+            thresholdRepository.save(threshold);
+        }
+    }
+
+    @Transactional
+    @PostMapping("/user/pet/sleep/alert")
+    public void setSleepAlert(@RequestParam String pet_id, @RequestParam int min_thre) {
+        Optional<HealthThreshold> thresholdOptional = thresholdRepository.findById(pet_id);
+        if (thresholdOptional.isPresent()) {
+            HealthThreshold threshold = thresholdOptional.get();
+            threshold.setSleep_min(min_thre);
+        } else {
+            HealthThreshold threshold = new HealthThreshold(pet_id);
+            threshold.setSleep_min(min_thre);
+            thresholdRepository.save(threshold);
+        }
+    }
+
+    @Transactional
+    @PostMapping("/user/pet/exercise/alert")
+    public void setExerciseAlert(@RequestParam String pet_id, @RequestParam int min_thre) {
+        Optional<HealthThreshold> thresholdOptional = thresholdRepository.findById(pet_id);
+        if (thresholdOptional.isPresent()) {
+            HealthThreshold threshold = thresholdOptional.get();
+            threshold.setExercise_min(min_thre);
+        } else {
+            HealthThreshold threshold = new HealthThreshold(pet_id);
+            threshold.setExercise_min(min_thre);
+            thresholdRepository.save(threshold);
+        }
+    }
+
+    @PostMapping("/user/pet/alert")
+    public LinkedHashMap<String, Integer> getAlertSetting (@RequestParam String pet_id, @RequestParam String type) {
+        Optional<HealthThreshold> thresholdOptional = thresholdRepository.findById(pet_id);
+        if (thresholdOptional.isEmpty()) {
+            throw new EntityNotFoundException("Alert settings not found");
+        }
+        HealthThreshold threshold = thresholdOptional.get();
+        LinkedHashMap<String, Integer> map = new LinkedHashMap<>();
+        switch (type) {
+            case "weight" -> {
+                map.put("min_thre", threshold.getWeight_min());
+                map.put("max_thre", threshold.getWeight_max());
+            }
+            case "calorie" -> {
+                map.put("min_thre", threshold.getCalorie_min());
+                map.put("max_thre", threshold.getCalorie_max());
+            }
+            case "sleep" -> {
+                map.put("min_thre", threshold.getSleep_min());
+                map.put("max_thre", null);
+            }
+            case "exercise" -> {
+                map.put("min_thre", threshold.getExercise_min());
+                map.put("max_thre", null);
+            }
+            default -> throw new IllegalArgumentException("Alert type not recognized");
+        }
+        return map;
     }
 }
