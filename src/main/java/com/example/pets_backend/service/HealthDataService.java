@@ -77,6 +77,9 @@ public class HealthDataService {
         if (mediData.getNotes() == null) {
             throw new IllegalArgumentException("Notes cannot be null, you can set it as 'NA'");
         }
+        if (mediData.getEnd_date() == null) {
+            throw new IllegalArgumentException("End date cannot be null");
+        }
         return saveHealthData(mediData);
     }
 
