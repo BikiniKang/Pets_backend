@@ -13,12 +13,12 @@ public class HealthThreshold {
 
     @Id
     private String pet_id;
-    private int weight_min;
-    private int weight_max;
-    private int calorie_min;
-    private int calorie_max;
-    private int sleep_min;
-    private int exercise_min;
+    private Integer weight_min = null;
+    private Integer weight_max = null;
+    private Integer calorie_min = null;
+    private Integer calorie_max = null;
+    private Integer sleep_min = null;
+    private Integer exercise_min = null;
 
     public HealthThreshold (String pet_id) {
         this.pet_id = pet_id;

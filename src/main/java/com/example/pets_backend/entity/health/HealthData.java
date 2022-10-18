@@ -22,6 +22,7 @@ public class HealthData {
     @Id
     private String data_id = NanoIdUtils.randomNanoId();
 
+    @JsonIgnore
     private String uid;
 
     @Column(nullable = false)
