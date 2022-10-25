@@ -22,7 +22,7 @@ public class User {
     private final String uid = NanoIdUtils.randomNanoId();
 
     @NonNull
-    @Column(length = 32)  //TODO: might can be defined as 'unique' instead of manually check duplicates in user service
+    @Column(length = 32, nullable = false, unique = true)
     private String email;
 
     @JsonIgnore

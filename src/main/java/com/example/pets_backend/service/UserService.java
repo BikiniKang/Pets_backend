@@ -51,8 +51,7 @@ public class UserService implements UserDetailsService {
 
     public User save(User user) {
         String email = user.getEmail();
-        if (userRepo.findByEmail(email) != null) {
-            log.error("Duplicate email '" + email + "'");
+        if (userRepo.existsByEmail(email)) {
             throw new DuplicateKeyException(("Duplicate email '" + email + "'"));
         } else {
             log.info("New user '{}' saved into database", user.getUid());
