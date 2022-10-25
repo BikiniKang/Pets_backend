@@ -24,7 +24,6 @@ jobs:
       - name: Build with Maven
         env:
           CUSTOMCONNSTR_DATABASE_PASSWORD: ${{ secrets.CUSTOMCONNSTR_DATABASE_PASSWORD }}
-          CUSTOMCONNSTR_EMAIL_PASSWORD: ${{ secrets.CUSTOMCONNSTR_DATABASE_PASSWORD }}
         run: mvn package --file pom.xml
 
       - name: Upload artifact for deployment job
