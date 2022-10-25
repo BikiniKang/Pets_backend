@@ -26,20 +26,22 @@ public class User {
     private String email;
 
     @JsonIgnore
+    @Column(nullable = false)
     private boolean email_verified = false;
 
     @JsonIgnore
     private String verify_token = NanoIdUtils.randomNanoId();
 
     @NonNull
+    @Column(nullable = false)
     private String password;
 
     @NonNull
-    @Column(length = 32)
+    @Column(length = 32, nullable = false)
     private String firstName;
 
     @NonNull
-    @Column(length = 32)
+    @Column(length = 32, nullable = false)
     private String lastName;
 
     @Column(length = 16)
@@ -49,13 +51,16 @@ public class User {
 
     private String image = DEFAULT_IMAGE;
 
+    @Column(nullable = false)
     private boolean isPetSitter = false;
 
+    @Column(nullable = false)
     private boolean eventNtfOn = true;
 
+    @Column(nullable = false)
     private boolean taskNtfOn = true;
 
-    @Column(length = 5)
+    @Column(length = 5, nullable = false)
     private String taskNtfTime  = "18:00";
 
     @JsonIgnore
@@ -77,6 +82,7 @@ public class User {
     @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Booking> bookingList = new ArrayList<>();
+
 
     public List<LinkedHashMap<String, Object>> getPetAbList() {
         List<LinkedHashMap<String, Object>> list = new ArrayList<>();
