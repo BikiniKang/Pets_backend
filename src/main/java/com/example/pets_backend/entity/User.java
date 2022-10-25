@@ -84,6 +84,11 @@ public class User {
     private List<Booking> bookingList = new ArrayList<>();
 
 
+    /**
+     * This method acts as a getter.
+     * In the json body of a User instance, there's a key-value pair - "petAbList": [...]
+     * @return a list of Pets' abstract information
+     */
     public List<LinkedHashMap<String, Object>> getPetAbList() {
         List<LinkedHashMap<String, Object>> list = new ArrayList<>();
         for (Pet pet:this.petList) {
@@ -92,6 +97,11 @@ public class User {
         return list;
     }
 
+    /**
+     * This method acts as a getter.
+     * In the json body of a User instance, there's a key-value pair - "eventAbList": [...]
+     * @return a list of Events' abstract information
+     */
     public List<LinkedHashMap<String, Object>> getEventAbList() {
         List<LinkedHashMap<String, Object>> list = new ArrayList<>();
         for (Event event:this.eventList) {
@@ -100,6 +110,11 @@ public class User {
         return list;
     }
 
+    /**
+     * This method acts as a getter.
+     * In the json body of a User instance, there's a key-value pair - "taskAbList": [...]
+     * @return a list of Tasks' abstract information
+     */
     public List<LinkedHashMap<String, Object>> getTaskAbList() {
         List<LinkedHashMap<String, Object>> list = new ArrayList<>();
         for (Task task:this.taskList) {
@@ -108,6 +123,11 @@ public class User {
         return list;
     }
 
+    /**
+     * This method acts as a getter.
+     * In the json body of a User instance, there's a key-value pair - "recordAbList": [...]
+     * @return a list of Records' abstract information
+     */
     public List<LinkedHashMap<String, Object>> getRecordAbList() {
         List<LinkedHashMap<String, Object>> list = new ArrayList<>();
         for (Record record:this.recordList) {
@@ -116,6 +136,10 @@ public class User {
         return list;
     }
 
+    /**
+     * Get all the ids of the pets belong to the user.
+     * @return a list of Pets' ids
+     */
     @JsonIgnore
     public List<String> getPetIdList() {
         List<String> petIdList = new ArrayList<>();
@@ -125,6 +149,10 @@ public class User {
         return petIdList;
     }
 
+    /**
+     * Get the notification settings of the user.
+     * @return a map looks like {"eventNtfOn": true, "taskNtfOn": true, "taskNtfTime": "18:00"}
+     */
     @JsonIgnore
     public LinkedHashMap<String, Object> getNotificationSettings() {
         LinkedHashMap<String, Object> map = new LinkedHashMap<>();
@@ -134,16 +162,15 @@ public class User {
         return map;
     }
 
+
     /**
      * Get the Pet object by petName
      * @param petName the name of the pet
      * @return a Pet object
      */
-    @JsonIgnore
     public Pet getPetByPetName(String petName) {
         for (Pet pet:this.petList) {
             if (pet.getPetName().equals(petName)) {
-                log.info("Pet with name '{}' found in User '{}'", petName, this.uid);
                 return pet;
             }
         }
@@ -155,11 +182,9 @@ public class User {
      * @param petId the id of the pet
      * @return a Pet object
      */
-    @JsonIgnore
     public Pet getPetByPetId(String petId) {
         for (Pet pet:this.petList) {
             if (pet.getPetId().equals(petId)) {
-                log.info("Pet '{}' found in User '{}'", pet.getPetId(), this.uid);
                 return pet;
             }
         }
@@ -171,11 +196,9 @@ public class User {
      * @param eventId the id of the event
      * @return an Event object
      */
-    @JsonIgnore
     public Event getEventByEventId(String eventId) {
         for (Event event:this.eventList) {
             if (event.getEventId().equals(eventId)) {
-                log.info("Event '{}' found in User '{}'", eventId, this.uid);
                 return event;
             }
         }
@@ -187,11 +210,9 @@ public class User {
      * @param taskId the id of the task
      * @return a Task object
      */
-    @JsonIgnore
     public Task getTaskByTaskId(String taskId) {
         for (Task task:this.taskList) {
             if (task.getTaskId().equals(taskId)) {
-                log.info("Task '{}' found in User '{}'", taskId, this.uid);
                 return task;
             }
         }
@@ -203,11 +224,9 @@ public class User {
      * @param recordId the id of the record
      * @return a Record object
      */
-    @JsonIgnore
     public Record getRecordByRecordId(String recordId) {
         for (Record record:this.recordList) {
             if (record.getRecordId().equals(recordId)) {
-                log.info("Record '{}' found in User '{}'", recordId, this.uid);
                 return record;
             }
         }
@@ -215,11 +234,10 @@ public class User {
     }
 
     /**
-     * Get all Event objects in a given date
+     * Get all events of the user that startDate <= date <= endDate
      * @param date 'yyyy-MM-dd'
-     * @return a list of Event objects
+     * @return a list of Event objects, ordered by event start time
      */
-    @JsonIgnore
     public List<Event> getEventsByDate(String date) {
         List<Event> eventList = new ArrayList<>();
         for (Event event:this.eventList) {
@@ -234,11 +252,10 @@ public class User {
     }
 
     /**
-     * Get all Task objects in a given date
+     * Get all tasks that due on a given date
      * @param date 'yyyy-MM-dd'
      * @return a list of Task objects
      */
-    @JsonIgnore
     public List<Task> getTasksByDate(String date) {
         List<Task> taskList = new ArrayList<>();
         for (Task task:this.taskList) {
@@ -246,14 +263,13 @@ public class User {
                 taskList.add(task);
             }
         }
-        taskList.sort(Comparator.comparing(Task::getDueDate));
         return taskList;
     }
 
     /**
-     * Get all Booking objects in a given date
+     * Get all bookings that start or end on the given date
      * @param date 'yyyy-MM-dd'
-     * @return a list of Booking objects
+     * @return a list of Booking objects, ordered by booking start time
      */
     public List<Booking> getBookingsByDate(String date) {
         List<Booking> bookingList = new ArrayList<>();
@@ -267,14 +283,18 @@ public class User {
         return bookingList;
     }
 
-    @JsonIgnore
+    /**
+     * Get all bookings that start or end in the given month
+     * @param month 'yyyy-MM'
+     * @return a list of maps (each map has keys 'date' and 'bookingList'), ordered by date
+     */
     public List<Map<String, Object>> getBookingsByMonth(String month) {
-        // get all dates in the given month
-        List<String> dateSpan = getDateSpanOfMonth(month);
-        Map<String, List<Booking>> cal = new HashMap<>();
+        List<String> dateSpan = getDateSpanOfMonth(month);  // Get all dates of the given month
+        Map<String, List<Booking>> cal = new HashMap<>();   // Initialize the <date:bookingList> map
         for (String date:dateSpan) {
             cal.put(date, new ArrayList<>());
         }
+        // Iterate bookings, if the booking's start/end date matches a date in the map, add it into the bookingList of that date
         for (Booking b:this.bookingList) {
             String startDate = b.getStart_time().substring(0, DATE_PATTERN.length());
             String endDate = b.getEnd_time().substring(0, DATE_PATTERN.length());
@@ -285,12 +305,12 @@ public class User {
                 cal.get(endDate).add(b);
             }
         }
-        // create a list of map, each map contains 'date' and 'bookingList' for a specific day in the given month
+        // Rearrange the <date:bookingList> map to create a list of maps, each map has keys 'date' and 'bookingList'
         List<Map<String, Object>> list = new ArrayList<>();
         for (String date:dateSpan) {
             Map<String, Object> map = new HashMap<>();
             List<Booking> bookingList = cal.get(date);
-            bookingList.sort(Comparator.comparing(Booking::getStart_time));
+            bookingList.sort(Comparator.comparing(Booking::getStart_time)); // sort the bookingList by booking start time
             map.put("date", date);
             map.put("bookingList", bookingList);
             list.add(map);
@@ -299,38 +319,35 @@ public class User {
     }
 
     /**
-     * Get a list of Calendar objects containing information of events and tasks
+     * Get a list of Calendar objects containing information of events, tasks, and bookings
      * @param month 'yyyy-MM'
-     * @return a list of maps, where each map represents a calendar day in the given month
-     *          and contains a date('yyyy-MM-dd'), an eventList(a list of Event objects),
-     *          a taskList(a list of Task objects)
+     * @return a list of maps, where each map represents a calendar day in the given month and contains a date('yyyy-MM-dd'), an eventList, a taskList, and a bookingList
      */
-    @JsonIgnore
     public List<Map<String, Object>> getCalByMonth(String month) {
-        // get all dates in the given month
-        List<String> dateSpan = getDateSpanOfMonth(month);
+        List<String> dateSpan = getDateSpanOfMonth(month);  // Get all dates of the given month
         Map<String, List<Event>> eventCal = new HashMap<>();
         Map<String, List<Task>> taskCal = new HashMap<>();
         Map<String, List<Booking>> bookingCal = new HashMap<>();
-        // initialize the event and task calendar map (key: date, value: a list of event/task entities)
+        // Initialize the three calendar maps <date:eventList/taskList/bookingList>
         for (String date:dateSpan) {
             eventCal.put(date, new ArrayList<>());
             taskCal.put(date, new ArrayList<>());
             bookingCal.put(date, new ArrayList<>());
         }
         for (Event event:eventList) {
-            // extract 'yyyy-MM-dd' from startDateTime and endDateTime
+            // Extract 'yyyy-MM-dd' from startDateTime and endDateTime
             String from = event.getStartDateTime().substring(0, DATE_PATTERN.length());
             String to = event.getEndDateTime().substring(0, DATE_PATTERN.length());
-            // get the date span of this event within the given month
+            // Get the date span of this event within the given month
             List<String> eventDateSpan = getDateSpan(from, to, month);
-            // add the event into each day it spans
+            // Add the event into every date it spans
             for (String d:eventDateSpan) {
                 eventCal.get(d).add(event);
             }
         }
         for (Task task:taskList) {
             String dueDate = task.getDueDate();
+            // Add the task into its due date
             if (taskCal.containsKey(dueDate)) {
                 taskCal.get(dueDate).add(task);
             }
@@ -338,6 +355,7 @@ public class User {
         for (Booking booking:bookingList) {
             String startDate = booking.getStart_time().substring(0, DATE_PATTERN.length());
             String endDate = booking.getEnd_time().substring(0, DATE_PATTERN.length());
+            // Add the booking into its start date and end date
             if (bookingCal.containsKey(startDate)) {
                 bookingCal.get(startDate).add(booking);
             }
@@ -345,18 +363,18 @@ public class User {
                 bookingCal.get(endDate).add(booking);
             }
         }
-        // create a list of map, each map contains 'date', 'eventList', and 'taskList' for a specific day in the given month
+        // Create a list of map, each map contains keys 'date', 'eventList', 'taskList', and 'bookingList'
         List<Map<String, Object>> list = new ArrayList<>();
         for (String date:dateSpan) {
             Map<String, Object> map = new HashMap<>();
             List<Event> eventList = eventCal.get(date);
             List<Task> taskList = taskCal.get(date);
             List<Booking> bookingList = bookingCal.get(date);
-            // sort the events in this day by startDateTime
+            // Sort the events by startDateTime
             eventList.sort(Comparator.comparing(Event::getStartDateTime));
-            // sort the tasks in this day by dueDate
+            // Sort the tasks by dueDate
             taskList.sort(Comparator.comparing(Task::getDueDate));
-            // sort the bookings in this day by start_time
+            // Sort the bookings by start_time
             bookingList.sort(Comparator.comparing(Booking::getStart_time));
             map.put("date", date);
             map.put("eventList", eventList);
@@ -372,7 +390,6 @@ public class User {
      * @param today 'yyyy-MM-dd'
      * @return a list of overdue Task objects
      */
-    @JsonIgnore
     public List<Task> getOverdueTasks(String today) {
         List<Task> list = new ArrayList<>();
         for (Task task:taskList) {
@@ -388,7 +405,6 @@ public class User {
      * @param today 'yyyy-MM-dd'
      * @return a list of upcoming Task objects
      */
-    @JsonIgnore
     public List<Task> getUpcomingTasks(String today) {
         List<Task> list = new ArrayList<>();
         for (Task task:taskList) {

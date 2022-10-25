@@ -41,18 +41,28 @@ public class ConstantValues {
     public static final int DAYS_TO_ARCHIVE = 3;
     public static final String WEB_PREFIX = "https://pets-tracking.azurewebsites.net/";
 
+    /**
+     * Get all dates of the given month
+     * @param month 'yyyy-MM'
+     * @return a list of date strings, i.e., ["2022-10-01", "2022-10-02", ..., "2022-10-31"]
+     */
     public static List<String> getDateSpanOfMonth(String month) {
         LocalDate beginDate = LocalDate.parse(month + "-01");
         LocalDate endDate = beginDate.with(lastDayOfMonth());
-        return getDateSpan(beginDate, endDate);
-    }
-    private static List<String> getDateSpan(LocalDate dateFrom, LocalDate dateTo) {
-        if (dateFrom.equals(dateTo)) {
-            return List.of(dateFrom.toString());
+        if (beginDate.equals(endDate)) {
+            return List.of(beginDate.toString());
         }
-        return dateFrom.datesUntil(dateTo.plusDays(1)).map(LocalDate::toString).toList();
+        return beginDate.datesUntil(endDate.plusDays(1)).map(LocalDate::toString).toList();
     }
 
+    /**
+     * Get all dates within the month such that from <= date <= to
+     * Example: getDateSpan("2022-09-25", "2022-10-02", "2022-10") => ["2022-10-01", "2022-10-02"]
+     * @param from 'yyyy-MM-dd'
+     * @param to 'yyyy-MM-dd'
+     * @param month 'yyyy-MM'
+     * @return a list of date strings
+     */
     public static List<String> getDateSpan(String from, String to, String month) {
         if (from.substring(0, 7).compareTo(month) <= 0 && to.substring(0, 7).compareTo(month) >= 0) {
             if (from.equals(to)) { // if the start and the end are in the same day, just return this day
