@@ -4,7 +4,6 @@ import com.example.pets_backend.entity.Event;
 import com.example.pets_backend.entity.Pet;
 import com.example.pets_backend.entity.Record;
 import com.example.pets_backend.entity.Task;
-import com.example.pets_backend.entity.User;
 import com.example.pets_backend.repository.PetRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,14 +24,12 @@ public class PetService {
     private final PetRepository petRepository;
 
     public Pet save(Pet pet) {
-        String petName = pet.getPetName();
-        User user = pet.getUser();
-        for (Pet p: user.getPetList()) {
+        String petName = (pet.getPetName());
+        for (Pet p: pet.getUser().getPetList()) {
             if (p.getPetName().equals(petName)) {
                 throw new DuplicateKeyException("Duplicate pet name " + petName);
             }
         }
-        log.info("New pet '{}' saved into database", pet.getPetId());
         return petRepository.save(pet);
     }
 

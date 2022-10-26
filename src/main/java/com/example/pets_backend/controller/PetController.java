@@ -6,6 +6,7 @@ import com.example.pets_backend.service.PetService;
 import com.example.pets_backend.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,13 +26,19 @@ public class PetController {
     private final PetService petService;
 
     @PostMapping("/user/pet/add")
-    @Transactional
     public LinkedHashMap<String, Object> addPet(@RequestBody Map<String, Object> mapIn) {
         User user = userService.findByUid((String) mapIn.get("uid"));
         String petAvatar = (String) mapIn.get("petAvatar");
         if (petAvatar == null || petAvatar.length() == 0) petAvatar = DEFAULT_IMAGE_PET;
-        Pet pet = new Pet(user, (String) mapIn.get("petName"), petAvatar,
-                (String) mapIn.get("species"), (String) mapIn.get("breed"), (int) mapIn.get("gender"), (String) mapIn.get("petDob"));
+        Pet pet = new Pet(
+                user,
+                (String) mapIn.get("petName"),
+                petAvatar,
+                (String) mapIn.get("species"),
+                (String) mapIn.get("breed"),
+                (int) mapIn.get("gender"),
+                (String) mapIn.get("petDob")
+        );
         if (mapIn.containsKey("weight")) pet.setWeight((int) mapIn.get("weight"));
         if (mapIn.containsKey("height")) pet.setHeight((int) mapIn.get("height"));
         LinkedHashMap<String, Object> map = new LinkedHashMap<>();
@@ -41,13 +48,8 @@ public class PetController {
     }
 
     @PostMapping("/user/pet/profile")
-    public LinkedHashMap<String, Object> getPet(@RequestBody Map<String, Object> mapIn) {
+    public LinkedHashMap<String, Object> getPetProfile(@RequestBody Map<String, Object> mapIn) {
         Pet pet = petService.findByPetId((String) mapIn.get("petId"));
-        String uid = (String) mapIn.get("uid");
-        if (!uid.equals(pet.getUser().getUid())) {
-            log.error("Pet {} does not belongs to user {}", pet.getPetId(), mapIn.get("uid"));
-            throw new IllegalArgumentException("Pet " + pet.getPetId() + " does not belongs to user " + mapIn.get("uid"));
-        }
         LinkedHashMap<String, Object> mapOut = new LinkedHashMap<>();
         mapOut.put("petName", pet.getPetName());
         mapOut.put("petAvatar", pet.getPetAvatar());
@@ -62,12 +64,8 @@ public class PetController {
 
     @PostMapping("/user/pet/profile/update")
     @Transactional
-    public void updatePet(@RequestBody Map<String, Object> mapIn) {
+    public void updatePetProfile(@RequestBody Map<String, Object> mapIn) {
         Pet pet = petService.findByPetId((String) mapIn.get("petId"));
-        if (!mapIn.get("uid").equals(pet.getUser().getUid())) {
-            log.error("Pet {} does not belongs to user {}", pet.getPetId(), mapIn.get("uid"));
-            throw new IllegalArgumentException("Pet " + pet.getPetId() + " does not belongs to user " + mapIn.get("uid"));
-        }
         pet.setPetName((String) mapIn.get("petName"));
         pet.setPetAvatar((String) mapIn.get("petAvatar"));
         pet.setGender((int) mapIn.get("gender"));
@@ -83,8 +81,8 @@ public class PetController {
         String petId = (String) mapIn.get("petId");
         Pet pet = petService.findByPetId(petId);
         if (!mapIn.get("uid").equals(pet.getUser().getUid())) {
-            log.error("Pet {} does not belongs to user {}", pet.getPetId(), mapIn.get("uid"));
-            throw new IllegalArgumentException("Pet " + pet.getPetId() + " does not belongs to user " + mapIn.get("uid"));
+            log.warn("Illegal Operation: Deleting pet '{}' that does not belong to the user '{}'", petId, mapIn.get("uid"));
+            throw new IllegalArgumentException("Invalid Argument");
         }
         petService.deleteByPetId(petId);
     }
