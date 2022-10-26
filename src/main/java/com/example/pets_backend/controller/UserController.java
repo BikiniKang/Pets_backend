@@ -9,7 +9,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import javax.mail.MessagingException;
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -27,8 +26,13 @@ public class UserController {
 
     private final UserService userService;
 
+    /*
+    Post request '/login' is not included in this controller.
+    For the request handling of Login, see '/security/JWTAuthenticationFilter.java'
+     */
+
     @PostMapping(REGISTER)
-    public LinkedHashMap<String, Object> register(@RequestBody Map<String, Object> mapIn) throws MessagingException {
+    public LinkedHashMap<String, Object> register(@RequestBody Map<String, Object> mapIn) {
         User user = new User((String) mapIn.get("email"), (String) mapIn.get("password"), (String) mapIn.get("firstName"), (String) mapIn.get("lastName"));
         User savedUser = userService.save(user);
         LinkedHashMap<String, Object> map = new LinkedHashMap<>();
@@ -69,11 +73,8 @@ public class UserController {
     /**
      * Delete the user by uid/email.
      * If both attributes are not valid, do nothing (do NOT throw exceptions).
-     *
      * @apiNote in 'Admin' group
-     *
-     * @param mapIn contains a key of "uid", or, a key of "email"
-     *
+     * @param mapIn contains a map with one key, either "uid" or "email"
      */
     @DeleteMapping("/user/delete")
     public void deleteUser(@RequestBody Map<String, Object> mapIn) {
