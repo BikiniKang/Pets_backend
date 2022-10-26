@@ -37,7 +37,7 @@ public class UserController {
     }
 
     @PostMapping( "/verify/send")
-    public void sendVerifyEmail(@RequestParam String email) throws MessagingException {
+    public void sendVerifyEmail(@RequestParam String email) {
         User user = userService.findByEmail(email);
         if (user == null) {
             throw new IllegalArgumentException("Account not registered");

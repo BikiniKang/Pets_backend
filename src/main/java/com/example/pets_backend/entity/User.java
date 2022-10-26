@@ -19,7 +19,7 @@ import static com.example.pets_backend.ConstantValues.*;
 public class User {
 
     @Id
-    private final String uid = NanoIdUtils.randomNanoId();
+    private final String uid = NanoIdUtils.randomNanoId();      // user ID
 
     @NonNull
     @Column(length = 32, nullable = false, unique = true)
@@ -216,7 +216,7 @@ public class User {
                 return task;
             }
         }
-        throw new EntityNotFoundException("Task '" + taskId + "' not found in User '" + this.uid + "'");
+        throw new EntityNotFoundException("The Task not found in the User");
     }
 
     /**
