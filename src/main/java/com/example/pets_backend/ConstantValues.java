@@ -19,8 +19,8 @@ public class ConstantValues {
     public static final String REGISTER = "/register";
     public static final String VERIFY = "/verify";
     public static final Algorithm ALGORITHM = Algorithm.HMAC256(SECRET.getBytes(StandardCharsets.UTF_8));
-    public static final String DEFAULT_IMAGE = "https://i.ibb.co/b3w8hXF/Png-Item-223968.png";
-    public static final String DEFAULT_IMAGE_PET = "https://i.ibb.co/P6Cz8CS/image-6.png";
+    public static final String DEFAULT_IMAGE = "https://firebasestorage.googleapis.com/v0/b/pet-tracking-app-51857.appspot.com/o/4EL4hp_qRUYMzzal_G29f_userAvatar_1660437446659?alt=media&token=74ffbb41-8336-4770-a279-c60f5f320ac94";
+    public static final String DEFAULT_IMAGE_PET = "https://firebasestorage.googleapis.com/v0/b/pet-tracking-app-51857.appspot.com/o/4EL4hp_qRUYMzzal_G29f_petAvatar_1666785259498?alt=media&token=e85467fc-13c1-4cd5-80a7-9dbb3efdeaa1";
     public static final String DEFAULT_ADDRESS = "";
     public static final String DEFAULT_PHONE = "";
     public static final String DEFAULT_EVENT_TYPE = "";
