@@ -162,21 +162,6 @@ public class User {
         return map;
     }
 
-
-    /**
-     * Get the Pet object by petName
-     * @param petName the name of the pet
-     * @return a Pet object
-     */
-    public Pet getPetByPetName(String petName) {
-        for (Pet pet:this.petList) {
-            if (pet.getPetName().equals(petName)) {
-                return pet;
-            }
-        }
-        return null;
-    }
-
     /**
      * Get the Pet object by petId
      * @param petId the id of the pet

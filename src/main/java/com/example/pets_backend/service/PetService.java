@@ -27,9 +27,10 @@ public class PetService {
     public Pet save(Pet pet) {
         String petName = pet.getPetName();
         User user = pet.getUser();
-        if (user.getPetByPetName(petName) != null) {
-            log.error("Duplicate pet name '{}' for User '{}'", petName, user.getUid());
-            throw new DuplicateKeyException("Duplicate pet name '" + petName + "' for User '" + user.getUid() + "'");
+        for (Pet p: user.getPetList()) {
+            if (p.getPetName().equals(petName)) {
+                throw new DuplicateKeyException("Duplicate pet name " + petName);
+            }
         }
         log.info("New pet '{}' saved into database", pet.getPetId());
         return petRepository.save(pet);

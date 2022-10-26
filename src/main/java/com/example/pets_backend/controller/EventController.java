@@ -46,7 +46,7 @@ public class EventController {
         String uid = (String) mapIn.get("uid");
         String eventId = (String) mapIn.get("eventId");
         // check whether the event exists and belongs to the user
-        userService.getEventByUidAndEventId(uid, eventId);
+        eventService.getEventByUidAndEventId(uid, eventId);
         eventService.deleteByEventId(eventId);
     }
 
@@ -56,7 +56,7 @@ public class EventController {
         Event eventNew = mapper.convertValue(mapIn.get("eventData"), Event.class);
         String eventId = eventNew.getEventId();
         // check whether the event exists and belongs to the user
-        userService.getEventByUidAndEventId(uid, eventId);
+        eventService.getEventByUidAndEventId(uid, eventId);
         Event event = eventService.editEvent(eventId, eventNew);
         Map<String, Object> mapOut = new HashMap<>();
         mapOut.put("event", event);

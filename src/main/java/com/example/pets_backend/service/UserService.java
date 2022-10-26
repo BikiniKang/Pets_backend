@@ -1,7 +1,5 @@
 package com.example.pets_backend.service;
 
-import com.example.pets_backend.entity.Event;
-import com.example.pets_backend.entity.Task;
 import com.example.pets_backend.entity.User;
 import com.example.pets_backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -140,21 +138,5 @@ public class UserService implements UserDetailsService {
         }
         userRepo.deleteByEmail(email);
         log.info("User '{}' deleted", email);
-    }
-
-    public Event getEventByUidAndEventId(String uid, String eventId) {
-        User user = userRepo.findByUid(uid);
-        if (user == null) {
-            throw new EntityNotFoundException("User not found");
-        }
-        return user.getEventByEventId(eventId);
-    }
-
-    public Task getTaskByUidAndTaskId(String uid, String taskId) {
-        User user = userRepo.findByUid(uid);
-        if (user == null) {
-            throw new EntityNotFoundException("User not found");
-        }
-        return user.getTaskByTaskId(taskId);
     }
 }
