@@ -139,7 +139,8 @@ public class TaskController {
     public List<Task> getOverdueTasks(@RequestBody Map<String, Object> mapIn) {
         String uid = (String) mapIn.get("uid");
         User user = userService.findByUid(uid);
-        return user.getOverdueTasks(LocalDate.now().toString());
+        String today = LocalDate.now().toString();
+        return user.getTaskList().stream().filter(task -> task.getDueDate().compareTo(today) < 0 && !task.isChecked()).collect(Collectors.toList());
     }
 
     @PostMapping("/user/task/archive/all")

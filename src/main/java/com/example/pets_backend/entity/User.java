@@ -163,8 +163,8 @@ public class User {
     }
 
     /**
-     * Get the Pet object by petId
-     * @param petId the id of the pet
+     * Get the Pet object by petId, throw exception if the pet not found
+     * @param petId petId
      * @return a Pet object
      */
     public Pet getPetByPetId(String petId) {
@@ -173,12 +173,12 @@ public class User {
                 return pet;
             }
         }
-        throw new EntityNotFoundException("Pet '" + petId + "' not found in User '" + this.uid + "'");
+        throw new EntityNotFoundException("Pet not found in the user");
     }
 
     /**
-     * Get the Event object by eventId
-     * @param eventId the id of the event
+     * Get the Event object by eventId, throw exception if the event not found
+     * @param eventId eventId
      * @return an Event object
      */
     public Event getEventByEventId(String eventId) {
@@ -187,12 +187,12 @@ public class User {
                 return event;
             }
         }
-        throw new EntityNotFoundException("Event '" + eventId + "' not found in User '" + this.uid + "'");
+        throw new EntityNotFoundException("Event not found in the user");
     }
 
     /**
-     * Get the Task object by taskId
-     * @param taskId the id of the task
+     * Get the Task object by taskId, throw exception if the task not found
+     * @param taskId taskId
      * @return a Task object
      */
     public Task getTaskByTaskId(String taskId) {
@@ -201,12 +201,12 @@ public class User {
                 return task;
             }
         }
-        throw new EntityNotFoundException("The Task not found in the User");
+        throw new EntityNotFoundException("Task not found in the user");
     }
 
     /**
-     * Get the Record object by recordId
-     * @param recordId the id of the record
+     * Get the Record object by recordId, throw exception if the task not found
+     * @param recordId recordId
      * @return a Record object
      */
     public Record getRecordByRecordId(String recordId) {
@@ -215,7 +215,7 @@ public class User {
                 return record;
             }
         }
-        throw new EntityNotFoundException("Record '" + recordId + "' not found in User '" + this.uid + "'");
+        throw new EntityNotFoundException("Record not found in the user");
     }
 
     /**
@@ -366,36 +366,6 @@ public class User {
             map.put("taskList", taskList);
             map.put("bookingList", bookingList);
             list.add(map);
-        }
-        return list;
-    }
-
-    /**
-     * Get all unchecked tasks due before today
-     * @param today 'yyyy-MM-dd'
-     * @return a list of overdue Task objects
-     */
-    public List<Task> getOverdueTasks(String today) {
-        List<Task> list = new ArrayList<>();
-        for (Task task:taskList) {
-            if (task.getDueDate().compareTo(today) < 0 && !task.isChecked()) {
-                list.add(task);
-            }
-        }
-        return list;
-    }
-
-    /**
-     * Get all unchecked tasks due today
-     * @param today 'yyyy-MM-dd'
-     * @return a list of upcoming Task objects
-     */
-    public List<Task> getUpcomingTasks(String today) {
-        List<Task> list = new ArrayList<>();
-        for (Task task:taskList) {
-            if (task.getDueDate().compareTo(today) == 0 && !task.isArchived()) {
-                list.add(task);
-            }
         }
         return list;
     }
