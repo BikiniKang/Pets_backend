@@ -30,7 +30,6 @@ public class SchedulerService {
 
     public void addJobToScheduler(String id, Runnable job, LocalDateTime triggerTime) {
         ScheduledFuture<?> scheduledJob = scheduler.schedule(job, triggerTime.atZone(ZoneId.of(TIMEZONE)).toInstant());
-        // todo: figure out better way to manage scheduled job ids
         if (id == null) {
             id = NanoIdUtils.randomNanoId();
         }
