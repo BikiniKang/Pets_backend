@@ -2,7 +2,9 @@ package com.example.pets_backend.service;
 
 
 import com.example.pets_backend.entity.Task;
+import com.example.pets_backend.entity.User;
 import com.example.pets_backend.repository.TaskRepository;
+import com.example.pets_backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -18,6 +20,7 @@ import java.util.List;
 public class TaskService {
 
     private final TaskRepository taskRepository;
+    private final UserRepository userRepo;
 
     public Task save(Task task) {
         log.info("New task '{}' saved into database", task.getTaskId());
@@ -28,6 +31,14 @@ public class TaskService {
         Task task = taskRepository.findByTaskId(taskId);
         checkTaskInDB(task, taskId);
         return task;
+    }
+
+    public Task getTaskByUidAndTaskId(String uid, String taskId) {
+        User user = userRepo.findByUid(uid);
+        if (user == null) {
+            throw new EntityNotFoundException("User not found");
+        }
+        return user.getTaskByTaskId(taskId);
     }
 
     public void deleteByTaskId(String taskId) {

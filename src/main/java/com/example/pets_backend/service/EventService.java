@@ -1,7 +1,9 @@
 package com.example.pets_backend.service;
 
 import com.example.pets_backend.entity.Event;
+import com.example.pets_backend.entity.User;
 import com.example.pets_backend.repository.EventRepository;
+import com.example.pets_backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -16,6 +18,7 @@ import javax.persistence.EntityNotFoundException;
 public class EventService {
 
     private final EventRepository eventRepository;
+    private final UserRepository userRepo;
     private final NtfEventService ntfService;
 
     public Event save(Event event) {
@@ -30,6 +33,14 @@ public class EventService {
         Event event = eventRepository.findByEventId(eventId);
         checkEventInDB(event, eventId);
         return event;
+    }
+
+    public Event getEventByUidAndEventId(String uid, String eventId) {
+        User user = userRepo.findByUid(uid);
+        if (user == null) {
+            throw new EntityNotFoundException("User not found");
+        }
+        return user.getEventByEventId(eventId);
     }
 
     public void deleteByEventId(String eventId) {

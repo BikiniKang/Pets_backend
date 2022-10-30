@@ -57,7 +57,7 @@ public class TaskController {
     public void deleteTask(@RequestBody Map<String, Object> mapIn) {
         String uid = (String) mapIn.get("uid");
         String taskId = (String) mapIn.get("taskId");
-        userService.getTaskByUidAndTaskId(uid, taskId);
+        taskService.getTaskByUidAndTaskId(uid, taskId);
         taskService.deleteByTaskId(taskId);
     }
 
@@ -67,7 +67,7 @@ public class TaskController {
         String uid = (String) mapIn.get("uid");
         Task taskNew = mapper.convertValue(mapIn.get("taskData"), Task.class);
         String taskId = taskNew.getTaskId();
-        Task task = userService.getTaskByUidAndTaskId(uid, taskId);
+        Task task = taskService.getTaskByUidAndTaskId(uid, taskId);
 
         // update all attributes except taskId, user
         task.setTaskTitle(taskNew.getTaskTitle());
@@ -85,7 +85,7 @@ public class TaskController {
     public Map<String, Object> checkTask(@RequestBody Map<String, Object> mapIn) {
         String uid = (String) mapIn.get("uid");
         String taskId = (String) mapIn.get("taskId");
-        Task task = userService.getTaskByUidAndTaskId(uid, taskId);
+        Task task = taskService.getTaskByUidAndTaskId(uid, taskId);
 
         boolean isChecked = (int) mapIn.get("isChecked") != 0;
         task.setChecked(isChecked);
@@ -139,7 +139,8 @@ public class TaskController {
     public List<Task> getOverdueTasks(@RequestBody Map<String, Object> mapIn) {
         String uid = (String) mapIn.get("uid");
         User user = userService.findByUid(uid);
-        return user.getOverdueTasks(LocalDate.now().toString());
+        String today = LocalDate.now().toString();
+        return user.getTaskList().stream().filter(task -> task.getDueDate().compareTo(today) < 0 && !task.isChecked()).collect(Collectors.toList());
     }
 
     @PostMapping("/user/task/archive/all")

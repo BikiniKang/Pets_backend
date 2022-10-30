@@ -26,30 +26,31 @@ public class Pet {
     private User user;
 
     @NonNull
-    @Column(length = 32)
+    @Column(length = 32, nullable = false)
     private String petName;
 
     @NonNull
     private String petAvatar;
 
     @NonNull
-    @Column(length = 32)
+    @Column(length = 32, nullable = false)
     private String species;
 
     @NonNull
-    @Column(length = 32)
+    @Column(length = 32, nullable = false)
     private String breed;
 
     @NonNull
-    private int gender;  // 0: female, 1: male, 2: N/A
+    @Column(nullable = false)
+    private int gender;         // 0: female, 1: male, 2: N/A
 
     @NonNull
-    @Column(length = 10)
-    private String petDob; // "yyyy/mm/dd"
+    @Column(length = 10, nullable = false)
+    private String petDob;      // "yyyy-MM-dd"
 
-    private int weight; // in kg
+    private int weight;         // in kg
 
-    private int height; // in cm
+    private int height;         // in cm
 
     @JsonIgnore
     @OneToMany(mappedBy = "pet", cascade = CascadeType.ALL)
@@ -76,6 +77,7 @@ public class Pet {
     private List<MediData> mediDataList = new ArrayList<>();
 
 
+    @JsonIgnore
     public LinkedHashMap<String, Object> getPetAb() {
         LinkedHashMap<String, Object> petAb = new LinkedHashMap<>();
         petAb.put("petId", this.petId);
@@ -83,5 +85,4 @@ public class Pet {
         petAb.put("petAvatar", this.petAvatar);
         return petAb;
     }
-
 }

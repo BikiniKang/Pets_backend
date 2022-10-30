@@ -28,6 +28,13 @@ public class SendMailService {
     private final JavaMailSenderImpl mailSender;
     private final FreeMarkerConfigurer freemarkerConfigurer;
 
+    /**
+     * Send an HTML email
+     * @param to email address of the receiver
+     * @param model a map of variables required by the template
+     * @param template the file name of the .ftlh template
+     * @param rawIcs  the raw String of the .ics attachment; empty string if the email does not contain a .ics attachment
+     */
     public void sendEmail(String to, Map<String, String> model, String template, String rawIcs) throws Exception {
         log.info("Sending email to '{}'", to);
         Template freemarkerTemplate = freemarkerConfigurer.getConfiguration().getTemplate(template);
