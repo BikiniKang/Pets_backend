@@ -1,13 +1,11 @@
-# Backend of PetPocket [![Build and deploy JAR app to Azure Web App - pets-backend](https://github.com/BikiniKang/pets-backend/actions/workflows/master_pets-backend.yml/badge.svg?branch=master)](https://github.com/BikiniKang/pets-backend/actions/workflows/master_pets-backend.yml)
+# Backend of PetPocket
 
 Important documentation for the backend of PetPocket: 
 * [API Documentation](https://www.apifox.cn/apidoc/shared-3f2c7cf4-280a-4617-af9b-12e61658e23a)
 * [Database Diagram](https://drive.google.com/file/d/1SKr-YTJUhAyQewe16b6HvqFJvcW7C1Lz/view?usp=sharing)
 
-Below is an instruction of *how to set up the development environment* on your own devices: \
- \
-``DOCKER COMING SOON...``
 
+The following is an instruction of *how to set up the development environment* on your own devices:
 ### Prerequisites
 #### Java
 Check your JDK version by running ```java version``` in a terminal window.\
